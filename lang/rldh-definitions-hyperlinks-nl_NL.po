@@ -1,0 +1,126 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Definitions hyperlinks v1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2015-01-05 12:24:40+0000\n"
+"Last-Translator: rogier <rogierlankhorst@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: CSL v1.x\n"
+"X-Poedit-Language: Dutch\n"
+"X-Poedit-Country: NETHERLANDS\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;\n"
+"X-Poedit-Basepath: ../\n"
+"X-Poedit-Bookmarks: \n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Textdomain-Support: yes"
+
+#. translators: plugin header field 'Name'
+#: rldh-definitions-hyperlinks.php:0
+#@ rldh-definitions-hyperlinks
+msgid "Definitions hyperlinks"
+msgstr ""
+
+#. translators: plugin header field 'PluginURI'
+#: rldh-definitions-hyperlinks.php:0
+#@ rldh-definitions-hyperlinks
+msgid "http://www.rogierlankhorst.com/definitions-hyperlinks"
+msgstr ""
+
+#. translators: plugin header field 'Description'
+#: rldh-definitions-hyperlinks.php:0
+#@ rldh-definitions-hyperlinks
+msgid "Plugin to autoreplace in the content of a page or post every instance of a word that is defined in the definitions"
+msgstr "Plugin om in de inhoud van een pagina of post elke instantie van een woord te vervangen die is gedefinieerd in de definities"
+
+#. translators: plugin header field 'Author'
+#: rldh-definitions-hyperlinks.php:0
+#@ rldh-definitions-hyperlinks
+msgid "Rogier Lankhorst"
+msgstr ""
+
+#. translators: plugin header field 'AuthorURI'
+#: rldh-definitions-hyperlinks.php:0
+#@ rldh-definitions-hyperlinks
+msgid "http://www.rogierlankhorst.com"
+msgstr ""
+
+#. translators: plugin header field 'Version'
+#: rldh-definitions-hyperlinks.php:0
+#@ rldh-definitions-hyperlinks
+msgid "1.0.0"
+msgstr ""
+
+#: rldh-definitions-hyperlinks.php:89
+#@ rldh-definitions-hyperlinks
+msgid "definitions"
+msgstr "definities"
+
+#: rldh-definitions-hyperlinks.php:76
+#: rldh-definitions-hyperlinks.php:79
+#@ rldh-definitions-hyperlinks
+msgid "definition"
+msgstr "definitie"
+
+#: rldh-definitions-hyperlinks.php:77
+#: rldh-definitions-hyperlinks.php:82
+#@ rldh-definitions-hyperlinks
+msgid "New definition"
+msgstr "Nieuwe definitie"
+
+#: rldh-definitions-hyperlinks.php:78
+#@ rldh-definitions-hyperlinks
+msgid "Add new definition"
+msgstr "Voeg nieuwe definitie toe"
+
+#: rldh-definitions-hyperlinks.php:80
+#@ rldh-definitions-hyperlinks
+msgid "definition parentitem"
+msgstr "Hoofditem definitie"
+
+#: rldh-definitions-hyperlinks.php:115
+#: rldh-definitions-hyperlinks.php:129
+#@ rldh-definitions-hyperlinks
+msgid "Definition"
+msgstr "Definitie"
+
+#: rldh-definitions-hyperlinks.php:75
+#@ rldh-definitions-hyperlinks
+msgid "Definitions"
+msgstr "Definities"
+
+#: rldh-definitions-hyperlinks.php:149
+#@ rldh-definitions-hyperlinks
+msgid "Click for more information"
+msgstr "Klik voor meer informatie"
+
+#: rldh-definitions-hyperlinks.php:81
+#@ rldh-definitions-hyperlinks
+msgid "Edit definition"
+msgstr "Wijzig definitie"
+
+#: rldh-definitions-hyperlinks.php:83
+#@ rldh-definitions-hyperlinks
+msgid "View definition"
+msgstr "Bekijk definitie"
+
+#: rldh-definitions-hyperlinks.php:84
+#@ rldh-definitions-hyperlinks
+msgid "Search definitions"
+msgstr "Zoek definities"
+
+#: rldh-definitions-hyperlinks.php:85
+#@ rldh-definitions-hyperlinks
+msgid "No definitions found"
+msgstr "Geen definities gevonden"
+
+#: rldh-definitions-hyperlinks.php:86
+#@ rldh-definitions-hyperlinks
+msgid "No definitions found in trash"
+msgstr "Geen definities gevonden in de prullenbak"
+
