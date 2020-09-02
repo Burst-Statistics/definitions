@@ -130,7 +130,7 @@ class rldh_definition {
             'hierarchical'          => true
         ) );
 
-        register_post_type(__('Definition','rldh-definitions-hyperlinks'),$args);
+        register_post_type('definition', $args);
     }
 
     private function get_tooltip_link($url, $link, $title) {
@@ -144,7 +144,7 @@ class rldh_definition {
 
         //find definitions in buffer
         $args = array(
-            'post_type'        => __('Definition','rldh-definitions-hyperlinks'),
+            'post_type'        => 'definition',
             'post_status'      => 'publish',
             'numberposts'      => -1,
             'suppress_filters' => true 
@@ -153,6 +153,7 @@ class rldh_definition {
         $definitions = get_posts( apply_filters( 'rldh_definitions_query',$args ));
         if ( $definitions ) {
           foreach ( $definitions as $definition ) {
+              _log($definition);
             //check if this post IS this definition, else skip to next definition
             if (get_the_ID()!=$definition->ID) {
                 $start_looking_at = 0;
@@ -171,58 +172,15 @@ class rldh_definition {
                 $placeholder   = $count.'_rldh_excerpt';
                 $placeholder_arr[] = $placeholder;
 
-                $name_lc   = strtolower($name);
-                $name_uc   = strtoupper($name);
-                $name_ucf  = ucfirst($name);
+                $link   = $this :: get_tooltip_link($url,$name,$placeholder);
 
-                $link_lc   = $this :: get_tooltip_link($url,$name_lc,$placeholder);
-                $link_uc   = $this :: get_tooltip_link($url,$name_uc,$placeholder);
-                $link_ucf  = $this :: get_tooltip_link($url,$name_ucf,$placeholder);
-                
                 //continue until end of string, or break
                 // use regex instead https://stackoverflow.com/questions/958095/use-regex-to-find-specific-string-not-in-html-tag
-                while ($start_looking_at<$content_length) {
-                    $poslc  = strpos($content, $name_lc, $start_looking_at);
-                    $posuc  = strpos($content, $name_uc, $start_looking_at);
-                    $posucf = strpos($content, $name_ucf, $start_looking_at);
+                //regex: replace $name in $content with $link
 
-                    //get the position of the first occurring string
-                    if ($poslc  === false) {$poslc = $unlikely_nr;}
-                    if ($posuc  === false) {$posuc = $unlikely_nr;}
-                    if ($posucf === false) {$posucf= $unlikely_nr;}
-                    $start_looking_at = min(array($poslc,$posuc,$posucf));
+                $pattern = '/(?![^<]*>)(wordpress)/i';
+	            $content = preg_replace($pattern, $link, $content);
 
-                    //if equal to unlikely nr, no occurrence was found, stop
-                    if ($start_looking_at!=$unlikely_nr) {
-                        //check if firstposition is within an image or hyperlink tag
-                        $pos_close1 = strpos($content, ">",$start_looking_at);
-                        $pos_open1 = strpos($content,"<", $start_looking_at);
-
-                        $pos_close2 = strpos($content, "</a",$start_looking_at);
-                        $pos_open2 = strpos($content,"<a", $start_looking_at);
-                        if (($pos_open2===false && $pos_close2!==false) || ($pos_close2<$pos_open2)) {
-                            //found hyperlink
-                            $start_looking_at = $pos_close2+1;
-                        }
-                        elseif (($pos_open1===false && $pos_close1!==false) || ($pos_close1<$pos_open1)) {
-                            //text within brackets, ignore
-                            $start_looking_at = $pos_close1+1;
-                        } else {
-                            //html free definition, replace, then exit while
-                            //find out if we need to replace with lowercase, uppercase, or uppercasefirst string
-                            if (($poslc != $unlikely_nr) && ($poslc==$start_looking_at)) {
-                                $content = substr_replace($content,$link_lc,$poslc,strlen($name_lc));
-                            }
-                            elseif (($posuc != $unlikely_nr) && ($posuc==$start_looking_at)) {
-                                $content = substr_replace($content,$link_uc,$posuc,strlen($name_uc));
-                            }
-                            elseif (($posucf != $unlikely_nr) && ($posucf==$start_looking_at)) {
-                                $content = substr_replace($content,$link_ucf,$posucf,strlen($name_ucf));
-                            }
-                            break;
-                        }
-                    }
-                }
                 $count++;
               }
           }
