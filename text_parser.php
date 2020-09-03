@@ -50,7 +50,6 @@ if (!class_exists('wpdef_text_parser')) {
 				$args ) );
 			if ( $definitions ) {
 				foreach ( $definitions as $definition ) {
-					_log( $definition );
 					//check if this post IS this definition, else skip to next definition
 					if ( get_the_ID() != $definition->ID ) {
 						$start_looking_at = 0;
