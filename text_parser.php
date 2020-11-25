@@ -53,9 +53,10 @@ if (!class_exists('wpdef_text_parser')) {
 				$content_post = get_post($postid);
 				$content = $content_post->post_content;
 				$img = get_the_post_thumbnail($content_post, 'medium' );
+
 				$previews[] = array(
 					'id' => $definitions_id,
-					'html' => '<div class="wpdef-preview-content">'.$img.$content.'</div>',
+					'html' => '<div class="wpdef-preview-content"><div class="wpdef-preview-image">'.$img.' </div><div class="wpdef-preview-text"> '.$content.' </div><div class="wpdef-read-more"><a href="#">Read more</a></div></div>',
 				);
 			}
 			
