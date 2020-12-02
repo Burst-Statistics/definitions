@@ -62,52 +62,52 @@ if ( ! class_exists( "wpdef_review" ) ) {
 			}
 			?>
 			<style>
-				.cmplz-container {
+				.wpdef-container {
 					display: flex;
 					padding: 12px;
 				}
 
-				.cmplz-container .dashicons {
+				.wpdef-container .dashicons {
 					margin-left: 10px;
 					margin-right: 5px;
 				}
 
-				.cmplz-review-image img {
+				.wpdef-review-image img {
 					margin-top: 0.5em;
 				}
 
-				.cmplz-buttons-row {
+				.wpdef-buttons-row {
 					margin-top: 10px;
 					display: flex;
 					align-items: center;
 				}
 			</style>
 			<div id="message"
-			     class="updated fade notice is-dismissible cmplz-review really-simple-plugins"
+			     class="updated fade notice is-dismissible wpdef-review really-simple-plugins"
 			     style="border-left:4px solid #333">
-				<div class="cmplz-container">
-					<div class="cmplz-review-image"><img width=80px"
+				<div class="wpdef-container">
+					<div class="wpdef-review-image"><img width=80px"
 					                                     src="<?php echo WPDEF_URL ?>/assets/images/icon-128x128.png"
 					                                     alt="review-logo">
 					</div>
 					<div style="margin-left:30px">
-						<p><?php printf( __( 'Hi, you have been using Complianz | GDPR cookie consent for a month now, awesome! If you have a moment, please consider leaving a review on WordPress.org to spread the word. We greatly appreciate it! If you have any questions or feedback, leave us a %smessage%s.',
+						<p><?php printf( __( 'Hi, you have been using Wordpress Definitions for a month now, awesome! If you have a moment, please consider leaving a review on WordPress.org to spread the word. We greatly appreciate it! If you have any questions or feedback, leave us a %smessage%s.',
 								'definitions' ),
-								'<a href="https://complianz.io/contact" target="_blank">',
+								'<a href="https://wpdefinitions.com" target="_blank">',
 								'</a>' ); ?></p>
 						<i>- Rogier</i>
-						<div class="cmplz-buttons-row">
+						<div class="wpdef-buttons-row">
 							<a class="button button-primary" target="_blank"
 							   href="https://wordpress.org/support/plugin/definitions/reviews/#new-post"><?php _e( 'Leave a review',
 									'definitions' ); ?></a>
 
 							<div class="dashicons dashicons-calendar"></div>
-							<a href="#"
+							<a href="<?php echo add_query_arg(array('post_type'=>'definition', 'wpdef_dismiss_review'=>1), admin_url('edit.php') )?>"
 							   id="maybe-later"><?php _e( 'Maybe later',
 									'definitions' ); ?></a>
 
 							<div class="dashicons dashicons-no-alt"></div>
-							<a href="<?php echo add_query_arg(array('page'=>'complianz', 'wpdef_dismiss_review'=>1), admin_url('admin.php') )?>"><?php _e( 'Don\'t show again',
+							<a href="<?php echo add_query_arg(array('post_type'=>'definition', 'wpdef_dismiss_review'=>1), admin_url('edit.php') )?>"><?php _e( 'Don\'t show again',
 									'definitions' ); ?></a>
 						</div>
 					</div>
@@ -133,16 +133,16 @@ if ( ! class_exists( "wpdef_review" ) ) {
 			?>
 			<script type='text/javascript'>
                 jQuery(document).ready(function ($) {
-                    $(".cmplz-review.notice.is-dismissible").on("click", ".notice-dismiss", function (event) {
+                    $(".wpdef-review.notice.is-dismissible").on("click", ".notice-dismiss", function (event) {
                         rsssl_dismiss_review('dismiss');
                     });
-                    $(".cmplz-review.notice.is-dismissible").on("click", "#maybe-later", function (event) {
+                    $(".wpdef-review.notice.is-dismissible").on("click", "#maybe-later", function (event) {
                         rsssl_dismiss_review('later');
-                        $(this).closest('.cmplz-review').remove();
+                        $(this).closest('.wpdef-review').remove();
                     });
-                    $(".cmplz-review.notice.is-dismissible").on("click", ".review-dismiss", function (event) {
+                    $(".wpdef-review.notice.is-dismissible").on("click", ".review-dismiss", function (event) {
                         rsssl_dismiss_review('dismiss');
-                        $(this).closest('.cmplz-review').remove();
+                        $(this).closest('.wpdef-review').remove();
                     });
 
                     function rsssl_dismiss_review(type) {

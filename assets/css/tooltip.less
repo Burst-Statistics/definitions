@@ -54,7 +54,6 @@ dfn {
   position: relative;
   display: inline-block;
   cursor: pointer;
-  transition: 5s ease-in-out;
 }
 
 dfn:before {
@@ -64,6 +63,8 @@ dfn > .wpdef-preview-content {
   display: none;
   position: absolute;
   top: calc(1em + 10px);
+  animation: fadeIn ease 2s;
+
 }
 
 dfn:hover > .wpdef-preview-content {
@@ -87,4 +88,16 @@ dfn:hover > .wpdef-preview-content {
 .wpdef-read-more {
   padding: 1em;
   font-style: normal;
+}
+
+.wpdef-preview-content {
+}
+
+@keyframes fadeIn {
+  0% {opacity:0;
+      transform: translate(0px, 10px)}
+  50% {opacity:0;
+    transform: translate(0px, 10px)}
+  100% {opacity:1;
+    transform: translate(0px, 0px)}
 }

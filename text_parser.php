@@ -57,7 +57,6 @@ if (!class_exists('wpdef_text_parser')) {
 					'image' => $img,
 					'content' => $content,
 					'permalink' => get_permalink( $postid ),
-
 				);
 
 				$previews[] = array(
