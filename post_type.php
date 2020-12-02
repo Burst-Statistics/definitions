@@ -4,8 +4,7 @@ defined('ABSPATH') or die("you do not have acces to this page!");
 if (!class_exists('wpdef_posttype')) {
 	class wpdef_posttype {
 		public function __construct() {
-			add_action( 'init',
-				array( $this, 'create_definitions_post_type' ) );
+			add_action( 'init', array( $this, 'create_definitions_post_type' ) );
 		}
 
 		public function create_definitions_post_type() {
