@@ -39,31 +39,27 @@ if (!class_exists('wpdef_text_parser')) {
 		}
 
 		public function wpdef_load_preview(){
-			error_log("ajax call");
-			error_log(print_r($_GET, true));
 			$definitions_ids = array_map( 'intval' , $_GET['ids']);
-			error_log(print_r($definitions_ids, true));
-			//get_post();
-
 			$error          = false;
 			$previews = array();
 			foreach ($definitions_ids as $definitions_id ) {
 
-				$postid = $definitions_id;
-				$content_post = get_post($postid);
-				$content = $content_post->post_content;
-				$img = get_the_post_thumbnail($content_post, 'medium' );
+				$definition = get_post($definitions_id);
+				$excerpt          = $this->get_excerpt( $definition );
+
+				$img = get_the_post_thumbnail($definition, 'medium' );
 				$args = array(
 					'image' => $img,
-					'content' => $content,
-					'permalink' => get_permalink( $postid ),
+					'content' => $excerpt,
+					'permalink' => get_permalink( $definitions_id ),
+
 				);
 
 				$previews[] = array(
 					'id' => $definitions_id,
 					'html' => $this->load_template( 'preview.php', $args ) );
 			}
-			
+
 			$response = array(
 				'success' => !$error,
 				'previews' => $previews,
@@ -121,14 +117,13 @@ if (!class_exists('wpdef_text_parser')) {
 		 */
 
 		private function get_tooltip_link( $url, $tooltip, $title , $post_id) {
-			$classes[] = sanitize_title($title);
-			$classes[] = 'wpdef-definition';
+			$classes[] = 'wpdef-'.sanitize_title($title);
 			$classes[] = 'wpdef-'.$this->tooltip_type;
 			$class = implode(' ', apply_filters( 'wpdef-classes', $classes) );
 			if ($this->tooltip_type === 'tooltip'){
 				$tooltip_html = '<a href="{url}" class="'.$class.'"><span data-hover="{tooltip}">{title}</span></a>';
 			} else {
-				$tooltip_html = '<dfn title="{title}" class="'.$class.'" data-definitions_id="{post_id}"></dfn>';
+				$tooltip_html = '<span class="'.$class.'"><a href="{url}"><dfn title="{title}" class="wpdef-definition" data-definitions_id="{post_id}"></dfn></a></span>';
 				// https://stackoverflow.com/questions/40531029/how-to-create-a-pure-css-tooltip-with-html-content-for-inline-elements
 			}
 			return apply_filters( 'wpdef_tooltip_html', str_replace( array(
@@ -146,8 +141,6 @@ if (!class_exists('wpdef_text_parser')) {
 		 */
 
 		public function replace_definitions_with_links( $content ) {
-			$count = 0;
-
 			//find definitions in buffer
 			$args = array(
 				'post_type'        => 'definition',
@@ -156,55 +149,53 @@ if (!class_exists('wpdef_text_parser')) {
 				'suppress_filters' => true
 			);
 
-			$definitions = get_posts( apply_filters( 'rldh_definitions_query',
-				$args ) );
+			$definitions = get_posts( apply_filters( 'wpdef_definitions_query', $args ) );
 			if ( $definitions ) {
 				foreach ( $definitions as $definition ) {
 					//check if this post IS this definition, else skip to next definition
 					if ( get_the_ID() != $definition->ID ) {
-						$url              = get_permalink( $definition->ID );
-						$name             = apply_filters( 'the_title', $definition->post_title );
-						$excerpt          = apply_filters( 'the_excerpt', $definition->post_excerpt );
-						//remove tags from excerpt
-						$excerpt = strip_tags( $excerpt );
-						//remove quotes
-						$excerpt = str_replace( '"', "", $excerpt );
-						$excerpt = str_replace( "'", "", $excerpt );
-						if ( strlen( $excerpt ) > 0 ) {
-							$excerpt = $excerpt . " ";
+						$terms = get_the_terms( $definition->ID, 'definitions_title' );
+						if ( !$terms ) continue;
+
+						foreach ($terms as $term ) {
+							$url              = get_permalink( $definition->ID );
+							$excerpt          = $this->get_excerpt( $definition );
+
+							$link = $this::get_tooltip_link( $url, $excerpt, $term->name , $definition->ID);
+
+							//continue until end of string, or break
+							// use regex instead https://stackoverflow.com/questions/958095/use-regex-to-find-specific-string-not-in-html-tag
+							//regex: replace $name in $content with $link
+
+							$pattern = '/(?![^<]*>)(' . $term->name . ')/i';
+							$limit = 1; //how many times a found definition can be replaced
+							$content = preg_replace( $pattern, $link, $content, $limit );
 						}
-						$excerpt .= __( 'Click for more information', 'definitions');
-
-						$excerpt_arr[]     = $excerpt;
-						$placeholder       = $count . '_rldh_excerpt';
-						$placeholder_arr[] = $placeholder;
-						$tooltip = $excerpt;
-						$link = $this::get_tooltip_link( $url, $tooltip, $name , $definition->ID);
-
-						//continue until end of string, or break
-						// use regex instead https://stackoverflow.com/questions/958095/use-regex-to-find-specific-string-not-in-html-tag
-						//regex: replace $name in $content with $link
-
-						$pattern = '/(?![^<]*>)(' . $name . ')/i';
-						$limit = 10; //how many times a found definition can be replaced
-
-
-						$content = preg_replace( $pattern, $link, $content, $limit );
-
-						$count ++;
 					}
 				}
 			}
 
-			if ( isset( $placeholder_arr ) ) {
-				$content = str_replace( $placeholder_arr, $excerpt_arr,
-					$content );
-			}
-
-			return apply_filters( 'rldh_replace_definitions', $content );
+			return apply_filters( 'wpdef_content', $content );
 		}
 
+		/**
+		 * @param WP_POST $definition
+		 *
+		 * @return string
+		 */
 
+		public function get_excerpt( $definition ) {
+			$excerpt = apply_filters( 'the_excerpt', $definition->post_excerpt );
+
+			if ( strlen( $excerpt ) == 0 ) {
+				$excerpt = $definition->post_content;
+				if ( strlen($excerpt)>250 ){
+					$excerpt = substr($definition->post_content, 0, 250 ).'...';
+				}
+			}
+
+			return $excerpt;
+		}
 
 	}
 }
