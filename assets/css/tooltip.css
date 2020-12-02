@@ -37,40 +37,35 @@ a.wpdef-definition:hover {
   bottom: 25px;
   @include transform(translate(-50%, -1em));
 }
-.wpdef-preview dfn {
+dfn {
   position: relative;
   display: inline-block;
   cursor: pointer;
   transition: 5s ease-in-out;
-  border-bottom: 1px dotted;
 }
-.wpdef-preview dfn div {
-  text-decoration: none;
-  color: initial;
-}
-.wpdef-preview dfn:before {
+dfn:before {
   content: attr(title);
 }
-.wpdef-preview dfn > .wpdef-preview-content {
+dfn > .wpdef-preview-content {
   display: none;
   position: absolute;
   top: calc(1em + 10px);
 }
-.wpdef-preview dfn:hover > .wpdef-preview-content {
-  box-shadow: 0 0px 5px 5px rgba(222, 222, 222, 0.2);
+dfn:hover > .wpdef-preview-content {
+  box-shadow: 0px 0px 5px 5px rgba(222, 222, 222, 0.2);
   display: block;
   z-index: 100;
   background-color: white;
   width: 16em;
 }
-.wpdef-preview dfn .wpdef-preview-image img {
+.wpdef-preview-image img {
   width: 100%;
 }
-.wpdef-preview dfn .wpdef-preview-text {
+.wpdef-preview-text {
   padding: 1em 1em 0 1em;
   font-style: normal;
 }
-.wpdef-preview dfn .wpdef-read-more {
+.wpdef-read-more {
   padding: 1em;
   font-style: normal;
 }

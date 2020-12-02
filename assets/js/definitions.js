@@ -12,7 +12,7 @@ jQuery(document).ready(function ($) {
 
         $('.wpdef-preview').each(function(){
 
-            var element = $(this).find('.wpdef-definition');
+            var element = $(this);
             var left = element.offset().left - distance,
                 top = element.offset().top - distance,
                 right = left + element.width() + ( 2 * distance ),
@@ -21,11 +21,12 @@ jQuery(document).ready(function ($) {
                 y = event.pageY;
 
             if ( x > left && x < right && y > top && y < bottom ) {
-                var definitions_id = element.data('definitions_id');
+                var definitions_id = $(this).data('definitions_id');
                 var html = wpdef_get_preview(definitions_id);
                 if (!$(this).find('.wpdef-preview-content').length ){
-                    element.append(html);
+                    $(this).append(html);
                 }
+
             }
         });
     } );
@@ -37,7 +38,7 @@ jQuery(document).ready(function ($) {
     function wpdef_load_previews(){
         if (!$('.wpdef-preview').length) return;
 
-        $('.wpdef-definition').each(function(){
+        $('.wpdef-preview').each(function(){
             var definitions_id = $(this).data('definitions_id');
             if (!preloaded.includes(definitions_id)) preloaded.push(definitions_id);
         });
@@ -53,6 +54,7 @@ jQuery(document).ready(function ($) {
             success: function (response) {
                 if (response.success) {
                     previews = response.previews;
+                    console.log(previews);
                 }
             }
         });
