@@ -53,11 +53,16 @@ if (!class_exists('wpdef_text_parser')) {
 				$content_post = get_post($postid);
 				$content = $content_post->post_content;
 				$img = get_the_post_thumbnail($content_post, 'medium' );
+				$args = array(
+					'image' => $img,
+					'content' => $content,
+					'permalink' => get_permalink( $postid ),
+
+				);
 
 				$previews[] = array(
 					'id' => $definitions_id,
-					'html' => '<div class="wpdef-preview-content"><div class="wpdef-preview-image">'.$img.' </div><div class="wpdef-preview-text"> '.$content.' </div><div class="wpdef-read-more"><a href="#">Read more</a></div></div>',
-				);
+					'html' => $this->load_template( 'preview.php', $args ) );
 			}
 			
 			$response = array(
@@ -69,6 +74,41 @@ if (!class_exists('wpdef_text_parser')) {
 			header( "Content-Type: application/json" );
 			echo $response;
 			exit;
+		}
+
+		/**
+		 * Load a template, and replace fields if any
+		 * @param string $filename
+		 * @param array $args
+		 *
+		 * @return false|string|string[]
+		 */
+		public function load_template( $filename, $args = array() ) {
+
+			$file       = trailingslashit( WPDEF_PATH ) . 'templates/' . $filename;
+			$theme_file = trailingslashit( get_stylesheet_directory() )
+			              . trailingslashit( basename( WPDEF_PATH ) )
+			              . 'templates/' . $filename;
+
+			if ( file_exists( $theme_file ) ) {
+				$file = $theme_file;
+			}
+
+			if ( strpos( $file, '.php' ) !== false ) {
+				ob_start();
+				require $file;
+				$contents = ob_get_clean();
+			} else {
+				$contents = file_get_contents( $file );
+			}
+
+			if ( !empty($args) && is_array($args) ) {
+				foreach ( $args as $fieldname => $fieldvalue ) {
+					$contents = str_replace( "{".$fieldname."}", $fieldvalue, $contents );
+				}
+			}
+
+			return $contents;
 		}
 
 		/**
