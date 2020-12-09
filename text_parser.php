@@ -190,7 +190,7 @@ if (!class_exists('wpdef_text_parser')) {
 			if ( strlen( $excerpt ) == 0 ) {
 				$excerpt = $definition->post_content;
 				if ( strlen($excerpt)>250 ){
-					$excerpt = substr($definition->post_content, 0, 250 ).'...';
+					$excerpt = substr(strip_tags($definition->post_content), 0, 250 ).'...';
 				}
 			}
 
