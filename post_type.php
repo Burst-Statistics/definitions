@@ -4,6 +4,7 @@ defined('ABSPATH') or die("you do not have acces to this page!");
 if (!class_exists('wpdef_posttype')) {
 	class wpdef_posttype {
 		public function __construct() {
+			add_action( 'init', array( $this, 'create_definitions_post_type'));
 			add_action( 'init', array( $this, 'create_definitions_post_type' ) );
 			add_action( 'init', array( $this, 'register_definitions' ) );
 		}
@@ -71,4 +72,16 @@ if (!class_exists('wpdef_posttype')) {
 		}
 
 	}
+
+	function columns_definition($columns) {
+		unset($columns['date']);
+		$columns['definition_string'] = 'String';
+		$columns['definition_count'] = 'Count';
+		$columns['definition_type'] = 'Type';
+		$columns['definition_tooltip'] = 'Tooltip';
+		return $columns;
+	}
+	add_filter('manage_definition_posts_columns', 'columns_definition');
 }
+
+

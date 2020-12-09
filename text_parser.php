@@ -167,7 +167,7 @@ if (!class_exists('wpdef_text_parser')) {
 							// use regex instead https://stackoverflow.com/questions/958095/use-regex-to-find-specific-string-not-in-html-tag
 							//regex: replace $name in $content with $link
 
-							$pattern = '/(?![^<]*>)(' . $term->name . ')/i';
+							$pattern = '/(?![^<]*>)(?<![A-Za-z])(' .$term->name. ')(?![A-Za-z])/i';
 							$limit = 1; //how many times a found definition can be replaced
 							$content = preg_replace( $pattern, $link, $content, $limit );
 						}
@@ -190,7 +190,7 @@ if (!class_exists('wpdef_text_parser')) {
 			if ( strlen( $excerpt ) == 0 ) {
 				$excerpt = $definition->post_content;
 				if ( strlen($excerpt)>250 ){
-					$excerpt = substr($definition->post_content, 0, 250 ).'...';
+					$excerpt = substr(strip_tags($definition->post_content), 0, 250 ).'...';
 				}
 			}
 
