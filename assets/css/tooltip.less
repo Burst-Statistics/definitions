@@ -7,49 +7,6 @@ a{
   }
 }
 
-// hover state of anything with a data-hover attribute
-*[data-hover] {
-  &:hover {
-
-    position:relative; // remove this if position is already set
-
-    // tooltip text
-    &:after {
-      background:#fff;
-      border-radius:4px;
-      color:rgba(0,0,0,1);
-      content:attr(data-hover); // value of data-hover attribute
-      display: block;
-      font-size:.875em;
-      line-height: 1.25em;
-      padding:15px 20px;
-      left:0;
-      position:absolute;
-      bottom:35px;
-    @include transform(translate(-50%, -1em));
-      white-space: nowrap;
-      max-width:250px;
-    }
-
-    // tooltip arrow
-    &:before {
-      width: 0;
-      height: 0;
-      border-left: 10px solid transparent;
-      border-right: 10px solid transparent;
-      border-top: 10px solid #fff;
-
-      content:"";
-      display: block;
-      font-size:.75em;
-      left:40%;
-      position:absolute;
-      bottom:25px;
-    @include transform(translate(-50%, -1em));
-    }
-  }
-}
-
 
 .wpdef-preview {
   dfn {
