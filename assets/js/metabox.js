@@ -29,13 +29,11 @@ jQuery(document).ready(function ($) {
         var exists = [];
 
         for (let i=0; i<new_definitions.length; i++) {
-            if ( $.inArray(new_definitions[i], existing_definitions) !== -1 ) {
-                exists.push(new_definitions[i]);
-                console.log(exists);
+            var definition = $.trim(new_definitions[i]);
+            if ( $.inArray(definition, existing_definitions) !== -1 ) {
+                exists.push(definition);
             }
-            console.log(exists);
         }
-        console.log(exists);
 
         if ( exists.length > 0 ) {
             $('input[name="dfn-definition-add"]').prop('disabled', true);
