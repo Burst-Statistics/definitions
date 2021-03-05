@@ -36,12 +36,23 @@ jQuery(document).ready(function ($) {
         }
 
         if ( exists.length > 0 ) {
+            exists = exists.join(', ');
             $('input[name="dfn-definition-add"]').prop('disabled', true);
-            var notice_html = '<div class="dfn-icon-bullet-red"></div><span class="dfn-comment">' + exists + ' is already in use. Choose another</span>';
+            if ( exists.indexOf(",") >= 0 ) {
+                var message = ' are already in use. Choose another'
+            } else {
+                var message = ' is already in use. Choose another'
+            }
+            var notice_html = '<div class="dfn-icon-bullet-red"></div><span class="dfn-comment">' + exists + message + '</span>';
             $('.dfn-definition-add-notice').html(notice_html);
         } else {
             $('input[name="dfn-definition-add"]').prop('disabled', false);
-            var notice_html = '<div class="dfn-icon-bullet-green"></div><span class="dfn-comment">' + new_definition + ' has not been used before!</span>';
+            if ( new_definition.indexOf(",") >= 0 ) {
+                var message = ' are not used before!'
+            } else {
+                var message = ' has not been used before!'
+            }
+            var notice_html = '<div class="dfn-icon-bullet-green"></div><span class="dfn-comment">' + new_definition + message + '</span>';
             $('.dfn-definition-add-notice').html(notice_html);
         }
     }
