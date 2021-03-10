@@ -135,24 +135,20 @@ if (!class_exists('wpdef_posttype')) {
 
 
         public function definitions_meta_box_html( $post ) {
-            $box['args'] = array('taxonomy' => 'definitions_title');
-            $use_tooltip = get_post_meta( $post->ID, 'definition_use_tooltip', true ) ? 'checked="checked"' : '';
-            $disable_image = get_post_meta( $post->ID, 'definition_disable_image', true ) ? 'checked="checked"' : '';
-            $enable = get_post_meta( $post->ID, 'definition_enable', true ) ? 'checked="checked"' : '';
+            $use_tooltip    = get_post_meta( $post->ID, 'definition_use_tooltip', true )    ? 'checked="checked"' : '';
+            $disable_image  = get_post_meta( $post->ID, 'definition_disable_image', true )  ? 'checked="checked"' : '';
+            $enable         = get_post_meta( $post->ID, 'definition_enable', true )         ? 'checked="checked"' : '';
 
-            $all_definitions = array_column( get_terms( 'definitions_title', array( 'orderby' => 'count', 'hide_empty' => 0 ) ), 'name');
+            $all_definitions    = array_column( get_terms( 'definitions_title', array( 'orderby' => 'count', 'hide_empty' => 0 ) ), 'name');
             $definitions_string = implode( ',', $all_definitions );
-
-            $post_count      = wp_count_posts()->publish;
-            $post_ids        = get_posts( array('fields' => 'ids', 'posts_per_page'  => -1) );
-            $post_ids_string = implode( ',', $post_ids );
+            $post_count         = wp_count_posts()->publish;
 
             ?>
             <span class="dfn-comment">If you want to know all the possibilities with Bob the Linkbuilder, have a look at our documentation. <a>Read more</a></span>
 
             <h3>Settings</h3>
             <span class="dfn-comment">Limit terms to only one per post.</span>
-            <?php $this->definition_tag_field( $post, $box ); ?>
+            <?php $this->definition_tag_field( $post ); ?>
             <div class="dfn-field dfn-definition-add-notice">
                 <div class="dfn-icon-bullet-invisible"></div><span class="dfn-comment">Add a term to see results</span>
             </div>
@@ -189,16 +185,9 @@ if (!class_exists('wpdef_posttype')) {
         }
 
 
-        private function definition_tag_field( $post, $box ) {
-            $defaults = array( 'taxonomy' => 'post_tag' );
-            if ( ! isset( $box['args'] ) || ! is_array( $box['args'] ) ) {
-                $args = array();
-            } else {
-                $args = $box['args'];
-            }
-            $parsed_args           = wp_parse_args( $args, $defaults );
-            $tax_name              = esc_attr( $parsed_args['taxonomy'] );
-            $taxonomy              = get_taxonomy( $parsed_args['taxonomy'] );
+        private function definition_tag_field( $post ) {
+            $tax_name              = 'definitions_title';
+            $taxonomy              = get_taxonomy( 'definitions_title' );
             $user_can_assign_terms = current_user_can( $taxonomy->cap->assign_terms );
             $comma                 = _x( ',', 'tag delimiter' );
             $terms_to_edit         = get_terms_to_edit( $post->ID, $tax_name );
