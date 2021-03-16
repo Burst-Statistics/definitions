@@ -5,6 +5,8 @@ if (!class_exists('wpdef_text_parser')) {
 	class wpdef_text_parser {
 
 		public $tooltip_type = 'preview'; //or preview
+        private $current_term_match;
+        private $current_replace_link;
 
 		public function __construct() {
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
@@ -150,6 +152,11 @@ if (!class_exists('wpdef_text_parser')) {
 			return apply_filters( 'wpdef_tooltip_html', $tooltip_html );
 		}
 
+		function definition_preg_replace_callback( $matches ) {
+            return preg_replace( "/(\s)({$this->current_term_match})([\s\,\.\;\!\?])/", "$1{$this->current_replace_link}$3", $matches[0], 1 );
+        }
+
+
 		/**
 		 * @param string $content
 		 *
@@ -188,11 +195,11 @@ if (!class_exists('wpdef_text_parser')) {
 							//continue until end of string, or break
 							// use regex instead https://stackoverflow.com/questions/958095/use-regex-to-find-specific-string-not-in-html-tag
 							//regex: replace $name in $content with $link
+                            $this->current_term_match = $term->name;
+                            $this->current_replace_link = $link;
 
 							$pattern = $this->get_regex( $term->name );
-							$replacement = " {$link}$2";
-							$limit = 1; //how many times a found definition can be replaced
-							$content = preg_replace( $pattern, $replacement, $content, $limit );
+                            $content = preg_replace_callback($pattern, [$this, 'definition_preg_replace_callback'], $content, 1);
 						}
 					}
 				}
@@ -202,7 +209,7 @@ if (!class_exists('wpdef_text_parser')) {
 		}
 
 		private function get_regex( $term ) {
-            return "/(?![^<]*>)( {$term}( |\,|\.|\;|\!|\?))/i";
+		    return "/(<p[^>]*>([^<]|\\\\<)*(\s{$term}[\s\,\.\;\!\?]))|((\s{$term}[\s\,\.\;\!\?])([^<]|\\\\<)*<\/p)/";
         }
 
 		/**
@@ -227,7 +234,7 @@ if (!class_exists('wpdef_text_parser')) {
 
         public function wpdef_scan_definition_count(){
 
-            if ( !isset($_GET['definitions']) ) {
+            if ( !isset($_GET['definitions']) || !isset($_GET['post_id']) ) {
                 $response = array(
                     'success' => true,
                     'count' => 0,
@@ -240,11 +247,13 @@ if (!class_exists('wpdef_text_parser')) {
             }
 
             $definitions = $_GET['definitions'];
+            $post_id = $_GET['post_id'];
 
             $count = 0;
             $posts = get_posts(array('numberposts' => -1));
 
             foreach ( $posts as $post ) {
+                if ( $post->ID == $post_id ) continue;
                 $content     = $post->post_content;
                 foreach( $definitions as $definition ) {
                     $pattern = $this->get_regex( $definition );

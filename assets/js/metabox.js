@@ -123,6 +123,7 @@ jQuery(document).ready(function ($) {
             data: ({
                 action: 'wpdef_scan_definition_count',
                 definitions: post_definitions,
+                post_id: $("#post_ID").val(),
             }),
             success: function (response) {
                 if (response.success) {
