@@ -1,6 +1,13 @@
 'use strict';
 jQuery(document).ready(function ($) {
 
+    if ( $('.block-editor__container').length ) {
+        window.tagBox && window.tagBox.init();
+        update_enable_checkbox_state();
+    } else {
+        update_enable_checkbox_state();
+    }
+
     var post_count                  = $('.dfn-post-count').val();
     var animation_time              = -20;
     var definition_count_current    = 0;
@@ -14,48 +21,52 @@ jQuery(document).ready(function ($) {
 
     function update_add_definition_notice_state() {
         var new_definition = $('input[name="newtag[definitions_title]"]').val();
+
         if ( new_definition.length == 0 ) {
-            var notice_html = '<div class="dfn-icon-bullet-invisible"></div><span class="dfn-comment">Add a term to see results</span>';
+            var notice_html = '<div class="dfn-icon-bullet-invisible"></div><span class="dfn-comment">' + localize_string('add-term') + '</span>';
             $('.dfn-definition-add-notice').html(notice_html);
             return;
         }
 
-        if ( new_definition.indexOf(",") >= 0 ) {
-            var new_definitions = new_definition.split(',');
-        } else {
-            var new_definitions = [new_definition];
-        }
-
-        var exists = [];
-
-        for (let i=0; i<new_definitions.length; i++) {
-            var definition = $.trim(new_definitions[i]);
-            if ( $.inArray(definition, existing_definitions) !== -1 ) {
-                exists.push(definition);
-            }
-        }
+        var definitions = new_definition.split(',');
+        var exists = get_already_existing_definitions( definitions );
 
         if ( exists.length > 0 ) {
             exists = exists.join(', ');
             $('input[name="dfn-definition-add"]').prop('disabled', true);
             if ( exists.indexOf(",") >= 0 ) {
-                var message = ' are already in use. Choose another'
+                var message = localize_string('already-in-use-plural').replace('{definitions}', exists)
             } else {
-                var message = ' is already in use. Choose another'
+                var message = localize_string('already-in-use-single').replace('{definitions}', exists)
             }
-            var notice_html = '<div class="dfn-icon-bullet-red"></div><span class="dfn-comment">' + exists + message + '</span>';
+            var notice_html = '<div class="dfn-icon-bullet-red"></div><span class="dfn-comment">' + message + '</span>';
             $('.dfn-definition-add-notice').html(notice_html);
         } else {
             $('input[name="dfn-definition-add"]').prop('disabled', false);
             if ( new_definition.indexOf(",") >= 0 ) {
-                var message = ' are not used before!'
+                var message = localize_string('not-in-use-plural').replace('{definitions}', new_definition)
             } else {
-                var message = ' has not been used before!'
+                var message = localize_string('not-in-use-single').replace('{definitions}', new_definition)
             }
-            var notice_html = '<div class="dfn-icon-bullet-green"></div><span class="dfn-comment">' + new_definition + message + '</span>';
+            var notice_html = '<div class="dfn-icon-bullet-green"></div><span class="dfn-comment">' + message + '</span>';
             $('.dfn-definition-add-notice').html(notice_html);
         }
     }
+
+
+    function get_already_existing_definitions( definitions ) {
+        var exists = [];
+
+        for (let i=0; i<definitions.length; i++) {
+            var definition = $.trim(definitions[i]);
+            if ( $.inArray(definition, existing_definitions) !== -1 ) {
+                exists.push(definition);
+            }
+        }
+
+        return exists;
+    }
+
 
     add_performance_notice();
     performance_notice_ajax();
@@ -68,7 +79,7 @@ jQuery(document).ready(function ($) {
     $(document).on('click', 'input[name="dfn-definition-add"]', update_add_definition_notice_state );
     $(document).on('click', 'span[class="remove-tag-icon"]', update_add_definition_notice_state );
 
-    update_enable_checkbox_state();
+
     function update_enable_checkbox_state() {
         if ( get_post_definitions_list().length == 0 ) {
             $('input[class="dfn-enable"]').prop('disabled', true);
@@ -78,11 +89,21 @@ jQuery(document).ready(function ($) {
     }
 
 
+    function localize_string( index ) {
+        if (wpdef.strings.hasOwnProperty(index)) {
+            return wpdef.strings[index];
+        }
+
+        return '';
+    }
+
+
     function add_definition_to_all_list() {
         var add_definition = get_post_definitions_list().pop();
         existing_definitions.push( add_definition );
         update_enable_checkbox_state();
     }
+
 
     function remove_definition_from_all_list() {
         var remove_definition = $(this).next().html().split(' ').pop();
@@ -121,9 +142,11 @@ jQuery(document).ready(function ($) {
         animate_performance_notice();
     }
 
+
     function anitation_time_to_wait(x) {
         return 0.1*x*x + x + 1;
     }
+
 
     function animate_performance_notice() {
         if ( animation_time != 40 ) {
@@ -159,22 +182,26 @@ jQuery(document).ready(function ($) {
         var performance_level = calculate_performance_level( definition_count, post_count );
 
         var icon    = "";
-        var notice  = "<span class='dfn-definition-count-notice'><span class='dfn-definition-count'>" + definition_count + "</span> terms in " + post_count + " posts<span>";
+
+        var notice = "<span class='dfn-definition-count-notice'>" + localize_string('terms-in-posts') + "<span>";
+        notice = notice.replace('{terms_count}', "<span class='dfn-definition-count'>" + definition_count + "</span>");
+        notice = notice.replace('{posts_count}', "" + post_count );
+
         var warning = "";
 
         if ( performance_level == 3 ) {
             icon = "<div class='dfn-icon-bullet-red'></div>";
-            warning = "<span class='dfn-comment'>There are too many terms per post. This might affect resources. Try to be more specific. <a>Read more</a><span>";
+            warning = "<span class='dfn-comment'>" + localize_string('too-many-terms') + "<a>" + localize_string('read-more') + "</a><span>";
         }
 
         if ( performance_level == 2 ) {
             icon = "<div class='dfn-icon-bullet-orange'></div>";
-            warning = "<span class='dfn-comment'>There might too many terms per post. This might affect resources. Try to be more specific. <a>Read more</a><span>";
+            warning = "<span class='dfn-comment'>" + localize_string('too-many-terms') + "<a>" + localize_string('read-more') + "</a><span>";
         }
 
         if ( performance_level == 1 ) {
             icon = "<div class='dfn-icon-bullet-green'></div>";
-            warning = "<span class='dfn-comment'></span>";
+            warning = "<span class='dfn-comment'>" + localize_string('positive-ratio-terms') + "<a>" + localize_string('read-more') + "</a><span>";
         }
 
         var html = "";
@@ -185,14 +212,15 @@ jQuery(document).ready(function ($) {
         html += "</div>";
         html += warning;
         html += "<input type='hidden' class='dfn-definition-ids' value='" + definition_count + "'>";
+        html += "<br><br>";
 
         return html;
     }
 
 
     function calculate_performance_level( definition_count, post_count ) {
-        if (definition_count / post_count > 3) return 3;
-        if (definition_count / post_count > 2) return 2;
+        if (definition_count / post_count > 0.5) return 3;
+        if (definition_count / post_count > 0.25) return 2;
         return 1;
     }
 

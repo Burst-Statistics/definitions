@@ -4,7 +4,6 @@ defined('ABSPATH') or die("you do not have acces to this page!");
 if (!class_exists('wpdef_posttype')) {
 	class wpdef_posttype {
 		public function __construct() {
-			add_action( 'init', array( $this, 'create_definitions_post_type' ) );
 			add_action( 'init', array( $this, 'register_definitions' ) );
 
 			add_action( 'add_meta_boxes', array( $this, 'add_definitions_meta_box' ) );
@@ -21,7 +20,7 @@ if (!class_exists('wpdef_posttype')) {
                 'add_new_item'                  => __( 'Add new definition', 'definitions' ),
                 'parent_item_colon'             => __( 'definition', 'definitions' ),
                 'parent'                        => __( 'definition parentitem', 'definitions' ),
-                'edit_item'                     => __( 'Edit Bert', 'definitions' ),
+                'edit_item'                     => __( 'Edit definition', 'definitions' ),
                 'new_item'                      => __( 'New definition', 'definitions' ),
                 'view_item'                     => __( 'View definition', 'definitions' ),
                 'search_items'                  => __( 'Search definitions', 'definitions' ),
@@ -31,66 +30,17 @@ if (!class_exists('wpdef_posttype')) {
                 'separate_items_with_commas'    => __( '', 'definitions' ),
             );
 
-			register_taxonomy(
-				'definitions_title',
-				array('definition'),
-				array(
-					'label' => __( 'Definition Title', 'definitions'),
-					'labels' => $labels,
-					'publicly_queryable' => false,
-					'hierarchical' => false,
-					'show_ui' => true,
-					'show_in_nav_menus' => true,
-					'show_in_rest' => false,
-					'rewrite' => array( 'slug' => 'definitions_title' ),
-				)
-			);
-		}
+            $args = [
+                'hierarchical'      => false,
+                'labels'            => $labels,
+                'show_ui'           => true,
+                'show_admin_column' => true,
+                'show_in_rest'      => false,
+                'query_var'         => true,
+                'rewrite'           => array( 'slug' => 'definitions_title' ),
+            ];
 
-		public function create_definitions_post_type() {
-			$labels   =  array(
-				'name'                          => __( 'Definitions', 'definitions' ),
-				'singular_name'                 => __( 'Definition', 'definitions' ),
-				'add_new'                       => __( 'New definition', 'definitions' ),
-				'add_new_item'                  => __( 'Add new definition', 'definitions' ),
-				'parent_item_colon'             => __( 'definition', 'definitions' ),
-				'parent'                        => __( 'definition parentitem', 'definitions' ),
-				'edit_item'                     => __( 'Edit Bert', 'definitions' ),
-				'new_item'                      => __( 'New definition', 'definitions' ),
-				'view_item'                     => __( 'View definition', 'definitions' ),
-				'search_items'                  => __( 'Search definitions', 'definitions' ),
-				'not_found'                     => __( 'No definitions found', 'definitions' ),
-				'not_found_in_trash'            => __( 'No definitions found in trash', 'definitions' ),
-			);
-			$rewrite  = array(
-				'slug'  => __( 'definitions', 'definitions' ),
-				'pages' => true
-			);
-			$supports =  array(
-				'title',
-				'editor',
-				'thumbnail',
-				'revisions',
-				'page-attributes',
-				'excerpt'
-			);
-
-			$args = array(
-				'labels'              => $labels,
-				'public'              => true,
-				'exclude_from_search' => false,
-				'show_ui'             => true,
-				'show_in_admin_bar'   => true,
-				'rewrite'             => $rewrite,
-				'menu_position'       => 5,
-				'menu_icon'           => 'dashicons-lightbulb',
-				'supports'            => $supports,
-				'has_archive'         => false,
-				'hierarchical'        => true,
-				'taxonomies'          => array('definitions_title'),
-			);
-
-			register_post_type( 'definition', $args );
+            register_taxonomy( 'definitions_title', ['post'], $args );
 		}
 
 
@@ -104,7 +54,6 @@ if (!class_exists('wpdef_posttype')) {
         }
 
 
-
         function add_definitions_meta_box_script( $hook ) {
 
             global $post;
@@ -114,7 +63,10 @@ if (!class_exists('wpdef_posttype')) {
                     wp_register_style( 'wpdef-metabox', trailingslashit( WPDEF_URL ) . "assets/css/metabox.css", "", WPDEF_VERSION );
                     wp_enqueue_style( 'wpdef-metabox' );
 
-                    //wp_enqueue_script( 'wpdef-metabox', WPDEF_URL . "assets/js/metabox.js", array( 'jquery' ), WPDEF_VERSION );
+                    if( ! is_plugin_active( 'classic-editor/classic-editor.php' ) ) {
+                        $suffix = wp_scripts_get_suffix();
+                        wp_enqueue_script('wpdef-tagbox-js', "/wp-admin/js/tags-box$suffix.js", array('jquery', 'tags-suggest'), false, true);
+                    }
 
                     $minified = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
 
@@ -127,6 +79,17 @@ if (!class_exists('wpdef_posttype')) {
                         'wpdef',
                         array(
                             'url'=> admin_url('admin-ajax.php'),
+                            'strings'=> array(
+                                'readmore' => __("Read more", "wp-definitions"),
+                                'add-term' => __('Add a term to see results', 'wp-definitions'),
+                                'already-in-use-plural' => sprintf(__('%s are already in use. Choose another', 'wp-definitions'), '{definitions}'),
+                                'already-in-use-single' => sprintf(__('%s is already in use. Choose another', 'wp-definitions'), '{definitions}'),
+                                'not-in-use-plural' => sprintf(__('%s are not used before!', 'wp-definitions'), '{definitions}'),
+                                'not-in-use-single' => sprintf(__('%s has not been used before!', 'wp-definitions'), '{definitions}'),
+                                'terms-in-posts' => sprintf(__('%s terms in %s posts', 'wp-definitions'), '{terms_count}','{posts_count}'),
+                                'too-many-terms' => __('There might too many terms per post. This might affect resources. Try to be more specific.', 'wp-definitions'),
+                                'positive-ratio-terms' => __('There is a positive ratio terms per post. This won\'t affect resources.', 'wp-definitions'),
+                            ),
                         )
                     );
                 }
@@ -143,11 +106,15 @@ if (!class_exists('wpdef_posttype')) {
             $definitions_string = implode( ',', $all_definitions );
             $post_count         = wp_count_posts()->publish;
 
-            ?>
-            <span class="dfn-comment">If you want to know all the possibilities with Bob the Linkbuilder, have a look at our documentation. <a>Read more</a></span>
+            if( ! is_plugin_active( 'classic-editor/classic-editor.php' ) ) { ?>
+                <script>
+                    window.tagBox && window.tagBox.init();
+                </script>
+            <?php } ?>
+            <span class="dfn-comment"><?php _e("If you want to know all the possibilities with Bob the Linkbuilder, have a look at our documentation.", "wp-definitions") ?> <a><?php _e("Read more", "wp-definitions") ?></a></span>
 
             <h3>Settings</h3>
-            <span class="dfn-comment">Limit terms to only one per post.</span>
+            <span class="dfn-comment">Limit termst to only one per post.</span>
             <?php $this->definition_tag_field( $post ); ?>
             <div class="dfn-field dfn-definition-add-notice">
                 <div class="dfn-icon-bullet-invisible"></div><span class="dfn-comment">Add a term to see results</span>

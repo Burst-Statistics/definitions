@@ -8,6 +8,7 @@ if (!class_exists('wpdef_text_parser')) {
 
 		public function __construct() {
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
+			add_action( 'script_loader_tag', array( $this, 'defer_replacement_script' ), 10, 3 );
 
 			add_filter( 'the_content', array( $this, 'replace_definitions_with_links' ) );
 
@@ -34,6 +35,18 @@ if (!class_exists('wpdef_text_parser')) {
 				)
 			);
 		}
+
+
+        function defer_replacement_script($tag, $handle, $src) {
+
+            if ($handle === 'wpdef') {
+                $tag = str_replace('<script ', '<script defer ', $tag);
+            }
+
+            return $tag;
+
+        }
+
 
 		public function wpdef_load_preview(){
 			$definitions_ids = array_map( 'intval' , $_GET['ids']);
@@ -162,6 +175,9 @@ if (!class_exists('wpdef_text_parser')) {
 
 						$terms = get_the_terms( $post->ID, 'definitions_title' );
 						if ( !$terms ) continue;
+
+						shuffle($terms);
+						$terms = array_slice( $terms, 0, 3);
 
 						foreach ($terms as $term ) {
 							$url              = get_permalink( $post->ID );
