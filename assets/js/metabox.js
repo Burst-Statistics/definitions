@@ -9,7 +9,7 @@ jQuery(document).ready(function ($) {
     }
 
     var post_count                  = $('.dfn-post-count').val();
-    var animation_time              = -20;
+    var animation_time              = -40;
     var definition_count_current    = 0;
     var definition_count_new        = 0;
     var step                        = 0;
@@ -145,7 +145,7 @@ jQuery(document).ready(function ($) {
 
 
     function anitation_time_to_wait(x) {
-        return 0.1*x*x + x + 1;
+        return 0.04*x*x + x + 1;
     }
 
 
