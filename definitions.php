@@ -63,6 +63,7 @@ if ( ! class_exists( 'DEFINITIONS' ) ) {
 		public static $shortcode;
 		public static $review;
 		public static $widget;
+		public static $tour;
 
 
 		private function __construct() {
@@ -75,6 +76,7 @@ if ( ! class_exists( 'DEFINITIONS' ) ) {
 			self::$shortcode         = new wpdef_shortcode();
 			if ( is_admin() ) {
 				self::$review        = new wpdef_review();
+                self::$tour          = new cmplz_tour();
 			}
 		}
 
@@ -94,6 +96,8 @@ if ( ! class_exists( 'DEFINITIONS' ) ) {
 			define( 'WPDEF_VERSION', $plugin_data['Version'] . $debug );
 			define( 'WPDEF_PLUGIN_FILE', __FILE__ );
 			define( 'DEFINITIONS_COUNT', 5 );
+
+
 		}
 
 		/**
@@ -121,6 +125,7 @@ if ( ! class_exists( 'DEFINITIONS' ) ) {
 
 			if ( is_admin() ) {
 				require_once( WPDEF_PATH . 'review.php' );
+                require_once( WPDEF_PATH . 'shepherd/tour.php' );
 			}
 		}
 
@@ -156,3 +161,17 @@ if ( ! function_exists( 'wpdef_set_activation_time_stamp' ) ) {
 }
 
 
+
+if ( ! function_exists( 'wpdef_start_tour' ) ) {
+    /**
+     * start tour for plugin
+     */
+    function wpdef_start_tour(){
+        _log("!get_site_option('wpdef_tour_shown_once'): " . (!get_site_option('wpdef_tour_shown_once')));
+        if (!get_site_option('wpdef_tour_shown_once')){
+            update_site_option('wpdef_tour_started', true);
+        }
+    }
+
+    register_activation_hook( __FILE__, 'wpdef_start_tour' );
+}
