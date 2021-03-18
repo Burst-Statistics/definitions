@@ -37,7 +37,10 @@
             $(document).on('change', 'input[type="checkbox"][name="dfn-use-tooltip"]', wpdef_metabox.conditionally_show_use_image);
         },
 
-
+        /**
+         * Enable/disable add button when trying to add existing definitions
+         * Show notice about the definitions your trying to add
+         */
         set_add_definition_state : function () {
             var new_definition = $('input[name="newtag[definitions_title]"]').val();
     
@@ -72,7 +75,10 @@
             }
         },
 
-
+        /**
+         * @param definitions_list
+         * @returns definitions that already exist in the database, from the definitions_list
+         */
         get_existing_definitions_from_list : function ( definitions_list ) {
             var exists = [];
     
@@ -86,7 +92,9 @@
             return exists;
         },
 
-
+        /**
+         * Enable/disable enable checkbox depending on if you added definition tags
+         */
         set_enable_checkbox_state : function () {
             if ( wpdef_metabox.get_post_definitions_list().length == 0 ) {
                 $('input[class="dfn-enable"]').prop('disabled', true);
@@ -96,7 +104,9 @@
             }
         },
 
-
+        /**
+         * @returns All definition tags of this post
+         */
         get_post_definitions_list : function () {
             var post_definitions = [];
             $('.dfn-post-definition-list li').each( function() {
@@ -105,7 +115,10 @@
             return post_definitions;
         },
 
-
+        /**
+         * @param index
+         * @returns Translated string
+         */
         localize_string : function ( index ) {
             if (wpdef.strings.hasOwnProperty(index)) {
                 return wpdef.strings[index];
@@ -114,14 +127,20 @@
             return '';
         },
 
-
+        /**
+         * Add the last added definition to the list of all definitions
+         * Set enable checkbox state
+         */
         add_definition_to_all_list : function () {
             var add_definition = wpdef_metabox.get_post_definitions_list().pop();
             wpdef_metabox.existing_definitions.push( add_definition );
             wpdef_metabox.set_enable_checkbox_state();
         },
 
-
+        /**
+         * Remove the this (currently removed) definition to the list of all definitions
+         * Set enable checkbox state
+         */
         remove_definition_from_all_list : function () {
             var remove_definition = $(this).next().html().split(' ').pop();
             wpdef_metabox.existing_definitions = wpdef_metabox.existing_definitions.filter(function(elem){
@@ -130,7 +149,10 @@
             wpdef_metabox.set_enable_checkbox_state();
         },
 
-
+        /**
+         * Count how many times the current definitions are used in all posts
+         * Start animation in the performance notice
+         */
         performance_notice_ajax : function () {
             var post_definitions = wpdef_metabox.get_post_definitions_list();
             $.ajax({
@@ -151,7 +173,9 @@
             });
         },
 
-
+        /**
+         * Start animation in the performance notice
+         */
         start_animation : function () {
             if (wpdef_metabox.definition_count_current == wpdef_metabox.definition_count_new) return;
 
@@ -160,12 +184,17 @@
             wpdef_metabox.animate_performance_notice();
         },
 
-
+        /**
+         * @param x Time elapsed in animation
+         * @returns double parabolic time to wait for next frame
+         */
         anitation_time_to_wait : function (x) {
             return 0.1*x*x + x + 1;
         },
 
-
+        /**
+         * Animate the definition count and notice message in the performance notice
+         */
         animate_performance_notice : function () {
             var new_performance_level = wpdef_metabox.calculate_performance_level( Math.round(wpdef_metabox.definition_count_current), wpdef_metabox.post_count );
             if ( wpdef_metabox.animation_time != wpdef_metabox.animation_time_end ) {
@@ -191,13 +220,18 @@
             }
         },
 
-
+        /**
+         * Add performance notice to metabox
+         */
         add_performance_notice : function () {
             var html = wpdef_metabox.get_performance_notice_html( wpdef_metabox.definition_count_current )
             $('.dfn-performance-notice').html( html );
         },
 
-
+        /**
+         * @param definition_count
+         * @returns {string} Performance notice according to definition count and post count
+         */
         get_performance_notice_html : function ( definition_count ) {
             definition_count = Math.round(definition_count);
 
@@ -237,14 +271,21 @@
             return html;
         },
 
-
+        /**
+         *
+         * @param definition_count
+         * @param post_count
+         * @returns {number} Performance level according to definition count and post count
+         */
         calculate_performance_level : function ( definition_count, post_count ) {
             if (definition_count / post_count > 0.5) return 3;
             if (definition_count / post_count > 0.25) return 2;
             return 1;
         },
 
-
+        /**
+         * Conditionally show the use image checkbox field depending if you use the tooltip or not
+         */
         conditionally_show_use_image : function () {
             if ( $('input[type="checkbox"][name="dfn-use-tooltip"]')[0].checked ) {
                 $('.dfn-disable-image').closest('.dfn-field').show();
@@ -252,7 +293,7 @@
                 $('.dfn-disable-image').closest('.dfn-field').hide();
             }
         },
-        
+
     };
 
 }( jQuery ));
