@@ -33,7 +33,7 @@ if (!class_exists('wpdef_posttype')) {
             $args = [
                 'hierarchical'      => false,
                 'labels'            => $labels,
-                'show_ui'           => true,
+                'show_ui'           => false,
                 'show_admin_column' => true,
                 'show_in_rest'      => false,
                 'query_var'         => true,
@@ -46,10 +46,11 @@ if (!class_exists('wpdef_posttype')) {
 
 		public function add_definitions_meta_box() {
             add_meta_box(
-                'definitions_box_id',                 // Unique ID
-                'Internal linkbuilding',      // Box title
-                array( $this, 'definitions_meta_box_html' ),  // Content callback, must be of type callable
-                'post'                            // Post type
+                'definitions_box_id',
+                'Internal linkbuilding',
+                array( $this, 'definitions_meta_box_html' ),
+                'post',
+                'side'
             );
         }
 
@@ -78,18 +79,21 @@ if (!class_exists('wpdef_posttype')) {
                         'wpdef',
                         'wpdef',
                         array(
-                            'url'=> admin_url('admin-ajax.php'),
+                            'url' => admin_url('admin-ajax.php'),
                             'strings'=> array(
-                                'readmore' => __("Read more", "wp-definitions"),
+                                'read-more' => __("Read more", "wp-definitions"),
                                 'add-term' => __('Add a term to see results', 'wp-definitions'),
                                 'already-in-use-plural' => sprintf(__('%s are already in use. Choose another', 'wp-definitions'), '{definitions}'),
                                 'already-in-use-single' => sprintf(__('%s is already in use. Choose another', 'wp-definitions'), '{definitions}'),
                                 'not-in-use-plural' => sprintf(__('%s are not used before!', 'wp-definitions'), '{definitions}'),
                                 'not-in-use-single' => sprintf(__('%s has not been used before!', 'wp-definitions'), '{definitions}'),
                                 'terms-in-posts' => sprintf(__('%s terms in %s posts', 'wp-definitions'), '{terms_count}','{posts_count}'),
-                                'too-many-terms' => __('There might too many terms per post. This might affect resources. Try to be more specific.', 'wp-definitions'),
+                                'way-too-many-terms' => __('There are too many terms per post. This might affect resources. Try to be more specific.', 'wp-definitions'),
+                                'too-many-terms' => __('There might be too many terms per post. This might affect resources. Try to be more specific.', 'wp-definitions'),
                                 'positive-ratio-terms' => __('There is a positive ratio terms per post. This won\'t affect resources.', 'wp-definitions'),
                             ),
+                            'post_count' => wp_count_posts()->publish,
+                            'existing_definitions' => array_column( get_terms( 'definitions_title', array( 'orderby' => 'count', 'hide_empty' => 0 ) ), 'name'),
                         )
                     );
                 }
@@ -102,24 +106,15 @@ if (!class_exists('wpdef_posttype')) {
             $disable_image  = get_post_meta( $post->ID, 'definition_disable_image', true )  ? 'checked="checked"' : '';
             $enable         = get_post_meta( $post->ID, 'definition_enable', true )         ? 'checked="checked"' : '';
 
-            $all_definitions    = array_column( get_terms( 'definitions_title', array( 'orderby' => 'count', 'hide_empty' => 0 ) ), 'name');
-            $definitions_string = implode( ',', $all_definitions );
-            $post_count         = wp_count_posts()->publish;
-
-            if( ! is_plugin_active( 'classic-editor/classic-editor.php' ) ) { ?>
-                <script>
-                    window.tagBox && window.tagBox.init();
-                </script>
-            <?php } ?>
-            <span class="dfn-comment"><?php _e("If you want to know all the possibilities with Bob the Linkbuilder, have a look at our documentation.", "wp-definitions") ?> <a><?php _e("Read more", "wp-definitions") ?></a></span>
+            ?>
+            <span class="dfn-comment"><?php _e("If you want to know all the possibilities with Bob the Linkbuilder, have a look at our documentation.", "wp-definitions") ?> <a href="https://really-simple-plugins.com/bob-the-linkbuilder/documentation"><?php _e("Read more", "wp-definitions") ?></a></span>
 
             <h3>Settings</h3>
-            <span class="dfn-comment">Limit termst to only one per post.</span>
+            <span class="dfn-comment"><?php _e("Limit terms to only one per post.", "wp-definitions") ?></span>
             <?php $this->definition_tag_field( $post ); ?>
             <div class="dfn-field dfn-definition-add-notice">
-                <div class="dfn-icon-bullet-invisible"></div><span class="dfn-comment">Add a term to see results</span>
+                <div class="dfn-icon-bullet-invisible"></div><span class="dfn-comment"><?php _e("Add a term to see results", "wp-definitions") ?></span>
             </div>
-            <input type="hidden" class="dfn-existing-definitions" value="<?php echo $definitions_string ?>">
 
             <div class="dfn-field">
                 <input type="hidden" class="dfn-use-tooltip" name="dfn-use-tooltip" value=""/>
@@ -135,11 +130,6 @@ if (!class_exists('wpdef_posttype')) {
 
             <h3>Status</h3>
             <div class="dfn-performance-notice">
-                <div class="dfn-field">
-                    <div class="dfn-icon-bullet-green"></div>
-                    <span>0 terms in <?php echo $post_count ?> posts<span>
-                    <input type="hidden" class="dfn-post-count" value="<?php echo $post_count ?>">
-                </div>
             </div>
 
             <div class="dfn-field">

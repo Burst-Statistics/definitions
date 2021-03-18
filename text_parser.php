@@ -157,6 +157,19 @@ if (!class_exists('wpdef_text_parser')) {
         }
 
 
+        function get_posts_with_definitions() {
+            $args = array(
+                'post_type'         => 'post',
+                'post_status'       => 'publish',
+                'posts_per_page'       => -1,
+                'suppress_filters'  => true,
+                'meta_key'          => 'definitions_enable',
+                'meta_value'        => true,
+            );
+            return new WP_Query($args);
+        }
+
+
 		/**
 		 * @param string $content
 		 *
@@ -164,15 +177,32 @@ if (!class_exists('wpdef_text_parser')) {
 		 */
 
 		public function replace_definitions_with_links( $content ) {
+//		    $current_post_id = get_the_ID();
+//
+//		    $query = $this->get_posts_with_definitions();
+//
+//		    if ( $query->have_posts() ) {
+//		        while ( $query->have_posts() ) {
+//                    $query->the_post();
+//                    get_the_terms( get_the_ID(), 'definitions_title' );
+//
+//                }
+//            }
+
 			//find definitions in buffer
 			$args = array(
 				'post_type'        => 'post',
 				'post_status'      => 'publish',
 				'numberposts'      => - 1,
-				'suppress_filters' => true
+                'meta_key'          => 'definitions_enable',
+                'meta_value'        => true,
 			);
 
 			$posts = get_posts( apply_filters( 'wpdef_definitions_query', $args ) );
+			$terms = wp_get_post_terms(0, 'definitions_title', ['meta_key' => 'definitions_enable', 'meta_value' => true]);
+			_log($posts);
+
+
 			if ( $posts ) {
 				foreach ( $posts as $post ) {
 					//check if this post IS this definition, else skip to next definition
