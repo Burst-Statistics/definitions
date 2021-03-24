@@ -18,6 +18,8 @@ if (!class_exists('wpdef_text_parser')) {
 			add_action( 'wp_ajax_wpdef_load_preview', array( $this, 'wpdef_load_preview' ) );
 
 			add_action( 'wp_ajax_wpdef_scan_definition_count', array( $this, 'wpdef_scan_definition_count' ) );
+
+            add_action( 'save_post', array( $this, 'save_used_definitions_in_post' ), 10, 1 );
 		}
 
 		public function enqueue_assets() {
@@ -152,23 +154,6 @@ if (!class_exists('wpdef_text_parser')) {
 			return apply_filters( 'wpdef_tooltip_html', $tooltip_html );
 		}
 
-		function definition_preg_replace_callback( $matches ) {
-            return preg_replace( "/(\s)({$this->current_term_match})([\s\,\.\;\!\?])/", "$1{$this->current_replace_link}$3", $matches[0], 1 );
-        }
-
-
-        function get_posts_with_definitions() {
-            $args = array(
-                'post_type'         => 'post',
-                'post_status'       => 'publish',
-                'posts_per_page'       => -1,
-                'suppress_filters'  => true,
-                'meta_key'          => 'definitions_enable',
-                'meta_value'        => true,
-            );
-            return new WP_Query($args);
-        }
-
 
 		/**
 		 * @param string $content
@@ -176,71 +161,42 @@ if (!class_exists('wpdef_text_parser')) {
 		 * @return string
 		 */
 
-		public function replace_definitions_with_links( $content ) {
-//		    $current_post_id = get_the_ID();
-//
-//		    $query = $this->get_posts_with_definitions();
-//
-//		    if ( $query->have_posts() ) {
-//		        while ( $query->have_posts() ) {
-//                    $query->the_post();
-//                    get_the_terms( get_the_ID(), 'definitions_title' );
-//
-//                }
-//            }
+		public function replace_definitions_with_links( $content )
+        {
+            $terms = $this->load_used_definitions_in_post(get_the_ID());
 
-			//find definitions in buffer
-			$args = array(
-				'post_type'        => 'post',
-				'post_status'      => 'publish',
-				'numberposts'      => - 1,
-                'meta_key'          => 'definitions_enable',
-                'meta_value'        => true,
-			);
-
-			$posts = get_posts( apply_filters( 'wpdef_definitions_query', $args ) );
-			$terms = wp_get_post_terms(0, 'definitions_title', ['meta_key' => 'definitions_enable', 'meta_value' => true]);
-			_log($posts);
+            foreach ($terms as $post_id_term) {
+                $post_id_term_array_object = explode(':', $post_id_term);
+                $post_id = $post_id_term_array_object[0];
+                $term = $post_id_term_array_object[1];
 
 
-			if ( $posts ) {
-				foreach ( $posts as $post ) {
-					//check if this post IS this definition, else skip to next definition
-					if ( get_the_ID() != $post->ID ) {
-                        $enable = get_post_meta( $post->ID, 'definition_enable', true );
-					    if ( !$enable ) continue;
+                $url = get_permalink();
+                $excerpt = $this->get_excerpt(get_post($post_id));
+                $link = $this->get_tooltip_link($url, $excerpt, $term, $post_id);
 
-						$terms = get_the_terms( $post->ID, 'definitions_title' );
-						if ( !$terms ) continue;
+                //continue until end of string, or break
+                // use regex instead https://stackoverflow.com/questions/958095/use-regex-to-find-specific-string-not-in-html-tag
+                //regex: replace $name in $content with $link
+                $this->current_term_match = $term;
+                $this->current_replace_link = $link;
 
-						shuffle($terms);
-						$terms = array_slice( $terms, 0, 3);
+                $pattern = $this->get_regex($term);
+                $content = preg_replace_callback($pattern, [$this, 'definition_preg_replace_callback'], $content, 1);
+            }
 
-						foreach ($terms as $term ) {
-							$url              = get_permalink( $post->ID );
-							$excerpt          = $this->get_excerpt( $post );
+            return apply_filters('wpdef_content', $content);
+        }
 
-							$link = $this->get_tooltip_link( $url, $excerpt, $term->name , $post->ID);
+        function definition_preg_replace_callback( $matches ) {
+            return preg_replace( "/(\s)({$this->current_term_match})([\s\,\.\;\!\?])/", "$1{$this->current_replace_link}$3", $matches[0], 1 );
+        }
 
-							//continue until end of string, or break
-							// use regex instead https://stackoverflow.com/questions/958095/use-regex-to-find-specific-string-not-in-html-tag
-							//regex: replace $name in $content with $link
-                            $this->current_term_match = $term->name;
-                            $this->current_replace_link = $link;
-
-							$pattern = $this->get_regex( $term->name );
-                            $content = preg_replace_callback($pattern, [$this, 'definition_preg_replace_callback'], $content, 1);
-						}
-					}
-				}
-			}
-
-			return apply_filters( 'wpdef_content', $content );
-		}
 
 		private function get_regex( $term ) {
-		    return "/(<p[^>]*>([^<]|\\\\<)*(\s{$term}[\s\,\.\;\!\?]))|((\s{$term}[\s\,\.\;\!\?])([^<]|\\\\<)*<\/p)/";
+		    return "/(<p>[^<]*( {$term}[ \,\.\;\!\?]))|(( {$term}[ \,\.\;\!\?])[^<]*<\/p)/";
         }
+
 
 		/**
 		 * @param WP_POST $definition
@@ -248,13 +204,13 @@ if (!class_exists('wpdef_text_parser')) {
 		 * @return string
 		 */
 
-		public function get_excerpt( $definition ) {
-			$excerpt = apply_filters( 'the_excerpt', $definition->post_excerpt );
+		public function get_excerpt( $post ) {
+			$excerpt = apply_filters( 'the_excerpt', $post->post_excerpt );
 
 			if ( strlen( $excerpt ) == 0 ) {
-				$excerpt = $definition->post_content;
+				$excerpt = $post->post_content;
 				if ( strlen($excerpt)>250 ){
-					$excerpt = substr($definition->post_content, 0, 250 ).'...';
+					$excerpt = substr($post->post_content, 0, 250 ).'...';
 				}
 			}
 
@@ -276,22 +232,19 @@ if (!class_exists('wpdef_text_parser')) {
                 exit;
             }
 
+            global $wpdb;
             $definitions = $_GET['definitions'];
             $post_id = $_GET['post_id'];
 
-            $count = 0;
-            $posts = get_posts(array('numberposts' => -1));
-
-            foreach ( $posts as $post ) {
-                if ( $post->ID == $post_id ) continue;
-                $content     = $post->post_content;
-                foreach( $definitions as $definition ) {
-                    $pattern = $this->get_regex( $definition );
-                    if ( preg_match_all($pattern, $content) ) {
-                        $count++;
-                    }
-                }
+            // Count definitions from this post used in all other posts
+            $sql = "select count(*) from wp_posts as post " .
+                   "where ID != {$post_id} and ";
+            $term_conditions = [];
+            foreach ( $definitions as $definition ) {
+                $term_conditions[] = "post.post_content REGEXP '(<p>[^<]*( {$definition}[ \,\.\;\!\?]))|(( {$definition}[ \,\.\;\!\?])[^<]*<\/p)' ";
             }
+            $sql .= implode(' or ', $term_conditions);
+            $count = $wpdb->get_var($sql);
 
             $response = array(
                 'success' => true,
@@ -305,6 +258,84 @@ if (!class_exists('wpdef_text_parser')) {
         }
 
 
+        public function save_used_definitions_in_post( $this_post_id )
+        {
+            global $wpdb;
 
-	}
+            // Pattern: (<p>[^<]*( definition[ \,\.\;\!\?]))|(( definition[ \,\.\;\!\?])[^<]*<\/p)
+            // <p>Commodi totam quam perferendis dicta definition.
+            // or
+            // Commodi totam quam perferendis dicta definition.</p>
+            // Where not encountered another html tag like <h3>, using [^<]
+
+            // Meta value: 'post_id:definition'
+
+            // Delete postmeta: definitions from this post used in all other posts
+            $sql = "delete from wp_postmeta where meta_key = 'used_definitions' and meta_value LIKE '{$this_post_id}:%'";
+            $wpdb->query($sql);
+
+            // Save postmeta: definitions from this post used in all other posts
+            //
+            // Cross join every post with terms used in the saved post
+            // Create table for postmeta with structure (post_id, meta_key, meta_value)
+            // Filter this table with post_content REGEXP pattern and definition_enable
+            $sql =
+                "insert into wp_postmeta (post_id, meta_key, meta_value) " .
+                "select post.ID as post_id, 'used_definitions' as meta_key, CONCAT('{$this_post_id}:', term.name) as meta_value from wp_posts as post, wp_terms as term " .
+                "join wp_term_taxonomy as term_taxonomy  " .
+                "on term.term_id = term_taxonomy.term_id " .
+                "join wp_term_relationships as term_relationships " .
+                "on term_relationships.term_taxonomy_id = term_taxonomy.term_taxonomy_id " .
+                "where term_taxonomy.taxonomy = 'definitions_title'" .
+                "and term_relationships.object_id = {$this_post_id} " .
+                "and post.post_content REGEXP CONCAT('(<p>[^<]*( ', term.name, '[ \,\.\;\!\?]))|(( ', term.name,'[ \,\.\;\!\?])[^<]*<\/p)') " .
+                "and (select meta_value from wp_postmeta where post_id = {$this_post_id}  and meta_key = 'definition_enable') = 'on'";
+            $wpdb->query($sql);
+
+
+            // Delete postmeta: definitions from other posts found in this post
+            $sql = "delete from wp_postmeta where meta_key = 'used_definitions' and post_id = {$this_post_id}";
+            $wpdb->query($sql);
+
+            // Save postmeta: definitions from other posts found in this post
+            //
+            // Create table for postmeta with structure (post_id, meta_key, meta_value)
+            // Select post_content of the saved post
+            // Create list (post_id, definition) for every post
+            //
+            // Save meta_value 'post_id:definition' where post_content REGEXP pattern
+            // Only when definition_enable for post with post_id
+            $sql =
+                "insert into wp_postmeta (post_id, meta_key, meta_value) " .
+                "select a.post_id, a.meta_key, a.meta_value from " .
+                "(select " .
+                "'{$this_post_id}' as post_id, " .
+                "'used_definitions' as meta_key, " .
+                "CONCAT(definitions.post_id, ':', definitions.definition) as meta_value, " .
+                "CONCAT('(<p>[^<]*( ', definitions.definition, '[ \,\.\;\!\?]))|(( ', definitions.definition,'[ \,\.\;\!\?])[^<]*<\/p)') as pattern, " .
+                "(select post_content from wp_posts where ID = {$this_post_id}) as content " .
+                "from " .
+                "(select term_relationships.object_id as post_id, term.name as definition " .
+                "from wp_term_taxonomy as term_taxonomy " .
+                "join wp_terms as term " .
+                "on term.term_id = term_taxonomy.term_id " .
+                "join wp_term_relationships as term_relationships " .
+                "on term_relationships.term_taxonomy_id = term_taxonomy.term_taxonomy_id " .
+                "where term_taxonomy.taxonomy = 'definitions_title'" .
+                "and (select meta_value from wp_postmeta where post_id = term_relationships.object_id  and meta_key = 'definition_enable') = 'on'" .
+                ") as definitions) as a " .
+                "where a.content REGEXP a.pattern";
+            $wpdb->query($sql);
+        }
+
+        public function load_used_definitions_in_post( $post_id ) {
+		    $used_definitions = get_post_meta( $post_id, 'used_definitions', false );
+		    if ( $used_definitions ) {
+                return $used_definitions;
+            } else {
+		        return array();
+            }
+		}
+    }
+
 }
