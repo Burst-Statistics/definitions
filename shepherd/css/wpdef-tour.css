@@ -17,13 +17,11 @@
   z-index: 2;
 }
 .shepherd-element.shepherd-theme-arrows.shepherd-has-title .shepherd-content header {
-  background-color: black;
   display: inline-block;
   width: 100%;
   height: 45px;
 }
 .shepherd-element.shepherd-theme-arrows .shepherd-content header h3 {
-  color: white;
   font-weight: 700;
 }
 .shepherd-element.shepherd-theme-arrows .shepherd-content footer .shepherd-buttons {
@@ -34,6 +32,12 @@
 }
 .shepherd-content {
   width: 450px;
+}
+.wpdef-plugins-overview-tour-container.shepherd-element.shepherd-theme-arrows.shepherd-has-title .shepherd-content header {
+  background-color: black;
+}
+.wpdef-plugins-overview-tour-container.shepherd-element.shepherd-theme-arrows.shepherd-has-title .shepherd-content header h3 {
+  color: white;
 }
 .wpdef-tour-logo {
   background-color: black;
