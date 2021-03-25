@@ -167,7 +167,6 @@ if ( ! function_exists( 'wpdef_start_tour' ) ) {
      * start tour for plugin
      */
     function wpdef_start_tour(){
-        _log("!get_site_option('wpdef_tour_shown_once'): " . (!get_site_option('wpdef_tour_shown_once')));
         if (!get_site_option('wpdef_tour_shown_once')){
             update_site_option('wpdef_tour_started', true);
         }
