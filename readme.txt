@@ -1,5 +1,5 @@
 === Definitions - Internal Linkbuilding ===
-Contributors: RogierLankhorst, aahulsebos, leonwimmenhoeve, 
+Contributors: RogierLankhorst, aahulsebos, leonwimmenhoeve, tomeijkelenkamp 
 Tags: linkbuilding, definitions, tooltips, hyperlinks, pillar pages, glossary,
 Requires at least: 4.0
 Tested up to: 4.1
