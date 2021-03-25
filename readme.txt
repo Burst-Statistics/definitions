@@ -1,5 +1,5 @@
-=== Definitions Hyperlinks ===
-Contributors: Stroknal, Sobesluh, Eddih, moT
+=== Definitions - Internal Linkbuilding ===
+Contributors: RogierLankhorst, aahulsebos, leonwimmenhoeve, 
 Tags: linkbuilding, definitions, tooltips, hyperlinks, pillar pages, glossary,
 Requires at least: 4.0
 Tested up to: 4.1
