@@ -107,7 +107,7 @@ if (!class_exists('wpdef_posttype')) {
             $enable         = get_post_meta( $post->ID, 'definition_enable', true )         ? 'checked="checked"' : '';
 
             ?>
-            <span class="dfn-comment"><?php _e("If you want to know all the possibilities with Bob the Linkbuilder, have a look at our documentation.", "wp-definitions") ?> <a href="https://really-simple-plugins.com/bob-the-linkbuilder/documentation"><?php _e("Read more", "wp-definitions") ?></a></span>
+            <span class="dfn-comment"><?php _e("If you want to know all the possibilities with Definitions - Internal Linkbuilding, have a look at our documentation.", "wp-definitions") ?> <a href="https://really-simple-plugins.com/definitions-internal-linkbuilding/documentation"><?php _e("Read more", "wp-definitions") ?></a></span>
 
             <h3>Settings</h3>
             <span class="dfn-comment"><?php _e("Limit terms to only one per post.", "wp-definitions") ?></span>
