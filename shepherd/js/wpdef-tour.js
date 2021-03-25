@@ -1,5 +1,7 @@
 jQuery(document).ready(function($) {
+	console.log('wpdef-tour');
 	if (!window.Shepherd) return;
+    console.log('wpdef-tour 2');
 
 	var plugins_overview_tour = new Shepherd.Tour();
 	plugins_overview_tour.options.defaults =
@@ -25,22 +27,22 @@ jQuery(document).ready(function($) {
 		}
 	};
 
-	var steps = cmplz_tour.steps;
-
-	plugins_overview_tour.addStep('cmplz-step-0', {
-		classes: 'shepherd-theme-arrows cmplz-plugins-overview-tour-container shepherd-has-cancel-link',
+	var steps = wpdef_tour.steps;
+    console.log('wpdef-tour 3');
+	plugins_overview_tour.addStep('wpdef-step-0', {
+		classes: 'shepherd-theme-arrows wpdef-plugins-overview-tour-container shepherd-has-cancel-link',
 		title: steps[0]['title'],
-		text: cmplz_tour.html.replace('{content}', steps[0]['text']),
+		text: wpdef_tour.html.replace('{content}', steps[0]['text']),
 		buttons: [
             {
-                text: cmplz_tour.start,
+                text: wpdef_tour.start,
                 classes: 'button button-secondary',
                 action: function() {
                     window.location = steps[0]['start_link'];
                 }
             },
 			{
-				text: cmplz_tour.documentation,
+				text: wpdef_tour.documentation,
 				classes: 'button button-primary',
 				action: function() {
 					window.open(steps[0]['documentation_link'], '_blank');
@@ -48,14 +50,14 @@ jQuery(document).ready(function($) {
 			},
 		],
 	});
-
+    console.log('wpdef-tour 4');
 	plugins_overview_tour.on('cancel', cancel_tour);
 
 	// start tour when the settings link appears after plugin activation
-	if ($('#deactivate-definitions').length) {
+	if ($('#deactivate-definitions-internal-linkbuilding').length) {
 		plugins_overview_tour.start();
 	}
-
+    console.log('wpdef-tour 5');
 	/**
 	 * Cancel tour
 	 */
@@ -66,11 +68,11 @@ jQuery(document).ready(function($) {
 
 		$.ajax({
 			type: "POST",
-			url: cmplz_tour.ajaxurl,
+			url: wpdef_tour.ajaxurl,
 			dataType: 'json',
 			data: ({
-				action: 'cmplz_cancel_tour',
-				token: cmplz_tour.token,
+				action: 'wpdef_cancel_tour',
+				token: wpdef_tour.token,
 			})
 		});
 	};

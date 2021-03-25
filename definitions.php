@@ -1,12 +1,12 @@
 <?php
 /**
- * Plugin Name: Definitions
+ * Plugin Name: Definitions - Internal Linkbuilding
  * Plugin URI: https://www.really-simple-plugins.com
  * Description: Plugin to autoreplace in the content of a page or post every instance of a word that is defined in the definitions 
  * Version: 1.0.0.1
  * Text Domain: definitions
  * Domain Path: /lang
- * Author: Hidde Nauta, Rogier Lankhorst
+ * Author: Hidde Nauta, Rogier Lankhorst, Tom Eijkelenkamp
  * Author URI: https://www.really-simple-plugins.com
  * License: GPL2
  */
@@ -26,7 +26,7 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-    Rogier Lankhorst Definitions
+    Rogier Lankhorst Definitions - Internal Linkbuilding
 */
 
 defined('ABSPATH') or die("you do not have acces to this page!");
@@ -40,14 +40,14 @@ if ( ! function_exists( 'wpdef_activation_check' ) ) {
 	function wpdef_activation_check() {
 		if ( version_compare( PHP_VERSION, '5.6', '<' ) ) {
 			deactivate_plugins( plugin_basename( __FILE__ ) );
-			wp_die( __( 'Complianz GDPR cannot be activated. The plugin requires PHP 5.6 or higher',
+			wp_die( __( 'Definitions - Internal Linkbuilding cannot be activated. The plugin requires PHP 5.6 or higher',
 				'definitions' ) );
 		}
 
 		global $wp_version;
 		if ( version_compare( $wp_version, '4.6', '<' ) ) {
 			deactivate_plugins( plugin_basename( __FILE__ ) );
-			wp_die( __( 'Complianz GDPR cannot be activated. The plugin requires WordPress 4.6 or higher',
+			wp_die( __( 'Definitions - Internal Linkbuilding cannot be activated. The plugin requires WordPress 4.6 or higher',
 				'definitions' ) );
 		}
 	}
@@ -76,7 +76,7 @@ if ( ! class_exists( 'DEFINITIONS' ) ) {
 			self::$shortcode         = new wpdef_shortcode();
 			if ( is_admin() ) {
 				self::$review        = new wpdef_review();
-                self::$tour          = new cmplz_tour();
+                self::$tour          = new wpdef_tour();
 			}
 		}
 
