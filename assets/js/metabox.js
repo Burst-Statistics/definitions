@@ -199,7 +199,7 @@
             var new_performance_level = wpdef_metabox.calculate_performance_level( Math.round(wpdef_metabox.definition_count_current), wpdef_metabox.post_count );
             if ( wpdef_metabox.animation_time != wpdef_metabox.animation_time_end ) {
                 wpdef_metabox.animation_time++;
-                wpdef_metabox.definition_count_current += wpdef_metabox.step;
+                wpdef_metabox.definition_count_current = Number(wpdef_metabox.definition_count_current) + Number(wpdef_metabox.step);
                 if ( wpdef_metabox.performance_level != new_performance_level ) {
                     wpdef_metabox.performance_level = new_performance_level;
                     wpdef_metabox.add_performance_notice();

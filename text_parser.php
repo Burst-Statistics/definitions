@@ -237,13 +237,13 @@ if (!class_exists('wpdef_text_parser')) {
             $post_id = $_GET['post_id'];
 
             // Count definitions from this post used in all other posts
-            $sql = "select count(*) from wp_posts as post " .
-                   "where ID != {$post_id} and ";
+            $sql = "select count(post.ID) from wp_posts as post " .
+                   "where post.ID != {$post_id} and ";
             $term_conditions = [];
             foreach ( $definitions as $definition ) {
-                $term_conditions[] = "post.post_content REGEXP '(<p>[^<]*( {$definition}[ \,\.\;\!\?]))|(( {$definition}[ \,\.\;\!\?])[^<]*<\/p)' ";
+                $term_conditions[] = "post.post_content REGEXP '(<p>[^<]*( {$definition}[ \,\.\;\!\?]))|(( {$definition}[ \,\.\;\!\?])[^<]*<\/p)'";
             }
-            $sql .= implode(' or ', $term_conditions);
+            $sql .= '(' . implode(' or ', $term_conditions) . ')';
             $count = $wpdb->get_var($sql);
 
             $response = array(
@@ -289,7 +289,8 @@ if (!class_exists('wpdef_text_parser')) {
                 "where term_taxonomy.taxonomy = 'definitions_title'" .
                 "and term_relationships.object_id = {$this_post_id} " .
                 "and post.post_content REGEXP CONCAT('(<p>[^<]*( ', term.name, '[ \,\.\;\!\?]))|(( ', term.name,'[ \,\.\;\!\?])[^<]*<\/p)') " .
-                "and (select meta_value from wp_postmeta where post_id = {$this_post_id}  and meta_key = 'definition_enable') = 'on'";
+                "and (select meta_value from wp_postmeta where post_id = {$this_post_id}  and meta_key = 'definition_enable') = 'on'" .
+                "and post.ID != {$this_post_id}";
             $wpdb->query($sql);
 
 
@@ -323,6 +324,7 @@ if (!class_exists('wpdef_text_parser')) {
                 "on term_relationships.term_taxonomy_id = term_taxonomy.term_taxonomy_id " .
                 "where term_taxonomy.taxonomy = 'definitions_title'" .
                 "and (select meta_value from wp_postmeta where post_id = term_relationships.object_id  and meta_key = 'definition_enable') = 'on'" .
+                "and term_relationships.object_id != {$this_post_id}" .
                 ") as definitions) as a " .
                 "where a.content REGEXP a.pattern";
             $wpdb->query($sql);
