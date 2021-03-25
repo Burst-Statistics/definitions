@@ -194,7 +194,7 @@ if (!class_exists('wpdef_text_parser')) {
 
 
 		private function get_regex( $term ) {
-		    return "/(<p>[^<]*( {$term}[ \,\.\;\!\?]))|(( {$term}[ \,\.\;\!\?])[^<]*<\/p)/";
+		    return "/(<p[^>]*>[^<]*( {$term}[ \,\.\;\!\?]))|(( {$term}[ \,\.\;\!\?])[^<]*<\/p)/";
         }
 
 
@@ -289,7 +289,7 @@ if (!class_exists('wpdef_text_parser')) {
                 "on term_relationships.term_taxonomy_id = term_taxonomy.term_taxonomy_id " .
                 "where term_taxonomy.taxonomy = 'definitions_title'" .
                 "and term_relationships.object_id = {$this_post_id} " .
-                "and post.post_content REGEXP CONCAT('(<p>[^<]*( ', term.name, '[ \,\.\;\!\?]))|(( ', term.name,'[ \,\.\;\!\?])[^<]*<\/p)') " .
+                "and post.post_content REGEXP CONCAT('(<p[^>]*>[^<]*( ', term.name, '[ \,\.\;\!\?]))|(( ', term.name,'[ \,\.\;\!\?])[^<]*<\/p)') " .
                 "and (select meta_value from wp_postmeta where post_id = {$this_post_id}  and meta_key = 'definition_enable') = 'on'" .
                 "and post.ID != {$this_post_id} " .
                 "and post.post_status = 'publish'";
@@ -315,7 +315,7 @@ if (!class_exists('wpdef_text_parser')) {
                 "'{$this_post_id}' as post_id, " .
                 "'used_definitions' as meta_key, " .
                 "CONCAT(definitions.post_id, ':', definitions.definition) as meta_value, " .
-                "CONCAT('(<p>[^<]*( ', definitions.definition, '[ \,\.\;\!\?]))|(( ', definitions.definition,'[ \,\.\;\!\?])[^<]*<\/p)') as pattern, " .
+                "CONCAT('(<p[^>]*>[^<]*( ', definitions.definition, '[ \,\.\;\!\?]))|(( ', definitions.definition,'[ \,\.\;\!\?])[^<]*<\/p)') as pattern, " .
                 "(select post_content from wp_posts where ID = {$this_post_id}) as content " .
                 "from " .
                 "(select term_relationships.object_id as post_id, term.name as definition " .
