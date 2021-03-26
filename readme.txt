@@ -1,16 +1,16 @@
-=== Definitions - Internal Linkbuilding ===
-Contributors: RogierLankhorst, aahulsebos, leonwimmenhoeve, tomeijkelenkamp 
-Tags: linkbuilding, definitions, tooltips, hyperlinks, pillar pages, glossary,
+=== Definitions Hyperlinks ===
+Contributors: Stroknal
+Tags: definitions, tooltips, hyperlinks
 Requires at least: 4.0
 Tested up to: 4.1
 Stable tag: trunk
 
-descr./
+Plugin to autoreplace in the content of a page or post every instance of a word that is defined in the definitions. By creating a separate page for every definition you create a lot of high value content, so it is seo friendly.  
 
 == Installation ==
-Download the plugin from the WordPress plugin directory
+Download the plugin from the wordpres plugin directory
 Upload the plugin in your plugins directory,
-Go to “plugins” in your WordPress admin, then click activate
+Go to “plugins” in your wordpress admin, then click activate
 
 == Frequently Asked Questions ==
 Can I remove the shipped .js and .css files?
