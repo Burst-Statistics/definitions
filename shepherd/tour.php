@@ -70,7 +70,7 @@ class wpdef_tour {
 			$steps = array(
 				0 => array(
 					'title'  => __( 'Welcome to Definitions - Internal Linkbuilding', 'definitions' ),
-					'text'   => __( "You can find the settings of Definitions under every posts. To get a headstart, have a look at our documentation.",
+					'text'   => __( "You can find the settings of Definitions under every post. To get a headstart, have a look at our documentation.",
 						'definitions' ),
 					'start_link'   => admin_url( "edit.php" ),
 					'documentation_link'   => "https://really-simple-plugins.com/definitions-internal-linkbuilding/documentation",
