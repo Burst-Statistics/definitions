@@ -81,16 +81,16 @@ if (!class_exists('wpdef_posttype')) {
                         array(
                             'url' => admin_url('admin-ajax.php'),
                             'strings'=> array(
-                                'read-more' => __("Read more", "wp-definitions"),
-                                'add-term' => __('Add a term to see results', 'wp-definitions'),
-                                'already-in-use-plural' => sprintf(__('%s are already in use. Choose another', 'wp-definitions'), '{definitions}'),
-                                'already-in-use-single' => sprintf(__('%s is already in use. Choose another', 'wp-definitions'), '{definitions}'),
-                                'not-in-use-plural' => sprintf(__('%s are not used before!', 'wp-definitions'), '{definitions}'),
-                                'not-in-use-single' => sprintf(__('%s has not been used before!', 'wp-definitions'), '{definitions}'),
-                                'terms-in-posts' => sprintf(__('%s terms in %s posts', 'wp-definitions'), '{terms_count}','{posts_count}'),
-                                'way-too-many-terms' => __('There are too many terms per post. This might affect resources. Try to be more specific.', 'wp-definitions'),
-                                'too-many-terms' => __('There might be too many terms per post. This might affect resources. Try to be more specific.', 'wp-definitions'),
-                                'positive-ratio-terms' => __('There is a positive ratio terms per post. This won\'t affect resources.', 'wp-definitions'),
+                                'read-more' => __("Read more", "definitions"),
+                                'add-term' => __('Add a term to see results', "definitions"),
+                                'already-in-use-plural' => sprintf(__('%s are already in use. Choose another', "definitions"), '{definitions}'),
+                                'already-in-use-single' => sprintf(__('%s is already in use. Choose another', "definitions"), '{definitions}'),
+                                'not-in-use-plural' => sprintf(__('%s are not used before!', "definitions"), '{definitions}'),
+                                'not-in-use-single' => sprintf(__('%s has not been used before!', "definitions"), '{definitions}'),
+                                'terms-in-posts' => sprintf(__('%s terms in %s posts', "definitions"), '{terms_count}','{posts_count}'),
+                                'way-too-many-terms' => __('There are too many terms per post. This might affect resources. Try to be more specific.', "definitions"),
+                                'too-many-terms' => __('There might be too many terms per post. This might affect resources. Try to be more specific.', "definitions"),
+                                'positive-ratio-terms' => __('There is a positive ratio terms per post. This won\'t affect resources.', "definitions"),
                             ),
                             'post_count' => wp_count_posts()->publish,
                             'existing_definitions' => array_column( get_terms( 'definitions_title', array( 'orderby' => 'count', 'hide_empty' => 0 ) ), 'name'),
@@ -107,35 +107,34 @@ if (!class_exists('wpdef_posttype')) {
             $enable         = get_post_meta( $post->ID, 'definition_enable', true )         ? 'checked="checked"' : '';
 
             ?>
-            <span class="dfn-comment"><?php _e("If you want to know all the possibilities with Definitions - Internal Linkbuilding, have a look at our documentation.", "wp-definitions") ?> <a href="https://really-simple-plugins.com/definitions-internal-linkbuilding/documentation"><?php _e("Read more", "wp-definitions") ?></a></span>
+            <span class="dfn-comment"><?php _e("If you want to know all the possibilities with Definitions - Internal Linkbuilding, have a look at our documentation.", "definitions") ?> <a href="https://really-simple-plugins.com/definitions-internal-linkbuilding/documentation"><?php _e("Read more", "definitions") ?></a></span>
 
-            <h3>Settings</h3>
-            <span class="dfn-comment"><?php _e("Limit terms to only one per post.", "wp-definitions") ?></span>
+            <h3><?php _e("Settings", "definitions")?></h3>
+            <span class="dfn-comment"><?php _e("Limit terms to only one per post.", "definitions") ?></span>
             <?php $this->definition_tag_field( $post ); ?>
             <div class="dfn-field dfn-definition-add-notice">
-                <div class="dfn-icon-bullet-invisible"></div><span class="dfn-comment"><?php _e("Add a term to see results", "wp-definitions") ?></span>
+                <div class="dfn-icon-bullet-invisible"></div><span class="dfn-comment"><?php _e("Add a term to see results", "definitions") ?></span>
             </div>
 
             <div class="dfn-field">
                 <input type="hidden" class="dfn-use-tooltip" name="dfn-use-tooltip" value=""/>
                 <input type="checkbox" class="dfn-use-tooltip" name="dfn-use-tooltip" <?php echo $use_tooltip ?>/>
-                <label>Use Tooltip</label>
+                <label><?php _e("Use Tooltip", "definitions")?></label>
             </div>
 
             <div class="dfn-field">
                 <input type="hidden" class="dfn-disable-image" name="dfn-disable-image" value=""/>
                 <input type="checkbox" class="dfn-disable-image" name="dfn-disable-image" <?php echo $disable_image ?>/>
-                <label>Disable Featured Image</label>
+                <label><?php _e("Disable Featured Image", "definitions")?></label>
             </div>
 
-            <h3>Status</h3>
-            <div class="dfn-performance-notice">
-            </div>
+            <h3><?php _e("Status", "definitions")?></h3>
+            <div class="dfn-performance-notice"></div>
 
             <div class="dfn-field">
                 <input type="hidden" class="dfn-enable" name="dfn-enable" value=""/>
                 <input type="checkbox" class="dfn-enable" name="dfn-enable" <?php echo $enable ?>/>
-                <label for="dfn-enable">Enable</label>
+                <label for="dfn-enable"><?php _e("Enable", "definitions")?></label>
             </div>
 
             <?php
@@ -177,26 +176,29 @@ if (!class_exists('wpdef_posttype')) {
 
         function save_postdata_definitions( $post_id ) {
             if ( array_key_exists( 'dfn-use-tooltip', $_POST ) ) {
+                $use_tooltip = $_POST['dfn-use-tooltip'] === 'on' ? 'on' : false;
                 update_post_meta(
                     $post_id,
                     'definition_use_tooltip',
-                    $_POST['dfn-use-tooltip']
+	                $use_tooltip
                 );
             }
 
             if ( array_key_exists( 'dfn-disable-image', $_POST ) ) {
-                update_post_meta(
+	            $disable_image = $_POST['dfn-disable-image'] === 'on' ? 'on' : false;
+	            update_post_meta(
                     $post_id,
                     'definition_disable_image',
-                    $_POST['dfn-disable-image']
+		            $disable_image
                 );
             }
 
             if ( array_key_exists( 'dfn-enable', $_POST ) ) {
-                update_post_meta(
+	            $enable = $_POST['dfn-enable'] === 'on' ? 'on' : false;
+	            update_post_meta(
                     $post_id,
                     'definition_enable',
-                    $_POST['dfn-enable']
+		            $enable
                 );
             }
         }

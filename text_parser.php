@@ -7,18 +7,15 @@ if (!class_exists('wpdef_text_parser')) {
 		public $tooltip_type = 'preview'; //or preview
         private $current_term_match;
         private $current_replace_link;
+        private $replaced_definitions = array();
 
 		public function __construct() {
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 			add_action( 'script_loader_tag', array( $this, 'defer_replacement_script' ), 10, 3 );
-
 			add_filter( 'the_content', array( $this, 'replace_definitions_with_links' ) );
-
 			add_action( 'wp_ajax_nopriv_wpdef_load_preview', array( $this, 'wpdef_load_preview' ) );
 			add_action( 'wp_ajax_wpdef_load_preview', array( $this, 'wpdef_load_preview' ) );
-
 			add_action( 'wp_ajax_wpdef_scan_definition_count', array( $this, 'wpdef_scan_definition_count' ) );
-
             add_action( 'save_post', array( $this, 'save_used_definitions_in_post' ), 10, 1 );
 		}
 
@@ -164,7 +161,7 @@ if (!class_exists('wpdef_text_parser')) {
 		public function replace_definitions_with_links( $content )
         {
             $terms = $this->load_used_definitions_in_post(get_the_ID());
-
+error_log("terms");
             foreach ($terms as $post_id_term) {
                 $post_id_term_array_object = explode(':', $post_id_term);
                 $post_id = $post_id_term_array_object[0];
@@ -180,22 +177,41 @@ if (!class_exists('wpdef_text_parser')) {
                 //regex: replace $name in $content with $link
                 $this->current_term_match = $term;
                 $this->current_replace_link = $link;
-
-                $pattern = $this->get_regex($term);
-                $content = preg_replace_callback($pattern, [$this, 'definition_preg_replace_callback'], $content, 1);
+                $pattern = $this->get_regex($term, true);
+                $content = preg_replace_callback($pattern, [$this, 'definition_preg_replace_callback'], $content, 3);
             }
 
             return apply_filters('wpdef_content', $content);
         }
 
         function definition_preg_replace_callback( $matches ) {
-            return preg_replace( "/(\s)({$this->current_term_match})([\s\,\.\;\!\?])/", "$1{$this->current_replace_link}$3", $matches[0], 1 );
+			//check if already replaced in this post
+			if (in_array( $matches[2], $this->replaced_definitions) ) {
+		        return $matches[0];
+			}
+	        error_log(print_r($matches, true));
+	        if (strpos($matches[0], '<h1>') !== FALSE
+	            || strpos($matches[0], '<h2>') !== FALSE
+	            || strpos($matches[0], '<h3>') !== FALSE
+	        ){
+	        	return $matches[0];
+	        }
+
+	        $this->replaced_definitions[] = $matches[2];
+
+			return str_replace($matches[2], $this->current_replace_link, $matches[0]);
         }
 
 
-		private function get_regex( $term ) {
-		    return "/(<p[^>]*>[^<]*( {$term}[ \,\.\;\!\?]))|(( {$term}[ \,\.\;\!\?])[^<]*<\/p)/";
-        }
+		private function get_regex( $term, $add_delimiter = false ) {
+			$pattern = str_replace('{definition}', $term, apply_filters('wp_definitions_pattern', WPDEF_PATTERN) );
+
+			if ($add_delimiter) {
+				$pattern = '/'.$pattern.'/';
+			}
+			return $pattern;
+
+		}
 
 
 		/**
@@ -233,17 +249,17 @@ if (!class_exists('wpdef_text_parser')) {
             }
 
             global $wpdb;
-            $definitions = $_GET['definitions'];
-            $post_id = $_GET['post_id'];
+            $definitions = array_map('sanitize_text_field', $_GET['definitions']);
+            $post_id = intval($_GET['post_id']);
 
             // Count definitions from this post used in all other posts
-            $sql = "select count(post.ID) from wp_posts as post " .
+            $sql = "select count(post.ID) from $wpdb->posts as post " .
                    "where post.ID != {$post_id} and post.post_status = 'publish' and ";
             $term_conditions = [];
             foreach ( $definitions as $definition ) {
                 $term_conditions[] = "post.post_content REGEXP '(<p>[^<]*( {$definition}[ \,\.\;\!\?]))|(( {$definition}[ \,\.\;\!\?])[^<]*<\/p)'";
             }
-            $sql .= '(' . implode(' or ', $term_conditions) . ')';
+            $sql .= '(' . implode(' OR ', $term_conditions) . ')';
 
             $count = $wpdb->get_var($sql);
 
@@ -262,7 +278,8 @@ if (!class_exists('wpdef_text_parser')) {
         public function save_used_definitions_in_post( $this_post_id )
         {
             global $wpdb;
-
+	        $this_post_id = intval($this_post_id);
+	        //((?<!h[1-9]\>))text(?!\<\/h[1-9])
             // Pattern: (<p>[^<]*( definition[ \,\.\;\!\?]))|(( definition[ \,\.\;\!\?])[^<]*<\/p)
             // <p>Commodi totam quam perferendis dicta definition.
             // or
@@ -272,7 +289,7 @@ if (!class_exists('wpdef_text_parser')) {
             // Meta value: 'post_id:definition'
 
             // Delete postmeta: definitions from this post used in all other posts
-            $sql = "delete from wp_postmeta where meta_key = 'used_definitions' and meta_value LIKE '{$this_post_id}:%'";
+            $sql = "delete from $wpdb->postmeta where meta_key = 'used_definitions' and meta_value LIKE '{$this_post_id}:%'";
             $wpdb->query($sql);
 
             // Save postmeta: definitions from this post used in all other posts
@@ -280,25 +297,27 @@ if (!class_exists('wpdef_text_parser')) {
             // Cross join every post with terms used in the saved post
             // Create table for postmeta with structure (post_id, meta_key, meta_value)
             // Filter this table with post_content REGEXP pattern and definition_enable
-            $sql =
-                "insert into wp_postmeta (post_id, meta_key, meta_value) " .
-                "select post.ID as post_id, 'used_definitions' as meta_key, CONCAT('{$this_post_id}:', term.name) as meta_value from wp_posts as post, wp_terms as term " .
-                "join wp_term_taxonomy as term_taxonomy  " .
+	        $pattern = $this->get_regex("', term.name, '");
+	        $sql =
+                "insert into $wpdb->postmeta (post_id, meta_key, meta_value) " .
+                "select post.ID as post_id, 'used_definitions' as meta_key, CONCAT('{$this_post_id}:', term.name) as meta_value from $wpdb->posts as post, $wpdb->terms as term " .
+                "join $wpdb->term_taxonomy as term_taxonomy  " .
                 "on term.term_id = term_taxonomy.term_id " .
-                "join wp_term_relationships as term_relationships " .
+                "join $wpdb->term_relationships as term_relationships " .
                 "on term_relationships.term_taxonomy_id = term_taxonomy.term_taxonomy_id " .
                 "where term_taxonomy.taxonomy = 'definitions_title'" .
                 "and term_relationships.object_id = {$this_post_id} " .
-                "and post.post_content REGEXP CONCAT('(<p[^>]*>[^<]*( ', term.name, '[ \,\.\;\!\?]))|(( ', term.name,'[ \,\.\;\!\?])[^<]*<\/p)') " .
-                "and (select meta_value from wp_postmeta where post_id = {$this_post_id}  and meta_key = 'definition_enable') = 'on'" .
+                "and post.post_content REGEXP CONCAT('$pattern') " .
+                "and (select meta_value from $wpdb->postmeta where post_id = {$this_post_id}  and meta_key = 'definition_enable') = 'on' " .
                 "and post.ID != {$this_post_id} " .
                 "and post.post_status = 'publish'";
             $wpdb->query($sql);
 
-
+			$this->load_used_definitions_in_post($this_post_id);
             // Delete postmeta: definitions from other posts found in this post
-            $sql = "delete from wp_postmeta where meta_key = 'used_definitions' and post_id = {$this_post_id}";
+            $sql = "delete from $wpdb->postmeta where meta_key = 'used_definitions' and post_id = {$this_post_id}";
             $wpdb->query($sql);
+	        $this->load_used_definitions_in_post($this_post_id);
 
             // Save postmeta: definitions from other posts found in this post
             //
@@ -308,33 +327,45 @@ if (!class_exists('wpdef_text_parser')) {
             //
             // Save meta_value 'post_id:definition' where post_content REGEXP pattern
             // Only when definition_enable for post with post_id
-            $sql =
-                "insert into wp_postmeta (post_id, meta_key, meta_value) " .
+	        $pattern = $this->get_regex("', definitions.definition,'");
+
+	        $sql =
+                "insert into $wpdb->postmeta (post_id, meta_key, meta_value) " .
                 "select a.post_id, a.meta_key, a.meta_value from " .
                 "(select " .
                 "'{$this_post_id}' as post_id, " .
                 "'used_definitions' as meta_key, " .
                 "CONCAT(definitions.post_id, ':', definitions.definition) as meta_value, " .
-                "CONCAT('(<p[^>]*>[^<]*( ', definitions.definition, '[ \,\.\;\!\?]))|(( ', definitions.definition,'[ \,\.\;\!\?])[^<]*<\/p)') as pattern, " .
-                "(select post_content from wp_posts where ID = {$this_post_id}) as content " .
+                "CONCAT('$pattern') as pattern, " .
+                "(select post_content from $wpdb->posts where ID = {$this_post_id}) as content " .
                 "from " .
                 "(select term_relationships.object_id as post_id, term.name as definition " .
-                "from wp_term_taxonomy as term_taxonomy " .
-                "join wp_terms as term " .
+                "from $wpdb->term_taxonomy as term_taxonomy " .
+                "join $wpdb->terms as term " .
                 "on term.term_id = term_taxonomy.term_id " .
-                "join wp_term_relationships as term_relationships " .
+                "join $wpdb->term_relationships as term_relationships " .
                 "on term_relationships.term_taxonomy_id = term_taxonomy.term_taxonomy_id " .
-                "where term_taxonomy.taxonomy = 'definitions_title'" .
-                "and (select meta_value from wp_postmeta where post_id = term_relationships.object_id  and meta_key = 'definition_enable') = 'on'" .
-                "and (select post_status from wp_posts where ID = term_relationships.object_id) = 'publish'" .
+                "where term_taxonomy.taxonomy = 'definitions_title' " .
+                "and (select meta_value from $wpdb->postmeta where post_id = term_relationships.object_id  and meta_key = 'definition_enable') = 'on' " .
+                "and (select post_status from $wpdb->posts where ID = term_relationships.object_id) = 'publish' " .
                 "and term_relationships.object_id != {$this_post_id}" .
                 ") as definitions) as a " .
                 "where a.content REGEXP a.pattern";
             $wpdb->query($sql);
         }
 
+		/**
+		 * Get definitions for a post_id
+		 *
+		 * @param int $post_id
+		 *
+		 * @return array
+		 */
         public function load_used_definitions_in_post( $post_id ) {
+	        $post_id = intval($post_id);
 		    $used_definitions = get_post_meta( $post_id, 'used_definitions', false );
+		    error_log("used defs");
+		    error_log(print_r($used_definitions, true));
 		    if ( $used_definitions ) {
                 return $used_definitions;
             } else {
