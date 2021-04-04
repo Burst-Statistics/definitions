@@ -24,7 +24,6 @@ jQuery(document).ready(function ($) {
                 var definitions_id = element.data('definitions_id');
                 var html = wpdef_get_preview(definitions_id);
                 if (!$(this).find('.wpdef-preview-content').length ){
-                    console.log(html);
                     element.append(html);
                 }
             }
