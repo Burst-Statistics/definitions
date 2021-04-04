@@ -43,7 +43,7 @@
             $(document).on('click', 'span[class="remove-tag-icon"]', wpdef_metabox.remove_definition_from_all_list );
             $(document).on('click', 'input[name="dfn-definition-add"]', wpdef_metabox.set_add_definition_state );
             $(document).on('click', 'span[class="remove-tag-icon"]', wpdef_metabox.set_add_definition_state );
-            $(document).on('change', 'input[type="checkbox"][name="dfn-use-tooltip"]', wpdef_metabox.conditionally_show_use_image);
+            $(document).on('change', 'select[name="dfn-link-type"]', wpdef_metabox.conditionally_show_use_image);
         },
 
 
@@ -345,7 +345,7 @@
          * Conditionally show the use image checkbox field depending if you use the tooltip or not
          */
         conditionally_show_use_image : function () {
-            if ( $('input[type="checkbox"][name="dfn-use-tooltip"]')[0].checked ) {
+            if ( $('select[name="dfn-link-type"]').val()!=='hyperlink' ) {
                 $('.dfn-disable-image').closest('.dfn-field').show();
             } else {
                 $('.dfn-disable-image').closest('.dfn-field').hide();

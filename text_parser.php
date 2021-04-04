@@ -3,9 +3,7 @@ defined('ABSPATH') or die("you do not have access to this page!");
 
 if (!class_exists('wpdef_text_parser')) {
 	class wpdef_text_parser {
-
-		public $tooltip_type = 'preview'; //or preview
-        private $current_term_match;
+		private $current_term_match;
         private $current_replace_link;
         private $replaced_definitions = array();
 
@@ -135,16 +133,17 @@ if (!class_exists('wpdef_text_parser')) {
 		 */
 
 		private function get_tooltip_link( $url, $tooltip, $title , $post_id) {
-            $use_tooltip = get_post_meta($post_id, 'definition_use_tooltip', true);
+            $link_type = get_post_meta($post_id, 'definition_link_type', true);
             $class = 'wpdef-'.sanitize_title($title);
 
-			if ( $use_tooltip ){
-                // https://stackoverflow.com/questions/40531029/how-to-create-a-pure-css-tooltip-with-html-content-for-inline-elements
-                $tooltip_html = '<span class="'.$class.' wpdef-preview"><a href="{url}"><dfn title="{title}" class="wpdef-definition" data-definitions_id="{post_id}"></dfn></a></span>';
-                $tooltip_html = str_replace( array( "{url}", "{tooltip}", "{title}", "{post_id}"), array( $url, $tooltip, $title , $post_id), $tooltip_html );
+            //defaults to preview
+			if ( $link_type === 'hyperlink' ){
+				$tooltip_html = '<a href="{url}" class="'.$class.'"><span>{title}</span></a>';
+				$tooltip_html = str_replace( array( "{url}", "{title}"), array( $url, $title ), $tooltip_html );
 			} else {
-                $tooltip_html = '<a href="{url}" class="'.$class.'"><span>{title}</span></a>';
-                $tooltip_html = str_replace( array( "{url}", "{title}"), array( $url, $title ), $tooltip_html );
+				// https://stackoverflow.com/questions/40531029/how-to-create-a-pure-css-tooltip-with-html-content-for-inline-elements
+				$tooltip_html = '<span class="'.$class.' wpdef-preview"><a href="{url}"><dfn title="{title}" class="wpdef-definition" data-definitions_id="{post_id}"></dfn></a></span>';
+				$tooltip_html = str_replace( array( "{url}", "{tooltip}", "{title}", "{post_id}"), array( $url, $tooltip, $title , $post_id), $tooltip_html );
 			}
 
 			return apply_filters( 'wpdef_tooltip_html', $tooltip_html );

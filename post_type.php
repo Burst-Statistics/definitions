@@ -102,7 +102,7 @@ if (!class_exists('wpdef_posttype')) {
 
 
         public function definitions_meta_box_html( $post ) {
-            $use_tooltip    = get_post_meta( $post->ID, 'definition_use_tooltip', true )    ? 'checked="checked"' : '';
+            $link_type    = get_post_meta( $post->ID, 'definition_link_type', true );
             $disable_image  = get_post_meta( $post->ID, 'definition_disable_image', true )  ? 'checked="checked"' : '';
             $disable        = get_post_meta( $post->ID, 'definition_disable', true )         ? 'checked="checked"' : '';
             ?>
@@ -116,9 +116,12 @@ if (!class_exists('wpdef_posttype')) {
             </div>
 
             <div class="dfn-field">
-                <input type="hidden" class="dfn-use-tooltip" name="dfn-use-tooltip" value=""/>
-                <input type="checkbox" class="dfn-use-tooltip" name="dfn-use-tooltip" <?php echo $use_tooltip ?>/>
-                <label><?php _e("Use Tooltip", "definitions")?></label>
+                <label for="dfn-link-type">
+                    <select name="dfn-link-type">
+                        <option value="preview"><?php _e("Show preview", "definitions")?></option>
+                        <option value="hyperlink" <?php if ($link_type ==='hyperlink') echo "selected"?> ><?php _e("Hyperlink", "definitions")?></option>
+                    </select>
+                </label>
             </div>
 
             <div class="dfn-field">
@@ -176,13 +179,20 @@ if (!class_exists('wpdef_posttype')) {
 
 
         function save_postdata_definitions( $post_id ) {
-            if ( array_key_exists( 'dfn-use-tooltip', $_POST ) ) {
-                $use_tooltip = $_POST['dfn-use-tooltip'] === 'on' ? 'on' : false;
-                update_post_meta(
-                    $post_id,
-                    'definition_use_tooltip',
-	                $use_tooltip
+            if ( array_key_exists( 'dfn-link-type', $_POST ) ) {
+                $options = array(
+                        'hyperlink',
+                        'preview',
                 );
+                if (in_array($_POST['dfn-link-type'], $options)) {
+	                $link_type = sanitize_title($_POST['dfn-link-type']);
+	                update_post_meta(
+		                $post_id,
+		                'definition_link_type',
+		                $link_type
+	                );
+                }
+
             }
 
             if ( array_key_exists( 'dfn-disable-image', $_POST ) ) {
