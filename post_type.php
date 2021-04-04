@@ -104,7 +104,6 @@ if (!class_exists('wpdef_posttype')) {
         public function definitions_meta_box_html( $post ) {
             $link_type    = get_post_meta( $post->ID, 'definition_link_type', true );
             $disable_image  = get_post_meta( $post->ID, 'definition_disable_image', true )  ? 'checked="checked"' : '';
-            $disable        = get_post_meta( $post->ID, 'definition_disable', true )         ? 'checked="checked"' : '';
             ?>
             <span class="dfn-comment"><?php _e("If you want to know all the possibilities with Definitions - Internal Linkbuilding, have a look at our documentation.", "definitions") ?> <a href="https://really-simple-plugins.com/definitions-internal-linkbuilding/documentation"><?php _e("Read more", "definitions") ?></a></span>
 
@@ -118,7 +117,7 @@ if (!class_exists('wpdef_posttype')) {
             <div class="dfn-field">
                 <label for="dfn-link-type">
                     <select name="dfn-link-type">
-                        <option value="preview"><?php _e("Show preview", "definitions")?></option>
+                        <option value="preview"><?php _e("Preview on hover", "definitions")?></option>
                         <option value="hyperlink" <?php if ($link_type ==='hyperlink') echo "selected"?> ><?php _e("Hyperlink", "definitions")?></option>
                     </select>
                 </label>
@@ -133,11 +132,6 @@ if (!class_exists('wpdef_posttype')) {
             <h3><?php _e("Status", "definitions")?></h3>
             <div class="dfn-performance-notice"></div>
 
-            <div class="dfn-field">
-                <input type="hidden" class="dfn-disable" name="dfn-disable" value=""/>
-                <input type="checkbox" class="dfn-disable" name="dfn-disable" <?php echo $disable ?>/>
-                <label for="dfn-disable"><?php _e("Disable", "definitions")?></label>
-            </div>
             <div class="dfn-field">
                 <span class="dfn-save-changes"><?php _e("Settings changed, don't forget to save!", "definitions")?></span>
             </div>
@@ -201,15 +195,6 @@ if (!class_exists('wpdef_posttype')) {
                     $post_id,
                     'definition_disable_image',
 		            $disable_image
-                );
-            }
-
-            if ( array_key_exists( 'dfn-disable', $_POST ) ) {
-	            $enable = $_POST['dfn-disable'] === 'on' ? 'on' : false;
-	            update_post_meta(
-                    $post_id,
-                    'definition_disable',
-		            $enable
                 );
             }
         }

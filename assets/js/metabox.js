@@ -121,9 +121,9 @@
          */
         set_enable_checkbox_state : function () {
             if ( wpdef_metabox.get_post_definitions_list().length == 0 ) {
-                $('input[class="dfn-disable"]').prop('disabled', true);
+                $('input[class="dfn-link-type"]').prop('disabled', true);
             } else {
-                $('input[class="dfn-disable"]').prop('disabled', false);
+                $('input[class="dfn-link-type"]').prop('disabled', false);
             }
         },
 
