@@ -104,7 +104,7 @@ if (!class_exists('wpdef_posttype')) {
         public function definitions_meta_box_html( $post ) {
             $use_tooltip    = get_post_meta( $post->ID, 'definition_use_tooltip', true )    ? 'checked="checked"' : '';
             $disable_image  = get_post_meta( $post->ID, 'definition_disable_image', true )  ? 'checked="checked"' : '';
-            $enable         = get_post_meta( $post->ID, 'definition_enable', true )         ? 'checked="checked"' : '';
+            $disable         = get_post_meta( $post->ID, 'definition_disable', true )         ? 'checked="checked"' : '';
 
             ?>
             <span class="dfn-comment"><?php _e("If you want to know all the possibilities with Definitions - Internal Linkbuilding, have a look at our documentation.", "definitions") ?> <a href="https://really-simple-plugins.com/definitions-internal-linkbuilding/documentation"><?php _e("Read more", "definitions") ?></a></span>
@@ -132,9 +132,9 @@ if (!class_exists('wpdef_posttype')) {
             <div class="dfn-performance-notice"></div>
 
             <div class="dfn-field">
-                <input type="hidden" class="dfn-enable" name="dfn-enable" value=""/>
-                <input type="checkbox" class="dfn-enable" name="dfn-enable" <?php echo $enable ?>/>
-                <label for="dfn-enable"><?php _e("Enable", "definitions")?></label>
+                <input type="hidden" class="dfn-disable" name="dfn-disable" value=""/>
+                <input type="checkbox" class="dfn-disable" name="dfn-disable" <?php echo $disable ?>/>
+                <label for="dfn-disable"><?php _e("Disable", "definitions")?></label>
             </div>
 
             <?php
@@ -193,11 +193,11 @@ if (!class_exists('wpdef_posttype')) {
                 );
             }
 
-            if ( array_key_exists( 'dfn-enable', $_POST ) ) {
-	            $enable = $_POST['dfn-enable'] === 'on' ? 'on' : false;
+            if ( array_key_exists( 'dfn-disable', $_POST ) ) {
+	            $enable = $_POST['dfn-disable'] === 'on' ? 'on' : false;
 	            update_post_meta(
                     $post_id,
-                    'definition_enable',
+                    'definition_disable',
 		            $enable
                 );
             }

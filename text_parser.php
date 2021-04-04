@@ -305,7 +305,7 @@ error_log("terms");
             //
             // Cross join every post with terms used in the saved post
             // Create table for postmeta with structure (post_id, meta_key, meta_value)
-            // Filter this table with post_content REGEXP pattern and definition_enabled
+            // Filter this table with post_content REGEXP pattern and definition_disabled
 	        $pattern = $this->get_regex("', term.name, '");
 	        $sql =
                 "insert into $wpdb->postmeta (post_id, meta_key, meta_value) " .
@@ -317,7 +317,7 @@ error_log("terms");
                 "where term_taxonomy.taxonomy = 'definitions_title'" .
                 "and term_relationships.object_id = {$this_post_id} " .
                 "and post.post_content REGEXP CONCAT('$pattern') " .
-                "and (select meta_value from $wpdb->postmeta where post_id = {$this_post_id}  and meta_key = 'definition_enable') = 'on' " .
+                "and (select meta_value from $wpdb->postmeta where post_id = {$this_post_id}  and meta_key = 'definition_disable') != 'on' " .
                 "and post.ID != {$this_post_id} " .
                 "and post.post_status = 'publish'";
             $wpdb->query($sql);
@@ -332,7 +332,7 @@ error_log($sql);
             // Create list (post_id, definition) for every post
             //
             // Save meta_value 'post_id:definition' where post_content REGEXP pattern
-            // Only when definition_enable for post with post_id
+            // Only when definition_disable for post with post_id
 	        $pattern = $this->get_regex("', definitions.definition,'");
 
 	        $sql =
@@ -352,7 +352,7 @@ error_log($sql);
                 "join $wpdb->term_relationships as term_relationships " .
                 "on term_relationships.term_taxonomy_id = term_taxonomy.term_taxonomy_id " .
                 "where term_taxonomy.taxonomy = 'definitions_title' " .
-                "and (select meta_value from $wpdb->postmeta where post_id = term_relationships.object_id  and meta_key = 'definition_enable') = 'on' " .
+                "and (select meta_value from $wpdb->postmeta where post_id = term_relationships.object_id  and meta_key = 'definition_disable') != 'on' " .
                 "and (select post_status from $wpdb->posts where ID = term_relationships.object_id) = 'publish' " .
                 "and term_relationships.object_id != {$this_post_id}" .
                 ") as definitions) as a " .
