@@ -136,7 +136,6 @@ if (!class_exists('wpdef_text_parser')) {
 
 		private function get_tooltip_link( $url, $tooltip, $title , $post_id) {
             $use_tooltip = get_post_meta($post_id, 'definition_use_tooltip', true);
-
             $class = 'wpdef-'.sanitize_title($title);
 
 			if ( $use_tooltip ){
@@ -321,7 +320,6 @@ error_log("terms");
                 "and post.ID != {$this_post_id} " .
                 "and post.post_status = 'publish'";
             $wpdb->query($sql);
-error_log($sql);
 
 	        $this->load_used_definitions_in_post($this_post_id);
 
@@ -372,8 +370,6 @@ error_log($sql);
         public function load_used_definitions_in_post( $post_id ) {
 	        $post_id = intval($post_id);
 		    $used_definitions = get_post_meta( $post_id, 'used_definitions', false );
-		    error_log("used defs");
-		    error_log(print_r($used_definitions, true));
 		    if ( $used_definitions ) {
                 return $used_definitions;
             } else {

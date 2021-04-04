@@ -82,15 +82,15 @@ if (!class_exists('wpdef_posttype')) {
                             'url' => admin_url('admin-ajax.php'),
                             'strings'=> array(
                                 'read-more' => __("Read more", "definitions"),
-                                'add-term' => __('Add a term to see results', "definitions"),
+                                'add-term' => __('Add a term to see the occurrence count', "definitions"),
                                 'already-in-use-plural' => sprintf(__('%s are already in use. Choose another', "definitions"), '{definitions}'),
-                                'already-in-use-single' => sprintf(__('%s is already in use. Choose another', "definitions"), '{definitions}'),
+                                'already-in-use-single' => sprintf(__('"%s" is already in use. Choose another', "definitions"), '{definitions}'),
                                 'not-in-use-plural' => sprintf(__('%s are not used before!', "definitions"), '{definitions}'),
-                                'not-in-use-single' => sprintf(__('%s has not been used before!', "definitions"), '{definitions}'),
+                                'not-in-use-single' => sprintf(__('"%s" has not been used before!', "definitions"), '{definitions}'),
                                 'terms-in-posts' => sprintf(__('%s terms in %s posts', "definitions"), '{terms_count}','{posts_count}'),
-                                'way-too-many-terms' => __('There are too many terms per post. This might affect resources. Try to be more specific.', "definitions"),
-                                'too-many-terms' => __('There might be too many terms per post. This might affect resources. Try to be more specific.', "definitions"),
-                                'positive-ratio-terms' => __('There is a positive ratio terms per post. This won\'t affect resources.', "definitions"),
+                                'way-too-many-terms' => __('Your term occurs in a lot of posts. Try to be more specific.', "definitions"),
+                                'too-many-terms' => __('Your term occurs in a lot of posts. Try to be more specific.', "definitions"),
+                                'positive-ratio-terms' => __('The number of times this term occurs is good.', "definitions"),
                             ),
                             'post_count' => wp_count_posts()->publish,
                             'existing_definitions' => array_column( get_terms( 'definitions_title', array( 'orderby' => 'count', 'hide_empty' => true ) ), 'name'),
@@ -104,16 +104,15 @@ if (!class_exists('wpdef_posttype')) {
         public function definitions_meta_box_html( $post ) {
             $use_tooltip    = get_post_meta( $post->ID, 'definition_use_tooltip', true )    ? 'checked="checked"' : '';
             $disable_image  = get_post_meta( $post->ID, 'definition_disable_image', true )  ? 'checked="checked"' : '';
-            $disable         = get_post_meta( $post->ID, 'definition_disable', true )         ? 'checked="checked"' : '';
-
+            $disable        = get_post_meta( $post->ID, 'definition_disable', true )         ? 'checked="checked"' : '';
             ?>
             <span class="dfn-comment"><?php _e("If you want to know all the possibilities with Definitions - Internal Linkbuilding, have a look at our documentation.", "definitions") ?> <a href="https://really-simple-plugins.com/definitions-internal-linkbuilding/documentation"><?php _e("Read more", "definitions") ?></a></span>
 
             <h3><?php _e("Settings", "definitions")?></h3>
-            <span class="dfn-comment"><?php _e("Limit terms to only one per post.", "definitions") ?></span>
+            <span class="dfn-comment"><?php _e("One term per post.", "definitions") ?></span>
             <?php $this->definition_tag_field( $post ); ?>
             <div class="dfn-field dfn-definition-add-notice">
-                <div class="dfn-icon-bullet-invisible"></div><span class="dfn-comment"><?php _e("Add a term to see results", "definitions") ?></span>
+                <div class="dfn-icon-bullet-invisible"></div><span class="dfn-comment"><?php _e("Add a term to see the occurrence count", "definitions") ?></span>
             </div>
 
             <div class="dfn-field">
@@ -136,7 +135,9 @@ if (!class_exists('wpdef_posttype')) {
                 <input type="checkbox" class="dfn-disable" name="dfn-disable" <?php echo $disable ?>/>
                 <label for="dfn-disable"><?php _e("Disable", "definitions")?></label>
             </div>
-
+            <div class="dfn-field">
+                <span class="dfn-save-changes"><?php _e("Settings changed, don't forget to save!", "definitions")?></span>
+            </div>
             <?php
         }
 
