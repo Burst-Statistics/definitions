@@ -93,9 +93,9 @@ if ( ! class_exists( 'DEFINITIONS' ) ) {
 			define( 'WPDEF_PATH', plugin_dir_path( __FILE__ ) );
 			define( 'WPDEF_PLUGIN', plugin_basename( __FILE__ ) );
 
-			//define( 'WPDEF_PATTERN', "(<p[^>]*>[^<]*( {definition}[ \,\.\;\!\?]))|(( {definition}[ \,\.\;\!\?])[^<]*<\/p)" );
-			$start = '\s\>';//string can start with either a tag (>) or a space
-			$end = '\<\n\s\,\.\;\!\?';//string can end with any punctuation, space, break, or tag
+//			define( 'WPDEF_PATTERN', "(<p[^>]*>[^<]*( {definition}[ \,\.\;\!\?]))|(( {definition}[ \,\.\;\!\?])[^<]*<\/p)" );
+			$start = ' \>';//string can start with either a tag (>) or a space
+			$end = '\n\< \,\.\;\!\?';//string can end with any punctuation, space, break, or tag
 			define( 'WPDEF_PATTERN', "(.*[^<]*[$start]({definition})[$end])|([$start]({definition})[".$end."][^<].*)" );
 
 			$debug = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? time() : '';

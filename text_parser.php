@@ -13,9 +13,9 @@ if (!class_exists('wpdef_text_parser')) {
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 			add_action( 'script_loader_tag', array( $this, 'defer_replacement_script' ), 10, 3 );
 			add_filter( 'the_content', array( $this, 'replace_definitions_with_links' ) );
-			add_action( 'wp_ajax_nopriv_wpdef_load_preview', array( $this, 'wpdef_load_preview' ) );
-			add_action( 'wp_ajax_wpdef_load_preview', array( $this, 'wpdef_load_preview' ) );
-			add_action( 'wp_ajax_wpdef_scan_definition_count', array( $this, 'wpdef_scan_definition_count' ) );
+			add_action( 'wp_ajax_nopriv_wpdef_load_preview', array( $this, 'load_preview' ) );
+			add_action( 'wp_ajax_wpdef_load_preview', array( $this, 'load_preview' ) );
+			add_action( 'wp_ajax_wpdef_scan_definition_count', array( $this, 'scan_definition_count' ) );
             add_action( 'save_post', array( $this, 'save_used_definitions_in_post' ), 10, 1 );
 		}
 
@@ -49,7 +49,7 @@ if (!class_exists('wpdef_text_parser')) {
         }
 
 
-		public function wpdef_load_preview(){
+		public function load_preview(){
 			$definitions_ids = array_map( 'intval' , $_GET['ids']);
 			$error          = false;
 			$previews = array();
@@ -234,7 +234,7 @@ error_log("terms");
 		}
 
 
-        public function wpdef_scan_definition_count(){
+        public function scan_definition_count(){
 
             if ( !isset($_GET['definitions']) || !isset($_GET['post_id']) ) {
                 $response = array(
@@ -257,10 +257,11 @@ error_log("terms");
                    "where post.ID != {$post_id} and post.post_status = 'publish' and ";
             $term_conditions = [];
             foreach ( $definitions as $definition ) {
-                $term_conditions[] = "post.post_content REGEXP '(<p>[^<]*( {$definition}[ \,\.\;\!\?]))|(( {$definition}[ \,\.\;\!\?])[^<]*<\/p)'";
+            	$pattern = $this->get_regex($definition);
+                $term_conditions[] = "post.post_content REGEXP '$pattern'";
             }
             $sql .= '(' . implode(' OR ', $term_conditions) . ')';
-
+			_log($sql);
             $count = $wpdb->get_var($sql);
 
             $response = array(
@@ -279,6 +280,13 @@ error_log("terms");
         {
             global $wpdb;
 	        $this_post_id = intval($this_post_id);
+
+	        error_log("####");
+	        $this->load_used_definitions_in_post($this_post_id);
+	        // Delete postmeta: definitions from other posts found in this post
+	        $sql = "delete from $wpdb->postmeta where meta_key = 'used_definitions' and post_id = {$this_post_id}";
+	        $wpdb->query($sql);
+
 	        //((?<!h[1-9]\>))text(?!\<\/h[1-9])
             // Pattern: (<p>[^<]*( definition[ \,\.\;\!\?]))|(( definition[ \,\.\;\!\?])[^<]*<\/p)
             // <p>Commodi totam quam perferendis dicta definition.
@@ -287,6 +295,7 @@ error_log("terms");
             // Where not encountered another html tag like <h3>, using [^<]
 
             // Meta value: 'post_id:definition'
+	        $this->load_used_definitions_in_post($this_post_id);
 
             // Delete postmeta: definitions from this post used in all other posts
             $sql = "delete from $wpdb->postmeta where meta_key = 'used_definitions' and meta_value LIKE '{$this_post_id}:%'";
@@ -296,7 +305,7 @@ error_log("terms");
             //
             // Cross join every post with terms used in the saved post
             // Create table for postmeta with structure (post_id, meta_key, meta_value)
-            // Filter this table with post_content REGEXP pattern and definition_enable
+            // Filter this table with post_content REGEXP pattern and definition_enabled
 	        $pattern = $this->get_regex("', term.name, '");
 	        $sql =
                 "insert into $wpdb->postmeta (post_id, meta_key, meta_value) " .
@@ -312,11 +321,8 @@ error_log("terms");
                 "and post.ID != {$this_post_id} " .
                 "and post.post_status = 'publish'";
             $wpdb->query($sql);
+error_log($sql);
 
-			$this->load_used_definitions_in_post($this_post_id);
-            // Delete postmeta: definitions from other posts found in this post
-            $sql = "delete from $wpdb->postmeta where meta_key = 'used_definitions' and post_id = {$this_post_id}";
-            $wpdb->query($sql);
 	        $this->load_used_definitions_in_post($this_post_id);
 
             // Save postmeta: definitions from other posts found in this post
@@ -352,6 +358,8 @@ error_log("terms");
                 ") as definitions) as a " .
                 "where a.content REGEXP a.pattern";
             $wpdb->query($sql);
+	        error_log($sql);
+
         }
 
 		/**

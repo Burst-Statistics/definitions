@@ -8,7 +8,6 @@ if (!class_exists('wpdef_posttype')) {
 
 			add_action( 'add_meta_boxes', array( $this, 'add_definitions_meta_box' ) );
 			add_action( 'save_post', array( $this, 'save_postdata_definitions' ) );
-
             add_action( 'admin_enqueue_scripts', array( $this, 'add_definitions_meta_box_script' ) );
 		}
 
@@ -33,10 +32,11 @@ if (!class_exists('wpdef_posttype')) {
             $args = [
                 'hierarchical'      => false,
                 'labels'            => $labels,
-                'show_ui'           => false,
+                'show_ui'           => true,
                 'show_admin_column' => true,
                 'show_in_rest'      => false,
                 'query_var'         => true,
+                'meta_box_cb'       => false,
                 'rewrite'           => array( 'slug' => 'definitions_title' ),
             ];
 
@@ -93,7 +93,7 @@ if (!class_exists('wpdef_posttype')) {
                                 'positive-ratio-terms' => __('There is a positive ratio terms per post. This won\'t affect resources.', "definitions"),
                             ),
                             'post_count' => wp_count_posts()->publish,
-                            'existing_definitions' => array_column( get_terms( 'definitions_title', array( 'orderby' => 'count', 'hide_empty' => 0 ) ), 'name'),
+                            'existing_definitions' => array_column( get_terms( 'definitions_title', array( 'orderby' => 'count', 'hide_empty' => true ) ), 'name'),
                         )
                     );
                 }
