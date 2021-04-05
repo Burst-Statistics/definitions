@@ -1,4 +1,7 @@
 @gridblock _height_big: calc(auto + 20px);
+.dfn-disabled {
+  opacity: 0.3;
+}
 .dfn-field {
   display: flex;
   align-items: center;
