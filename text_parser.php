@@ -14,6 +14,8 @@ if (!class_exists('wpdef_text_parser')) {
 			add_action( 'wp_ajax_wpdef_load_preview', array( $this, 'load_preview' ) );
 			add_action( 'wp_ajax_wpdef_scan_definition_count', array( $this, 'scan_definition_count' ) );
             add_action( 'save_post', array( $this, 'save_used_definitions_in_post' ), 10, 1 );
+
+			do_action( 'delete_term', array( $this,'clear_used_definitions'), 10, 5 );
 		}
 
 		/**
@@ -283,6 +285,21 @@ if (!class_exists('wpdef_text_parser')) {
             header( "Content-Type: application/json" );
             echo $response;
             exit;
+        }
+
+		/**
+		 * Clear used definitions on posts
+		 * @param int $term
+		 * @param int $tt_id
+		 * @param string $taxonomy
+		 * @param WP_Term $deleted_term
+		 * @param array $object_ids
+		 */
+
+        public function clear_used_definitions( $term, $tt_id, $taxonomy, $deleted_term, $object_ids){
+        	global $wpdb;
+	        $sql = "delete from $wpdb->postmeta where meta_key = 'used_definitions' and meta_value LIKE '%:$deleted_term'";
+	        $wpdb->query($sql);
         }
 
 		/**
