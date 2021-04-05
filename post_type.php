@@ -87,6 +87,13 @@ if (!class_exists('wpdef_posttype')) {
                         WPDEF_URL . "assets/js/metabox$minified.js", array('jquery'),
                         WPDEF_VERSION, true );
 
+                    $args = array(
+                            'taxonomy' => 'definitions_title',
+                            'orderby' => 'count',
+                            'hide_empty' => true,
+                    );
+	                $definitions = array_column( get_terms( $args ), 'name');
+
                     wp_localize_script(
                         'wpdef',
                         'wpdef',
@@ -107,7 +114,7 @@ if (!class_exists('wpdef_posttype')) {
                                 'no-terms' => __('No matches were found.', "definitions"),
                             ),
                             'post_count' => wp_count_posts()->publish,
-                            'existing_definitions' => array_column( get_terms( 'definitions_title', array( 'orderby' => 'count', 'hide_empty' => true ) ), 'name'),
+                            'existing_definitions' => $definitions,
                         )
                     );
                 }
