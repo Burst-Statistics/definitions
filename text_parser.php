@@ -330,7 +330,8 @@ if (!class_exists('wpdef_text_parser')) {
                 "and term_relationships.object_id = {$this_post_id} " .
                 "and post.post_content REGEXP CONCAT('$pattern') " .
                 "and post.ID != {$this_post_id} " .
-                "and post.post_status = 'publish'";
+                "and post.post_status = 'publish' ".
+                "and (post.post_type = 'post' OR post.post_type= 'page')";
             $wpdb->query($sql);
 
             // Save postmeta: definitions from other posts found in this post
