@@ -280,15 +280,12 @@
          * Add performance notice to metabox
          */
         add_performance_notice : function () {
-
             var definitions = wpdef_metabox.get_post_definitions_list();
-            console.log("add performance notice "+definitions.length);
             if ( definitions.length > 0 ){
                 $('.dfn-show-if-term ').removeClass('dfn-disabled');
             } else {
                 $('.dfn-show-if-term ').addClass('dfn-disabled');
             }
-
             var html = wpdef_metabox.get_performance_notice_html( wpdef_metabox.definition_count_current )
             $('.dfn-performance-notice').html( html );
         },

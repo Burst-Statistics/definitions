@@ -56,9 +56,7 @@ jQuery(document).ready(function ($) {
                 }
             }
         });
-
     }
-
 
     function wpdef_get_preview(id) {
         var html = '';
@@ -70,7 +68,6 @@ jQuery(document).ready(function ($) {
             }
         );
         return html;
-
     }
 
 
