@@ -42,7 +42,7 @@ if (!class_exists('wpdef_posttype')) {
                 'rewrite'           => array( 'slug' => 'definitions_title' ),
             ];
 
-            register_taxonomy( 'definitions_title', ['post'], $args );
+            register_taxonomy( 'definitions_title', apply_filters('wpdef_post_types', ['post']), $args );
 		}
 
 
