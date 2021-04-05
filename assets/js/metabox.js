@@ -222,8 +222,6 @@
                 success: function (response) {
                     wpdef_metabox.ajaxCallActive = false;
                     if (response.success) {
-                        console.log("counted uses");
-                        console.log(response.count);
                         wpdef_metabox.definition_count_new = response.count;
                         wpdef_metabox.start_animation();
                     }
@@ -235,7 +233,7 @@
          * Start animation in the performance notice
          */
         start_animation : function () {
-            if (wpdef_metabox.definition_count_current == wpdef_metabox.definition_count_new) return;
+            if (wpdef_metabox.definition_count_current == wpdef_metabox.definition_count_new ) return;
 
             wpdef_metabox.animation_time = wpdef_metabox.animation_time_begin;
             wpdef_metabox.step = (wpdef_metabox.definition_count_new - wpdef_metabox.definition_count_current) / 40;
@@ -282,6 +280,15 @@
          * Add performance notice to metabox
          */
         add_performance_notice : function () {
+
+            var definitions = wpdef_metabox.get_post_definitions_list();
+            console.log("add performance notice "+definitions.length);
+            if ( definitions.length > 0 ){
+                $('.dfn-show-if-term ').removeClass('dfn-disabled');
+            } else {
+                $('.dfn-show-if-term ').addClass('dfn-disabled');
+            }
+
             var html = wpdef_metabox.get_performance_notice_html( wpdef_metabox.definition_count_current )
             $('.dfn-performance-notice').html( html );
         },
@@ -300,20 +307,29 @@
             notice = notice.replace('{posts_count}', "" + wpdef_metabox.post_count );
 
             var warning = "";
-
-            if ( wpdef_metabox.performance_level == 3 ) {
+            if ( wpdef_metabox.performance_level == 4 ) {
                 icon = "<div class='dfn-icon-bullet-red'></div>";
                 warning = "<span class='dfn-comment'>" + wpdef_metabox.localize_string('way-too-many-terms') + " <a href='https://really-simple-plugins.com/internal-linkbuilder/'>" + wpdef_metabox.localize_string('read-more') + "</a><span>";
             }
 
-            if ( wpdef_metabox.performance_level == 2 ) {
+            if ( wpdef_metabox.performance_level == 3 ) {
                 icon = "<div class='dfn-icon-bullet-orange'></div>";
                 warning = "<span class='dfn-comment'>" + wpdef_metabox.localize_string('too-many-terms') + " <a href='https://really-simple-plugins.com/internal-linkbuilder/'>" + wpdef_metabox.localize_string('read-more') + "</a><span>";
+            }
+
+            if ( wpdef_metabox.performance_level == 2 ) {
+                icon = "<div class='dfn-icon-bullet-orange'></div>";
+                warning = "<span class='dfn-comment'>" + wpdef_metabox.localize_string('few-terms') + " <a href='https://really-simple-plugins.com/internal-linkbuilder/'>" + wpdef_metabox.localize_string('read-more') + "</a><span>";
             }
 
             if ( wpdef_metabox.performance_level == 1 ) {
                 icon = "<div class='dfn-icon-bullet-green'></div>";
                 warning = "<span class='dfn-comment'>" + wpdef_metabox.localize_string('positive-ratio-terms') + " <a href='https://really-simple-plugins.com/internal-linkbuilder/'>" + wpdef_metabox.localize_string('read-more') + "</a><span>";
+            }
+
+            if ( wpdef_metabox.performance_level == 0 ) {
+                icon = "<div class='dfn-icon-bullet-red'></div>";
+                warning = "<span class='dfn-comment'>" + wpdef_metabox.localize_string('no-terms') + " <a href='https://really-simple-plugins.com/internal-linkbuilder/'>" + wpdef_metabox.localize_string('read-more') + "</a><span>";
             }
 
             var html = "";
@@ -336,8 +352,11 @@
          * @returns {number} Performance level according to definition count and post count
          */
         calculate_performance_level : function ( definition_count, post_count ) {
-            if ( (definition_count>500) && (definition_count / post_count > 0.5) ) return 3;
-            if ( (definition_count>100) && (definition_count / post_count > 0.25) ) return 2;
+            if ( (definition_count==0) ) return 0;
+            if ( (definition_count<5) ) return 2;
+            if ( (definition_count>500) && (definition_count / post_count > 0.5) ) return 4;
+            if ( (definition_count>100) && (definition_count / post_count > 0.25) ) return 3;
+
             return 1;
         },
 

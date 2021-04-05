@@ -85,7 +85,6 @@ if ( ! class_exists( 'DEFINITIONS' ) ) {
 		 */
 
 		private function setup_constants() {
-
 			require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 			$plugin_data = get_plugin_data( __FILE__ );
 
@@ -93,10 +92,27 @@ if ( ! class_exists( 'DEFINITIONS' ) ) {
 			define( 'WPDEF_PATH', plugin_dir_path( __FILE__ ) );
 			define( 'WPDEF_PLUGIN', plugin_basename( __FILE__ ) );
 
-//			define( 'WPDEF_PATTERN', "(<p[^>]*>[^<]*( {definition}[ \,\.\;\!\?]))|(( {definition}[ \,\.\;\!\?])[^<]*<\/p)" );
+			/**
+			 * SQL does not support negative look aheads and negative lookbehinds. So we have to use a broader match
+			 */
+
 			$start = ' \>';//string can start with either a tag (>) or a space
 			$end = '\n\< \,\.\;\!\?';//string can end with any punctuation, space, break, or tag
-			define( 'WPDEF_PATTERN', "(.*[^<]*[$start]({definition})[$end])|([$start]({definition})[".$end."][^<].*)" );
+			define( 'WPDEF_PATTERN_SQL', "(.*[^<]*[$start]({definition})[$end])|([$start]({definition})[".$end."][^<].*)" );
+
+			/**
+			 * With PHP we can use a negative lookbehind and lookahead
+			 *
+			 * Not between a b h1-9
+			 * between space, punctuation, p or div tag
+			 */
+
+			define( 'WPDEF_PATTERN_PHP', "/((?!<(a|b|h[1-9])[^>]*?>)(?:^|(<div.*>)|(<p.*>)|\s)({definition})(?:\s|\.|\,|\?|\!|(<\/p>)|(<\/div>))(?![^<]*?<\/(a|b|h[1-9])>))/i" );
+
+			/**
+			 * This is the matching group that contains our match.
+			 */
+			define( 'WPDEF_PATTERN_PHP_MATCHING_GROUP', 5 );
 
 			$debug = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? time() : '';
 			define( 'WPDEF_VERSION', $plugin_data['Version'] . $debug );

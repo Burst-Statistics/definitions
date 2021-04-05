@@ -5,7 +5,6 @@ if (!class_exists('wpdef_text_parser')) {
 	class wpdef_text_parser {
 		private $current_term_match;
         private $current_replace_link;
-        private $replaced_definitions = array();
 
 		public function __construct() {
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
@@ -17,6 +16,9 @@ if (!class_exists('wpdef_text_parser')) {
             add_action( 'save_post', array( $this, 'save_used_definitions_in_post' ), 10, 1 );
 		}
 
+		/**
+		 * Enqueue our assets
+		 */
 		public function enqueue_assets() {
 			wp_register_style( 'wpdef-tooltip', WPDEF_URL . 'assets/css/tooltip.css' , array(), WPDEF_VERSION );
 			wp_enqueue_style( 'wpdef-tooltip' );
@@ -35,7 +37,14 @@ if (!class_exists('wpdef_text_parser')) {
 			);
 		}
 
-
+		/**
+		 * Add a defer tag
+		 * @param string $tag
+		 * @param string $handle
+		 * @param string $src
+		 *
+		 * @return string
+		 */
         function defer_replacement_script($tag, $handle, $src) {
 
             if ($handle === 'wpdef') {
@@ -43,9 +52,11 @@ if (!class_exists('wpdef_text_parser')) {
             }
 
             return $tag;
-
         }
 
+		/**
+		 * Load the preview for our definitions
+		 */
 
 		public function load_preview(){
 			$definitions_ids = array_map( 'intval' , $_GET['ids']);
@@ -147,6 +158,7 @@ if (!class_exists('wpdef_text_parser')) {
 
 
 		/**
+		 * The actual definitions replacement.
 		 * @param string $content
 		 *
 		 * @return string
@@ -155,7 +167,7 @@ if (!class_exists('wpdef_text_parser')) {
 		public function replace_definitions_with_links( $content )
         {
             $terms = $this->load_used_definitions_in_post(get_the_ID());
-            foreach ($terms as $post_id_term) {
+            foreach ( $terms as $post_id_term ) {
                 $post_id_term_array_object = explode(':', $post_id_term);
                 $post_id = $post_id_term_array_object[0];
                 $term = $post_id_term_array_object[1];
@@ -168,13 +180,8 @@ if (!class_exists('wpdef_text_parser')) {
                 //regex: replace $name in $content with $link
                 $this->current_term_match = $term;
                 $this->current_replace_link = $link;
-                $pattern = $this->get_regex($term, true);
-                $attempt = 0;
-                while ( !in_array( $term, $this->replaced_definitions) && $attempt <= 3 ) {
-                	$attempt++;
-                	$limit = $attempt;
-	                $content = preg_replace_callback($pattern, [$this, 'definition_preg_replace_callback'], $content, $limit);
-                }
+                $pattern = $this->get_regex($term, 'PHP');
+                $content = preg_replace_callback($pattern, [$this, 'definition_preg_replace_callback'], $content, 1);
             }
 
             return apply_filters('wpdef_content', $content);
@@ -188,33 +195,24 @@ if (!class_exists('wpdef_text_parser')) {
 		 */
 
         function definition_preg_replace_callback( $matches ) {
-			if ( preg_match('<h[1-9]>', $matches[0]) ){
-	        	return $matches[0];
-	        }
-
-			if (in_array( $matches[0], $this->replaced_definitions) ) {
-				return $matches[0];
-			}
-
-	        $this->replaced_definitions[] = $matches[2];
-			return str_replace($matches[2], $this->current_replace_link, $matches[0]);
+			return str_replace($matches[apply_filters('wpdef_matching_group', WPDEF_PATTERN_PHP_MATCHING_GROUP)], $this->current_replace_link, $matches[0]);
         }
 
 		/**
 		 * Get regex pattern
 		 * @param string $term
-		 * @param bool $add_delimiter
+		 * @param string $type
 		 *
 		 * @return string
 		 */
-		private function get_regex( $term, $add_delimiter = false ) {
-			$pattern = str_replace('{definition}', $term, apply_filters('wp_definitions_pattern', WPDEF_PATTERN) );
+		private function get_regex( $term, $type = 'PHP' ) {
 
-			if ($add_delimiter) {
-				$pattern = '/'.$pattern.'/';
+			if ($type === 'SQL' ) {
+				$pattern = str_replace('{definition}', $term, apply_filters('wp_definitions_pattern', WPDEF_PATTERN_SQL) );
+			} else {
+				$pattern = str_replace('{definition}', $term, apply_filters('wp_definitions_pattern', WPDEF_PATTERN_PHP) );
 			}
 			return $pattern;
-
 		}
 
 
@@ -232,13 +230,22 @@ if (!class_exists('wpdef_text_parser')) {
 				if ( strlen($excerpt)>250 ){
 					$excerpt = substr($post->post_content, 0, 250 ).'...';
 				}
+				//when our html breaks because we cut of a string, we fix this by passing it through the DOMDocument parser.
+				$x = new DOMDocument;
+				//this may generate warnings if the html is bad (which is what we're trying to fix here), so we suppress this.
+				libxml_use_internal_errors(true);
+				$x->loadHTML($excerpt);
+				$excerpt = $x->saveXML();
 			}
 
 			return $excerpt;
 		}
 
-
+		/**
+		 * Check how often a definition is used
+		 */
         public function scan_definition_count(){
+	        if (!current_user_can('edit_posts')) return;
 
             if ( !isset($_GET['definitions']) || !isset($_GET['post_id']) ) {
                 $response = array(
@@ -261,11 +268,10 @@ if (!class_exists('wpdef_text_parser')) {
                    "where post.ID != {$post_id} and post.post_status = 'publish' and ";
             $term_conditions = [];
             foreach ( $definitions as $definition ) {
-            	$pattern = $this->get_regex($definition);
+            	$pattern = $this->get_regex($definition, 'SQL');
                 $term_conditions[] = "post.post_content REGEXP '$pattern'";
             }
             $sql .= '(' . implode(' OR ', $term_conditions) . ')';
-			_log($sql);
             $count = $wpdb->get_var($sql);
 
             $response = array(
@@ -279,14 +285,17 @@ if (!class_exists('wpdef_text_parser')) {
             exit;
         }
 
-
+		/**
+		 * Save our definitions in the database
+		 * @param int $this_post_id
+		 */
         public function save_used_definitions_in_post( $this_post_id )
         {
+        	if (!current_user_can('edit_posts')) return;
+
             global $wpdb;
 	        $this_post_id = intval($this_post_id);
 
-	        error_log("####");
-	        $this->load_used_definitions_in_post($this_post_id);
 	        // Delete postmeta: definitions from other posts found in this post
 	        $sql = "delete from $wpdb->postmeta where meta_key = 'used_definitions' and post_id = {$this_post_id}";
 	        $wpdb->query($sql);
@@ -309,7 +318,7 @@ if (!class_exists('wpdef_text_parser')) {
             // Cross join every post with terms used in the saved post
             // Create table for postmeta with structure (post_id, meta_key, meta_value)
             // Filter this table with post_content REGEXP pattern
-	        $pattern = $this->get_regex("', term.name, '");
+	        $pattern = $this->get_regex("', term.name, '", 'SQL');
 	        $sql =
                 "insert into $wpdb->postmeta (post_id, meta_key, meta_value) " .
                 "select post.ID as post_id, 'used_definitions' as meta_key, CONCAT('{$this_post_id}:', term.name) as meta_value from $wpdb->posts as post, $wpdb->terms as term " .
@@ -331,7 +340,7 @@ if (!class_exists('wpdef_text_parser')) {
             // Create list (post_id, definition) for every post
             //
             // Save meta_value 'post_id:definition' where post_content REGEXP pattern
-	        $pattern = $this->get_regex("', definitions.definition,'");
+	        $pattern = $this->get_regex("', definitions.definition,'", 'SQL');
 
 	        $sql =
                 "insert into $wpdb->postmeta (post_id, meta_key, meta_value) " .
@@ -357,6 +366,13 @@ if (!class_exists('wpdef_text_parser')) {
             $wpdb->query($sql);
         }
 
+		/**
+		 * Callback to sort an array by length
+		 * @param $a
+		 * @param $b
+		 *
+		 * @return int
+		 */
 		private function sort_by_value_length($a,$b){
 			return strlen($b)-strlen($a);
 		}
@@ -373,9 +389,7 @@ if (!class_exists('wpdef_text_parser')) {
 	        $post_id = intval($post_id);
 		    $used_definitions = get_post_meta( $post_id, 'used_definitions', false );
 		    if ( $used_definitions ) {
-		    	error_log(print_r($used_definitions, true));
 			    usort($used_definitions, array($this, 'sort_by_value_length'));
-			    error_log(print_r($used_definitions, true));
 
 			    return $used_definitions;
             } else {
