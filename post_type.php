@@ -57,7 +57,10 @@ if (!class_exists('wpdef_posttype')) {
                 'post',
                 'side'
             );
-        }
+
+			$this->maybe_sort_metabox('burst_edit_meta_box');
+
+		}
 
 		/**
          * On posts, we add some scripts to handle the definitions
@@ -110,6 +113,43 @@ if (!class_exists('wpdef_posttype')) {
                 }
             }
         }
+
+		/**
+		 * Put our metabox right below the publish post box
+		 * @param string $key
+		 */
+		public function maybe_sort_metabox($key) {
+			$user_id = get_current_user_id();
+			//only do this once
+			if ( get_user_meta( $user_id, 'wpdef_sorted_metaboxes', true) ){
+				return;
+			}
+
+			global $post;
+			$post_type = get_post_type($post);
+
+			$order = get_user_option("meta-box-order_$post_type", get_current_user_id() );
+			if ( !$order['side'] ) {
+				$new_order = array(
+					'submitdiv',
+					$key,
+				);
+			} else  {
+				$new_order = explode(",", $order['side'] );
+				for( $i=0 ; $i < count ($new_order) ; $i++ ){
+					$temp = $new_order[$i];
+					if ( $new_order[$i] == $key && $i != 1) {
+						$new_order[$i] = $new_order[1];
+						$new_order[1] = $temp;
+					}
+				}
+			}
+
+			$order['side'] = implode(",",$new_order);
+			update_user_option( $user_id, "meta-box-order_".$post_type, $order, true);
+			update_user_meta( $user_id, 'wpdef_sorted_metaboxes', true);
+		}
+
 
 		/**
          * Check if this setup uses Gutenberg or not

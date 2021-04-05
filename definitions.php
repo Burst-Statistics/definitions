@@ -141,7 +141,6 @@ if ( ! class_exists( 'DEFINITIONS' ) ) {
 			require_once( WPDEF_PATH . 'post_type.php' );
 			require_once( WPDEF_PATH . 'text_parser.php' );
 			require_once( WPDEF_PATH . 'shortcode.php' );
-			require_once( WPDEF_PATH . 'widget.php' );
 
 			if ( is_admin() ) {
 				require_once( WPDEF_PATH . 'review.php' );
