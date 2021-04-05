@@ -7,7 +7,7 @@
 Add to custom post-types:
 
 `function my_add_post_type($post_types){
-        $post_types[] = 'definition';
+        $post_types[] = 'your-custom-post-type';
         return $post_types;
     }
 add_filter('wpdef_post_types','my_add_post_type');`
