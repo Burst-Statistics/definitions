@@ -244,6 +244,16 @@ if (!class_exists('wpdef_text_parser')) {
 		}
 
 		/**
+		 * Get count of number of posts that use definitions
+		 * @return int
+ 		 */
+		public function count_posts_with_definitions(){
+			global $wpdb;
+			$sql = "select count(*) from (SELECT DISTINCT post_id FROM wp_postmeta  WHERE meta_key = 'used_definitions') as postids";
+			return $wpdb->get_var($sql);
+		}
+
+		/**
 		 * Check how often a definition is used
 		 */
         public function scan_definition_count(){
