@@ -70,7 +70,7 @@
                 } else {
                     var message = wpdef_metabox.localize_string('already-in-use-single').replace('{definitions}', exists)
                 }
-                var notice_html = '<div class="dfn-icon-bullet-red"></div><span class="dfn-comment">' + message + '</span>';
+                var notice_html = '<div class="dfn-icon-bullet dfn-icon-bullet-red"></div><span class="dfn-comment">' + message + '</span>';
                 $('.dfn-definition-add-notice').html(notice_html);
                 $('input[name="dfn-definition-add"]').prop('disabled', true);
             } else {
@@ -79,7 +79,7 @@
                 } else {
                     var message = wpdef_metabox.localize_string('not-in-use-single').replace('{definitions}', new_definition)
                 }
-                var notice_html = '<div class="dfn-icon-bullet-green"></div><span class="dfn-comment">' + message + '</span>';
+                var notice_html = '<div class="dfn-icon-bullet dfn-icon-bullet-green"></div><span class="dfn-comment">' + message + '</span>';
                 $('.dfn-definition-add-notice').html(notice_html);
                 $('input[name="dfn-definition-add"]').prop('disabled', false);
             }
@@ -136,7 +136,7 @@
                 $('.dfn-definition-add-notice').hide();
                 $('input[name="dfn-definition-add"]').closest('.ajaxtag').hide();
             } else {
-                var notice_html = '<div class="dfn-icon-bullet-red"></div><span class="dfn-comment">' + wpdef_metabox.localize_string('add-term') + '</span>';
+                var notice_html = '<div class="dfn-icon-bullet dfn-icon-bullet-red"></div><span class="dfn-comment">' + wpdef_metabox.localize_string('add-term') + '</span>';
                 $('.dfn-definition-add-notice').html(notice_html).show();
                 $('input[name="dfn-definition-add"]').closest('.ajaxtag').show();
             }
@@ -305,27 +305,27 @@
 
             var warning = "";
             if ( wpdef_metabox.performance_level == 4 ) {
-                icon = "<div class='dfn-icon-bullet-red'></div>";
+                icon = "<div class='dfn-icon-bullet dfn-icon-bullet-red'></div>";
                 warning = "<span class='dfn-comment'>" + wpdef_metabox.localize_string('way-too-many-terms') + " <a href='https://really-simple-plugins.com/internal-linkbuilder/'>" + wpdef_metabox.localize_string('read-more') + "</a><span>";
             }
 
             if ( wpdef_metabox.performance_level == 3 ) {
-                icon = "<div class='dfn-icon-bullet-orange'></div>";
+                icon = "<div class='dfn-icon-bullet dfn-icon-bullet-orange'></div>";
                 warning = "<span class='dfn-comment'>" + wpdef_metabox.localize_string('too-many-terms') + " <a href='https://really-simple-plugins.com/internal-linkbuilder/'>" + wpdef_metabox.localize_string('read-more') + "</a><span>";
             }
 
             if ( wpdef_metabox.performance_level == 2 ) {
-                icon = "<div class='dfn-icon-bullet-orange'></div>";
+                icon = "<div class='dfn-icon-bullet dfn-icon-bullet-orange'></div>";
                 warning = "<span class='dfn-comment'>" + wpdef_metabox.localize_string('few-terms') + " <a href='https://really-simple-plugins.com/internal-linkbuilder/'>" + wpdef_metabox.localize_string('read-more') + "</a><span>";
             }
 
             if ( wpdef_metabox.performance_level == 1 ) {
-                icon = "<div class='dfn-icon-bullet-green'></div>";
+                icon = "<div class='dfn-icon-bullet dfn-icon-bullet-green'></div>";
                 warning = "<span class='dfn-comment'>" + wpdef_metabox.localize_string('positive-ratio-terms') + " <a href='https://really-simple-plugins.com/internal-linkbuilder/'>" + wpdef_metabox.localize_string('read-more') + "</a><span>";
             }
 
             if ( wpdef_metabox.performance_level == 0 ) {
-                icon = "<div class='dfn-icon-bullet-red'></div>";
+                icon = "<div class='dfn-icon-bullet dfn-icon-bullet-red'></div>";
                 warning = "<span class='dfn-comment'>" + wpdef_metabox.localize_string('no-terms') + " <a href='https://really-simple-plugins.com/internal-linkbuilder/'>" + wpdef_metabox.localize_string('read-more') + "</a><span>";
             }
 

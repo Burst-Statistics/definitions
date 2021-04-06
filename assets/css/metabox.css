@@ -16,6 +16,9 @@
 .dfn-field input[type='checkbox'] {
   margin: 0;
 }
+.dfn-field .dfn-icon-bullet {
+  margin-right: 10px;
+}
 .dfn-field .dfn-icon-bullet-red {
   height: 15px;
   width: 15px;
