@@ -54,7 +54,7 @@ if (!class_exists('wpdef_posttype')) {
                 'definitions_box_id',
                 'Internal linkbuilding',
                 array( $this, 'definitions_meta_box_html' ),
-                'post',
+	            apply_filters('wpdef_post_types', ['post']),
                 'side'
             );
 
@@ -72,7 +72,7 @@ if (!class_exists('wpdef_posttype')) {
             global $post;
 
             if ( $hook == 'post-new.php' || $hook == 'post.php' ) {
-                if ( 'post' === $post->post_type ) {
+                if ( in_array($post->post_type, apply_filters('wpdef_post_types', array('post') )) ) {
                     wp_register_style( 'wpdef-metabox', trailingslashit( WPDEF_URL ) . "assets/css/metabox.css", "", WPDEF_VERSION );
                     wp_enqueue_style( 'wpdef-metabox' );
 
@@ -190,7 +190,7 @@ if (!class_exists('wpdef_posttype')) {
             <h3><?php _e("Settings", "definitions")?></h3>
             <?php $this->definition_tag_field( $post ); ?>
             <div class="dfn-field dfn-definition-add-notice">
-                <div class="dfn-icon-bullet-invisible"></div><span class="dfn-comment"><?php _e("Add a term to see the occurrence count", "definitions") ?></span>
+                <div class="dfn-icon-bullet dfn-icon-bullet-invisible"></div><span class="dfn-comment"><?php _e("Add a term to see the occurrence count", "definitions") ?></span>
             </div>
 
             <div class="dfn-field dfn-show-if-term dfn-disabled">
