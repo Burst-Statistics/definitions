@@ -1,4 +1,7 @@
 @gridblock _height_big: calc(auto + 20px);
+#tagsdiv-definitions_title {
+  display: none;
+}
 .dfn-disabled {
   opacity: 0.3;
 }

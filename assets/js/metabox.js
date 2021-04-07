@@ -27,42 +27,60 @@
             wpdef_metabox.set_add_tag_state();
             wpdef_metabox.conditionally_show_use_image();
 
-            $(document).on('keyup', 'input[name="newtag[definitions_title]"]', function(e){
+            $(document).on('keyup', '#definitions_box_id input[name="newtag[definitions_title]"]', function(e){
                 clearTimeout(wpdef_metabox.typingTimer);
                 wpdef_metabox.typingTimer = setTimeout(wpdef_metabox.afterFinishedTyping, wpdef_metabox.doneTypingInterval);
             });
 
             //on keydown, clear the countdown
-            $(document).on('keydown', 'input[name="newtag[definitions_title]"]', function(e){
+            $(document).on('keydown', '#definitions_box_id input[name="newtag[definitions_title]"]', function(e){
                 clearTimeout(wpdef_metabox.typingTimer);
             });
 
-            $(document).on('click', 'input[name="dfn-definition-add"]', wpdef_metabox.performance_notice_ajax );
-            $(document).on('click', 'span[class="remove-tag-icon"]', wpdef_metabox.performance_notice_ajax );
-            $(document).on('click', 'input[name="dfn-definition-add"]', wpdef_metabox.add_definition_to_all_list );
-            $(document).on('click', 'span[class="remove-tag-icon"]', wpdef_metabox.remove_definition_from_all_list );
-            $(document).on('click', 'input[name="dfn-definition-add"]', wpdef_metabox.set_add_definition_state );
-            $(document).on('click', 'span[class="remove-tag-icon"]', wpdef_metabox.set_add_definition_state );
-            $(document).on('change', 'select[name="dfn-link-type"]', wpdef_metabox.conditionally_show_use_image);
+            $(document).on('click', '#definitions_box_id input[name="dfn-definition-add"]',  wpdef_metabox.handle_add_tag );
+            $(document).on('click', '.remove-tag-icon', wpdef_metabox.handle_remove_tag  );
+            $(document).on('change', '#definitions_box_id select[name="dfn-link-type"]', wpdef_metabox.conditionally_show_use_image);
         },
 
+        handle_remove_tag : function () {
+            wpdef_metabox.set_add_tag_state();
+            wpdef_metabox.remove_definition_from_all_list($(this));
+            wpdef_metabox.set_add_definition_state();
+            wpdef_metabox.performance_notice_ajax();
+            wpdef_metabox.set_enable_checkbox_state();
 
+        },
+
+        handle_add_tag : function () {
+            wpdef_metabox.add_definition_to_all_list();
+            wpdef_metabox.performance_notice_ajax();
+            wpdef_metabox.set_add_tag_state();
+            wpdef_metabox.set_add_definition_state();
+            wpdef_metabox.set_enable_checkbox_state();
+
+        },
 
         /**
-         * Enable/disable add button when trying to add existing definitions
-         * Show notice about the definitions your trying to add
+         *
+         */
+        afterFinishedTyping : function ( e ) {
+            wpdef_metabox.performance_notice_ajax();
+            wpdef_metabox.set_add_tag_state();
+            wpdef_metabox.set_add_definition_state();
+            wpdef_metabox.set_enable_checkbox_state();
+        },
+
+        /**
+         * Show notice about the definitions you're trying to add
          */
         set_add_definition_state : function () {
-
-            wpdef_metabox.set_add_tag_state();
-            var new_definition = $('input[name="newtag[definitions_title]"]').val();
+            var new_definition = $('#definitions_box_id input[name="newtag[definitions_title]"]').val();
             if ( new_definition.length == 0 ) {
                 return;
             }
     
             var definitions = new_definition.split(',');
             var exists = wpdef_metabox.get_existing_definitions_from_list( definitions );
-    
             if ( exists.length > 0 ) {
                 if ( exists.length > 1 ) {
                     exists = exists.join(', ');
@@ -71,8 +89,8 @@
                     var message = wpdef_metabox.localize_string('already-in-use-single').replace('{definitions}', exists)
                 }
                 var notice_html = '<div class="dfn-icon-bullet dfn-icon-bullet-red"></div><span class="dfn-comment">' + message + '</span>';
-                $('.dfn-definition-add-notice').html(notice_html);
-                $('input[name="dfn-definition-add"]').prop('disabled', true);
+                $('#definitions_box_id .dfn-definition-add-notice').html(notice_html);
+                $('#definitions_box_id input[name="dfn-definition-add"]').prop('disabled', true);
             } else {
                 if ( new_definition.indexOf(",") >= 0 ) {
                     var message = wpdef_metabox.localize_string('not-in-use-plural').replace('{definitions}', new_definition)
@@ -80,11 +98,9 @@
                     var message = wpdef_metabox.localize_string('not-in-use-single').replace('{definitions}', new_definition)
                 }
                 var notice_html = '<div class="dfn-icon-bullet dfn-icon-bullet-green"></div><span class="dfn-comment">' + message + '</span>';
-                $('.dfn-definition-add-notice').html(notice_html);
-                $('input[name="dfn-definition-add"]').prop('disabled', false);
+                $('#definitions_box_id .dfn-definition-add-notice').html(notice_html);
+                $('#definitions_box_id input[name="dfn-definition-add"]').prop('disabled', false);
             }
-
-
         },
 
         /**
@@ -93,7 +109,6 @@
          */
         get_existing_definitions_from_list : function ( definitions_list ) {
             var exists = [];
-    
             for (let i=0; i<definitions_list.length; i++) {
                 var definition = $.trim(definitions_list[i]);
                 if ( $.inArray(definition, wpdef_metabox.existing_definitions) !== -1 ) {
@@ -104,26 +119,21 @@
             return exists;
         },
 
-        /**
-         *
-         */
-        afterFinishedTyping : function ( e ) {
-            wpdef_metabox.performance_notice_ajax();
-            wpdef_metabox.set_add_definition_state();
-        },
-
         showSaveChanges : function () {
-            $('.dfn-save-changes').show();
+            $('#definitions_box_id .dfn-save-changes').show();
         },
 
         /**
          * Enable/disable enable checkbox depending on if definition tags were added
          */
         set_enable_checkbox_state : function () {
-            if ( wpdef_metabox.get_post_definitions_list().length == 0 ) {
-                $('input[class="dfn-link-type"]').prop('disabled', true);
+            var definitions = wpdef_metabox.get_post_definitions_list(false);
+            if ( definitions.length > 0 ){
+                $('#definitions_box_id .dfn-show-if-term ').removeClass('dfn-disabled');
+                $('#definitions_box_id input.dfn-link-type').prop('disabled', false);
             } else {
-                $('input[class="dfn-link-type"]').prop('disabled', false);
+                $('#definitions_box_id .dfn-show-if-term ').addClass('dfn-disabled');
+                $('#definitions_box_id input.dfn-link-type').prop('disabled', true);
             }
         },
 
@@ -133,12 +143,15 @@
         set_add_tag_state : function () {
             var current_definitions = wpdef_metabox.get_post_definitions_list(true);
             if (current_definitions.length > 0) {
-                $('.dfn-definition-add-notice').hide();
-                $('input[name="dfn-definition-add"]').closest('.ajaxtag').hide();
+                console.log("hide");
+
+                $('#definitions_box_id .dfn-definition-add-notice').hide();
+                $('#definitions_box_id input[name="dfn-definition-add"]').closest('.ajaxtag').hide();
             } else {
+                console.log("show");
                 var notice_html = '<div class="dfn-icon-bullet dfn-icon-bullet-red"></div><span class="dfn-comment">' + wpdef_metabox.localize_string('add-term') + '</span>';
-                $('.dfn-definition-add-notice').html(notice_html).show();
-                $('input[name="dfn-definition-add"]').closest('.ajaxtag').show();
+                $('#definitions_box_id .dfn-definition-add-notice').html(notice_html).show();
+                $('#definitions_box_id input[name="dfn-definition-add"]').closest('.ajaxtag').show();
             }
         },
 
@@ -150,7 +163,7 @@
             var post_definitions = [];
 
             if ( !existing_only ) {
-                var new_definition = $('input[name="newtag[definitions_title]"]').val();
+                var new_definition = $('#definitions_box_id input[name="newtag[definitions_title]"]').val();
                 if (new_definition.length) {
                     new_definition = new_definition.split(',');
                     for (var key in new_definition) {
@@ -161,7 +174,7 @@
                 }
             }
 
-            $('.dfn-post-definition-list li').each( function() {
+            $('#definitions_box_id .dfn-post-definition-list li').each( function() {
                 post_definitions.push( $(this).html().split('&nbsp;').pop() );
             });
             return post_definitions;
@@ -186,19 +199,17 @@
         add_definition_to_all_list : function () {
             var add_definition = wpdef_metabox.get_post_definitions_list().pop();
             wpdef_metabox.existing_definitions.push( add_definition );
-            wpdef_metabox.set_enable_checkbox_state();
         },
 
         /**
          * Remove the this (currently removed) definition to the list of all definitions
          * Set enable checkbox state
          */
-        remove_definition_from_all_list : function () {
-            var remove_definition = $(this).next().html().split(' ').pop();
+        remove_definition_from_all_list : function (obj) {
+            var remove_definition = obj.next().html().split(' ').pop();
             wpdef_metabox.existing_definitions = wpdef_metabox.existing_definitions.filter(function(elem){
                 return elem != remove_definition;
             });
-            wpdef_metabox.set_enable_checkbox_state();
         },
 
         /**
@@ -207,7 +218,9 @@
          */
         performance_notice_ajax : function () {
             var post_definitions = wpdef_metabox.get_post_definitions_list();
-            if (wpdef_metabox.ajaxCallActive) return;
+            if (wpdef_metabox.ajaxCallActive) {
+                return;
+            }
 
             wpdef_metabox.ajaxCallActive = true;
             $.ajax({
@@ -261,7 +274,7 @@
                     wpdef_metabox.add_performance_notice();
                     setTimeout(wpdef_metabox.animate_performance_notice, wpdef_metabox.anitation_time_to_wait(wpdef_metabox.animation_time) );
                 } else {
-                    $('.dfn-definition-count').html( Math.round(wpdef_metabox.definition_count_current) );
+                    $('#definitions_box_id .dfn-definition-count').html( Math.round(wpdef_metabox.definition_count_current) );
                     setTimeout(wpdef_metabox.animate_performance_notice, wpdef_metabox.anitation_time_to_wait(wpdef_metabox.animation_time) );
                 }
             } else {
@@ -270,7 +283,7 @@
                     wpdef_metabox.definition_count_current = wpdef_metabox.definition_count_new;
                     wpdef_metabox.add_performance_notice();
                 } else {
-                    $('.dfn-definition-count').val(wpdef_metabox.definition_count_new);
+                    $('#definitions_box_id .dfn-definition-count').val(wpdef_metabox.definition_count_new);
                     wpdef_metabox.definition_count_current = wpdef_metabox.definition_count_new;
                 }
             }
@@ -282,12 +295,12 @@
         add_performance_notice : function () {
             var definitions = wpdef_metabox.get_post_definitions_list();
             if ( definitions.length > 0 ){
-                $('.dfn-show-if-term ').removeClass('dfn-disabled');
+                $('#definitions_box_id .dfn-show-if-term ').removeClass('dfn-disabled');
             } else {
-                $('.dfn-show-if-term ').addClass('dfn-disabled');
+                $('#definitions_box_id .dfn-show-if-term ').addClass('dfn-disabled');
             }
             var html = wpdef_metabox.get_performance_notice_html( wpdef_metabox.definition_count_current )
-            $('.dfn-performance-notice').html( html );
+            $('#definitions_box_id .dfn-performance-notice').html( html );
         },
 
         /**
@@ -361,7 +374,7 @@
          * Conditionally show the use image checkbox field depending if you use the tooltip or not
          */
         conditionally_show_use_image : function () {
-            if ( $('select[name="dfn-link-type"]').val()!=='hyperlink' ) {
+            if ( $('#definitions_box_id select[name="dfn-link-type"]').val()!=='hyperlink' ) {
                 $('.dfn-disable-image').closest('.dfn-field').show();
             } else {
                 $('.dfn-disable-image').closest('.dfn-field').hide();

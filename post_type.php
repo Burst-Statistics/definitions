@@ -38,11 +38,10 @@ if (!class_exists('wpdef_posttype')) {
                 'show_admin_column' => true,
                 'show_in_rest'      => false,
                 'query_var'         => true,
-                'meta_box_cb'       => false,
                 'rewrite'           => array( 'slug' => 'definitions_title' ),
             ];
 
-            register_taxonomy( 'definitions_title', apply_filters('wpdef_post_types', ['post']), $args );
+            register_taxonomy( 'definitions_title', apply_filters('wpdef_post_types', array('post') ), $args );
 		}
 
 
@@ -75,11 +74,12 @@ if (!class_exists('wpdef_posttype')) {
                 if ( in_array($post->post_type, apply_filters('wpdef_post_types', array('post') )) ) {
                     wp_register_style( 'wpdef-metabox', trailingslashit( WPDEF_URL ) . "assets/css/metabox.css", "", WPDEF_VERSION );
                     wp_enqueue_style( 'wpdef-metabox' );
-
-                    if( $this->uses_gutenberg() ) {
+	                wp_enqueue_script( 'tags-box' );
+                    //if( $this->uses_gutenberg() ) {
                         $suffix = wp_scripts_get_suffix();
+//	                    wp_enqueue_script( 'tags-box' );
                         wp_enqueue_script('wpdef-tagbox-js', "/wp-admin/js/tags-box$suffix.js", array('jquery', 'tags-suggest'), false, true);
-                    }
+                 //   }
 
                     $minified = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
 
@@ -186,7 +186,6 @@ if (!class_exists('wpdef_posttype')) {
             $disable_image  = get_post_meta( $post->ID, 'definition_disable_image', true )  ? 'checked="checked"' : '';
             ?>
             <span class="dfn-comment"><?php _e("If you want to know all the possibilities with Definitions - Internal Linkbuilding, have a look at our documentation.", "definitions") ?> <a href="https://really-simple-plugins.com/definitions-internal-linkbuilding/documentation"><?php _e("Read more", "definitions") ?></a></span>
-
             <h3><?php _e("Settings", "definitions")?></h3>
             <?php $this->definition_tag_field( $post ); ?>
             <div class="dfn-field dfn-definition-add-notice">
