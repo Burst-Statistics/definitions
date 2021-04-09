@@ -280,9 +280,11 @@ if ( ! class_exists( 'wpdef_text_parser' ) ) {
 			$definitions = array_map( 'sanitize_text_field', $_GET['definitions'] );
 			$post_id     = intval( $_GET['post_id'] );
 
+			$post_type_sql = "(post.post_type = '".implode("' or post.post_type = '", DEFINITIONS::$post_types)."')";
+
 			// Count definitions from this post used in all other posts
 			$sql             = "select count(post.ID) from $wpdb->posts as post " .
-			                   "where post.ID != {$post_id} and post.post_status = 'publish' and ";
+			                   "where post.ID != {$post_id} and post.post_status = 'publish' and ($post_type_sql) and ";
 			$term_conditions = [];
 			foreach ( $definitions as $definition ) {
 				$pattern           = $this->get_regex( $definition, 'SQL' );
@@ -354,6 +356,7 @@ if ( ! class_exists( 'wpdef_text_parser' ) ) {
 			// Create table for postmeta with structure (post_id, meta_key, meta_value)
 			// Filter this table with post_content REGEXP pattern
 			$pattern = $this->get_regex( "', term.name, '", 'SQL' );
+			$post_type_sql = "(post.post_type = '".implode("' or post.post_type = '", DEFINITIONS::$post_types)."')";
 			$sql
 			         = "insert into $wpdb->postmeta (post_id, meta_key, meta_value) " .
 			           "select post.ID as post_id, 'used_definitions' as meta_key, CONCAT('{$this_post_id}:', term.name) as meta_value from $wpdb->posts as post, $wpdb->terms as term " .
@@ -366,7 +369,7 @@ if ( ! class_exists( 'wpdef_text_parser' ) ) {
 			           "and post.post_content REGEXP CONCAT('$pattern') " .
 			           "and post.ID != {$this_post_id} " .
 			           "and post.post_status = 'publish' " .
-			           "and (post.post_type = 'post' OR post.post_type= 'page')";
+			           "and ($post_type_sql)";
 			$wpdb->query( $sql );
 
 			// Save postmeta: definitions from other posts found in this post

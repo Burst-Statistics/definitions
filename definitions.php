@@ -63,13 +63,14 @@ if ( ! class_exists( 'DEFINITIONS' ) ) {
 		public static $review;
 		public static $widget;
 		public static $tour;
+		public static $post_types;
 
 
 		private function __construct() {
 			self::setup_constants();
 			self::includes();
 			self::hooks();
-
+			self::$post_types = apply_filters('wpdef_target_post_types', array('page','post'));
 			self::$post_type         = new wpdef_posttype();
 			self::$text_parser       = new wpdef_text_parser();
 			if ( is_admin() ) {
