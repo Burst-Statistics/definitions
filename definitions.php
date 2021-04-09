@@ -60,7 +60,6 @@ if ( ! class_exists( 'DEFINITIONS' ) ) {
 		public static $instance;
 		public static $post_type;
 		public static $text_parser;
-		public static $shortcode;
 		public static $review;
 		public static $widget;
 		public static $tour;
@@ -73,7 +72,6 @@ if ( ! class_exists( 'DEFINITIONS' ) ) {
 
 			self::$post_type         = new wpdef_posttype();
 			self::$text_parser       = new wpdef_text_parser();
-			self::$shortcode         = new wpdef_shortcode();
 			if ( is_admin() ) {
 				self::$review        = new wpdef_review();
                 self::$tour          = new wpdef_tour();

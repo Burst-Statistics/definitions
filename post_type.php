@@ -112,6 +112,7 @@ if (!class_exists('wpdef_posttype')) {
                                 'positive-ratio-terms' => __('The number of times this term occurs is good.', "definitions"),
                                 'few-terms' => __('There are not many matches for this term.', "definitions"),
                                 'no-terms' => __('No matches were found.', "definitions"),
+                                'retrieving-status' => __('Calculating results...', "definitions"),
                             ),
                             'post_count' => wp_count_posts()->publish,
                             'existing_definitions' => $definitions,

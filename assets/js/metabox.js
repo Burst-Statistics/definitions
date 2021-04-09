@@ -52,6 +52,7 @@
         },
 
         handle_add_tag : function () {
+            console.log("handle add tag");
             wpdef_metabox.add_definition_to_all_list();
             wpdef_metabox.performance_notice_ajax();
             wpdef_metabox.set_add_tag_state();
@@ -78,7 +79,7 @@
             if ( new_definition.length == 0 ) {
                 return;
             }
-    
+
             var definitions = new_definition.split(',');
             var exists = wpdef_metabox.get_existing_definitions_from_list( definitions );
             if ( exists.length > 0 ) {
@@ -115,7 +116,7 @@
                     exists.push(definition);
                 }
             }
-    
+
             return exists;
         },
 
@@ -221,6 +222,8 @@
             if (wpdef_metabox.ajaxCallActive) {
                 return;
             }
+
+            $('.dfn-performance-notice').html(wpdef_metabox.localize_string('retrieving-status'));
 
             wpdef_metabox.ajaxCallActive = true;
             $.ajax({

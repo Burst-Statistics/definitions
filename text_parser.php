@@ -14,8 +14,7 @@ if ( ! class_exists( 'wpdef_text_parser' ) ) {
 			add_action( 'wp_ajax_wpdef_load_preview', array( $this, 'load_preview' ) );
 			add_action( 'wp_ajax_wpdef_scan_definition_count', array( $this, 'scan_definition_count' ) );
 			add_action( 'save_post', array( $this, 'save_used_definitions_in_post' ), 10, 1 );
-
-			do_action( 'delete_term', array( $this, 'clear_used_definitions' ), 10, 5 );
+			add_action( 'delete_term', array( $this, 'clear_used_definitions' ), 10, 5 );
 		}
 
 		/**
@@ -147,7 +146,6 @@ if ( ! class_exists( 'wpdef_text_parser' ) ) {
 			$link_type = get_post_meta( $post_id, 'definition_link_type', true );
 
 			//defaults to preview
-			error_log( $link_type );
 			if ( $link_type === 'hyperlink' ) {
 				$tooltip_html = '<a href="{url}" class="wpdef-hyperlink"><span>{term}</span></a>';
 				$tooltip_html = str_replace( array( "{url}" ), array( $url ), $tooltip_html );
