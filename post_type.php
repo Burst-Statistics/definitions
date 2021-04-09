@@ -75,11 +75,11 @@ if (!class_exists('wpdef_posttype')) {
                     wp_register_style( 'wpdef-metabox', trailingslashit( WPDEF_URL ) . "assets/css/metabox.css", "", WPDEF_VERSION );
                     wp_enqueue_style( 'wpdef-metabox' );
 	                wp_enqueue_script( 'tags-box' );
-                    //if( $this->uses_gutenberg() ) {
+                    if( $this->uses_gutenberg() ) {
                         $suffix = wp_scripts_get_suffix();
-//	                    wp_enqueue_script( 'tags-box' );
-                        wp_enqueue_script('wpdef-tagbox-js', "/wp-admin/js/tags-box$suffix.js", array('jquery', 'tags-suggest'), false, true);
-                 //   }
+	                    wp_enqueue_script( 'tags-box' );
+//                        wp_enqueue_script('wpdef-tagbox-js', "/wp-admin/js/tags-box$suffix.js", array('jquery', 'tags-suggest'), false, true);
+                    }
 
                     $minified = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
 
