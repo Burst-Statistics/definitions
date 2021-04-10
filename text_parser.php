@@ -313,6 +313,9 @@ if ( ! class_exists( 'wpdef_text_parser' ) ) {
 		 */
 
 		public function clear_used_definitions( $term, $tt_id, $taxonomy, $deleted_term, $object_ids ) {
+			if ( ! current_user_can( 'edit_posts' ) ) {
+				return;
+			}
 			if ( $taxonomy === 'definitions_title') {
 				global $wpdb;
 				$definition = $deleted_term->name;
