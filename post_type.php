@@ -41,7 +41,7 @@ if (!class_exists('wpdef_posttype')) {
                 'rewrite'           => array( 'slug' => 'definitions_title' ),
             ];
 
-            register_taxonomy( 'definitions_title', apply_filters('wpdef_post_types', array('post') ), $args );
+            register_taxonomy( 'definitions_title', DEFINITIONS::$source_post_types, $args );
 		}
 
 
@@ -53,7 +53,7 @@ if (!class_exists('wpdef_posttype')) {
                 'definitions_box_id',
                 'Internal linkbuilding',
                 array( $this, 'definitions_meta_box_html' ),
-	            apply_filters('wpdef_post_types', ['post']),
+	            apply_filters('wpdef_post_types', DEFINITIONS::$source_post_types),
                 'side'
             );
 
@@ -71,7 +71,7 @@ if (!class_exists('wpdef_posttype')) {
             global $post;
 
             if ( $hook == 'post-new.php' || $hook == 'post.php' ) {
-                if ( in_array($post->post_type, apply_filters('wpdef_post_types', array('post') )) ) {
+                if ( in_array($post->post_type, DEFINITIONS::$source_post_types ) ) {
                     wp_register_style( 'wpdef-metabox', trailingslashit( WPDEF_URL ) . "assets/css/metabox.css", "", WPDEF_VERSION );
                     wp_enqueue_style( 'wpdef-metabox' );
 	                wp_enqueue_script( 'tags-box' );

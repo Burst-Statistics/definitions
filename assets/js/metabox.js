@@ -19,7 +19,8 @@
             wpdef_metabox.step                        = 0;
             wpdef_metabox.performance_level           = 1;
             wpdef_metabox.typingTimer;
-            wpdef_metabox.doneTypingInterval = 800;
+            wpdef_metabox.doneTypingInterval          = 800;
+            wpdef_metabox.last_checked_definition;
             wpdef_metabox.ajaxCallActive = false;
             wpdef_metabox.add_performance_notice();
             wpdef_metabox.performance_notice_ajax();
@@ -144,12 +145,9 @@
         set_add_tag_state : function () {
             var current_definitions = wpdef_metabox.get_post_definitions_list(true);
             if (current_definitions.length > 0) {
-                console.log("hide");
-
                 $('#definitions_box_id .dfn-definition-add-notice').hide();
                 $('#definitions_box_id input[name="dfn-definition-add"]').closest('.ajaxtag').hide();
             } else {
-                console.log("show");
                 var notice_html = '<div class="dfn-icon-bullet dfn-icon-bullet-red"></div><span class="dfn-comment">' + wpdef_metabox.localize_string('add-term') + '</span>';
                 $('#definitions_box_id .dfn-definition-add-notice').html(notice_html).show();
                 $('#definitions_box_id input[name="dfn-definition-add"]').closest('.ajaxtag').show();
@@ -219,10 +217,18 @@
          */
         performance_notice_ajax : function () {
             var post_definitions = wpdef_metabox.get_post_definitions_list();
-            if (wpdef_metabox.ajaxCallActive) {
+
+            if ( post_definitions.length==0 ){
                 return;
             }
 
+            if (wpdef_metabox.last_checked_definition === post_definitions[0]) {
+                return;
+            }
+            if ( wpdef_metabox.ajaxCallActive ) {
+                return;
+            }
+            
             $('.dfn-performance-notice').html(wpdef_metabox.localize_string('retrieving-status'));
 
             wpdef_metabox.ajaxCallActive = true;
@@ -236,11 +242,16 @@
                     post_id: $("#post_ID").val(),
                 }),
                 success: function (response) {
+                    wpdef_metabox.last_checked_definition = post_definitions[0];
                     wpdef_metabox.ajaxCallActive = false;
                     if (response.success) {
                         wpdef_metabox.definition_count_new = response.count;
                         wpdef_metabox.start_animation();
                     }
+                },
+                error:function(response) {
+                    console.log("error retrieving count");
+                    wpdef_metabox.ajaxCallActive = false;
                 }
             });
         },

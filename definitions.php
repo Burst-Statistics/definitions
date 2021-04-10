@@ -3,10 +3,10 @@
  * Plugin Name: Definitions - Internal Linkbuilding
  * Plugin URI: https://www.really-simple-plugins.com
  * Description: Plugin to autoreplace in the content of a page or post every instance of a word that is defined in the definitions 
- * Version: 1.0.0.1
+ * Version: 1.0.0.2
  * Text Domain: definitions
  * Domain Path: /lang
- * Author: Hidde Nauta, Rogier Lankhorst, Tom Eijkelenkamp
+ * Author: Really Simple Plugins
  * Author URI: https://www.really-simple-plugins.com
  * License: GPL2
  */
@@ -63,14 +63,16 @@ if ( ! class_exists( 'DEFINITIONS' ) ) {
 		public static $review;
 		public static $widget;
 		public static $tour;
-		public static $post_types;
+		public static $target_post_types;
+		public static $source_post_types;
 
 
 		private function __construct() {
 			self::setup_constants();
 			self::includes();
 			self::hooks();
-			self::$post_types = apply_filters('wpdef_target_post_types', array('page','post'));
+			self::$target_post_types = apply_filters('wpdef_target_post_types', array('page','post'));
+			self::$source_post_types = apply_filters('wpdef_post_types', array('post'));
 			self::$post_type         = new wpdef_posttype();
 			self::$text_parser       = new wpdef_text_parser();
 			if ( is_admin() ) {
