@@ -53,7 +53,7 @@ if (!class_exists('wpdef_posttype')) {
                 'definitions_box_id',
                 'Internal linkbuilding',
                 array( $this, 'definitions_meta_box_html' ),
-	            apply_filters('wpdef_post_types', DEFINITIONS::$source_post_types),
+	            apply_filters('wpdef_source_post_types', DEFINITIONS::$source_post_types),
                 'side'
             );
 

@@ -47,8 +47,7 @@ if ( ! function_exists( 'wpdef_activation_check' ) ) {
 		global $wp_version;
 		if ( version_compare( $wp_version, '4.6', '<' ) ) {
 			deactivate_plugins( plugin_basename( __FILE__ ) );
-			wp_die( __( 'Definitions - Internal Linkbuilding cannot be activated. The plugin requires WordPress 4.6 or higher',
-				'definitions' ) );
+			wp_die( __( 'Definitions - Internal Linkbuilding cannot be activated. The plugin requires WordPress 4.6 or higher', 'definitions' ) );
 		}
 	}
 
@@ -72,7 +71,7 @@ if ( ! class_exists( 'DEFINITIONS' ) ) {
 			self::includes();
 			self::hooks();
 			self::$target_post_types = apply_filters('wpdef_target_post_types', array('page','post'));
-			self::$source_post_types = apply_filters('wpdef_post_types', array('post'));
+			self::$source_post_types = apply_filters('wpdef_source_post_types', array('post'));
 			self::$post_type         = new wpdef_posttype();
 			self::$text_parser       = new wpdef_text_parser();
 			if ( is_admin() ) {

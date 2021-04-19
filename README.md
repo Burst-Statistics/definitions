@@ -10,6 +10,6 @@ Add to custom post-types:
         $post_types[] = 'your-custom-post-type';
         return $post_types;
     }
-add_filter('wpdef_post_types','my_add_post_type');`
+add_filter('wpdef_source_post_types','my_add_post_type');`
 
 More coming soon...
