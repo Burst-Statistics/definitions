@@ -371,6 +371,22 @@ if ( ! class_exists( 'wpdef_text_parser' ) ) {
 					  "where term_taxonomy.taxonomy = 'definitions_title'" .
 					  "and term_relationships.object_id = {$post_id} " .
 					  "and post.post_content REGEXP CONCAT('$pattern') ";
+
+				/**
+				 * Consider changing the above into the below, as it first limits the selection, then runs a regex on that selection.
+				 */
+
+//			$sql = "insert into $wpdb->postmeta (post_id, meta_key, meta_value) " .
+//			       "select sub.post_id as post_id, sub.meta_key as meta_key, sub.meta_value as meta_value from " .
+//			       "(select post.ID as post_id, post.post_content as post_content, 'used_definitions' as meta_key, CONCAT('$post_id:', term.name) as meta_value, term.name as term_name from " .
+//			       " ($sub_sql) as post, $wpdb->terms as term ".
+//			       "join $wpdb->term_taxonomy as term_taxonomy  on term.term_id = term_taxonomy.term_id ".
+//			       "join $wpdb->term_relationships as term_relationships ".
+//			       "on term_relationships.term_taxonomy_id = term_taxonomy.term_taxonomy_id ".
+//			       "where term_taxonomy.taxonomy = 'definitions_title' ".
+//			       "and term_relationships.object_id = $post_id ".
+//			       "and post.post_content like CONCAT('%',term.name,'%')) as sub " .
+//			       "where sub.post_content REGEXP CONCAT('$pattern')";
 				  $wpdb->query( $sql );
 			}
 
