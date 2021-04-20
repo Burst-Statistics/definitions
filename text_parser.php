@@ -281,14 +281,19 @@ if ( ! class_exists( 'wpdef_text_parser' ) ) {
 				$definition = sanitize_text_field(reset($_GET['definitions']));
 				$post_id     = intval( $_GET['post_id'] );
 
-				// Count definitions from this post used in all other posts
-				$post_type_sql = "(p.post_type = '".implode("' or p.post_type = '", DEFINITIONS::$target_post_types)."')";
-				$pattern_sql           = $this->get_regex( $definition, 'SQL' );
-				$pattern_sql = "post.post_content REGEXP '$pattern_sql'";
-				$sql             = "select count(*) from (select * from $wpdb->posts as p where p.ID != {$post_id} and p.post_content LIKE '%$definition%' AND p.post_status = 'publish' and ($post_type_sql) ) as post " .
-				                   "where  $pattern_sql";
-
-				$count = $wpdb->get_var( $sql );
+				//cache count
+				$sanitized_definition = sanitize_title($definition);
+				$count = get_transient("wpdef_{$post_id}_{$sanitized_definition}_count");
+				if ( !$count ) {
+					// Count definitions from this post used in all other posts
+					$post_type_sql = "(p.post_type = '".implode("' or p.post_type = '", DEFINITIONS::$target_post_types)."')";
+					$pattern_sql           = $this->get_regex( $definition, 'SQL' );
+					$pattern_sql = "post.post_content REGEXP '$pattern_sql'";
+					$sql             = "select count(*) from (select * from $wpdb->posts as p where p.ID != {$post_id} and p.post_content LIKE '%$definition%' AND p.post_status = 'publish' and ($post_type_sql) ) as post " .
+					                   "where  $pattern_sql";
+					$count = $wpdb->get_var( $sql );
+					set_transient("wpdef_{$post_id}_{$sanitized_definition}_count", $count, DAY_IN_SECONDS );
+				}
 
 				$response = array(
 					'success' => true,
