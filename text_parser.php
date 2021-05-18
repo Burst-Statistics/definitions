@@ -249,7 +249,7 @@ if ( ! class_exists( 'wpdef_text_parser' ) ) {
 		 */
 		public function count_posts_with_definitions() {
 			global $wpdb;
-			$sql = "select count(*) from (SELECT DISTINCT post_id FROM wp_postmeta  WHERE meta_key = 'used_definitions') as postids";
+			$sql = "select count(*) from (SELECT DISTINCT post_id FROM $wpdb->postmeta WHERE meta_key = 'used_definitions') as postids";
 
 			return $wpdb->get_var( $sql );
 		}
