@@ -287,11 +287,8 @@ if ( ! class_exists( 'wpdef_text_parser' ) ) {
 				if ( !$count ) {
 					// Count definitions from this post used in all other posts
 					$post_type_sql = "(p.post_type = '".implode("' or p.post_type = '", DEFINITIONS::$target_post_types)."')";
-					$pattern_sql           = $this->get_regex( $definition, 'SQL' );
-					$pattern_sql = "post.post_content REGEXP '$pattern_sql'";
-					$sql             = "select count(*) from (select * from $wpdb->posts as p where p.ID != {$post_id} and p.post_content LIKE '%$definition%' AND p.post_status = 'publish' and ($post_type_sql) ) as post " .
-					                   "where  $pattern_sql";
-					$count = $wpdb->get_var( $sql );
+					$sql           = "select count(*) from (select * from $wpdb->posts as p where p.ID != {$post_id} and p.post_content LIKE '%$definition%' AND p.post_status = 'publish' and ($post_type_sql) ) as post ";
+					$count         = $wpdb->get_var( $sql );
 					set_transient("wpdef_{$post_id}_{$sanitized_definition}_count", $count, DAY_IN_SECONDS );
 				}
 
@@ -375,24 +372,9 @@ if ( ! class_exists( 'wpdef_text_parser' ) ) {
 					  "on term_relationships.term_taxonomy_id = term_taxonomy.term_taxonomy_id " .
 					  "where term_taxonomy.taxonomy = 'definitions_title'" .
 					  "and term_relationships.object_id = {$post_id} " .
-					  "and post.post_content REGEXP CONCAT('$pattern') ";
+					  "and post.post_content like concat('%', term.name, '%') ";
 
-				/**
-				 * Consider changing the above into the below, as it first limits the selection, then runs a regex on that selection.
-				 */
-
-//			$sql = "insert into $wpdb->postmeta (post_id, meta_key, meta_value) " .
-//			       "select sub.post_id as post_id, sub.meta_key as meta_key, sub.meta_value as meta_value from " .
-//			       "(select post.ID as post_id, post.post_content as post_content, 'used_definitions' as meta_key, CONCAT('$post_id:', term.name) as meta_value, term.name as term_name from " .
-//			       " ($sub_sql) as post, $wpdb->terms as term ".
-//			       "join $wpdb->term_taxonomy as term_taxonomy  on term.term_id = term_taxonomy.term_id ".
-//			       "join $wpdb->term_relationships as term_relationships ".
-//			       "on term_relationships.term_taxonomy_id = term_taxonomy.term_taxonomy_id ".
-//			       "where term_taxonomy.taxonomy = 'definitions_title' ".
-//			       "and term_relationships.object_id = $post_id ".
-//			       "and post.post_content like CONCAT('%',term.name,'%')) as sub " .
-//			       "where sub.post_content REGEXP CONCAT('$pattern')";
-				  $wpdb->query( $sql );
+                $wpdb->query( $sql );
 			}
 
 			//if the post type of the current this post is not in the target post type list, skip.
@@ -420,7 +402,7 @@ if ( ! class_exists( 'wpdef_text_parser' ) ) {
 					  "'{$post_id}' as post_id, " .
 					  "'used_definitions' as meta_key, " .
 					  "CONCAT(definitions.post_id, ':', definitions.definition) as meta_value, " .
-					  "CONCAT('$pattern') as pattern, " .
+					  "CONCAT('%', definitions.definition,'%') as pattern, " .
 					  "(select post_content from $wpdb->posts where ID = {$post_id}) as content " .
 					  "from " .
 
@@ -436,7 +418,8 @@ if ( ! class_exists( 'wpdef_text_parser' ) ) {
 
 					  " as def_terms inner join $wpdb->posts as p ON def_terms.post_id= p.ID where $post_type_sql and p.post_status='publish' )".
 					  " as definitions) as a " .
-					  "where a.content REGEXP a.pattern";
+					  "where a.content like a.pattern";
+
 				$wpdb->query( $sql );
 			}
 
