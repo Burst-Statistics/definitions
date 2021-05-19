@@ -106,7 +106,7 @@ if (!class_exists('wpdef_posttype')) {
                                 'already-in-use-single' => sprintf(__('"%s" is already in use. Choose another', "definitions"), '{definitions}'),
                                 'not-in-use-plural' => sprintf(__('%s are not used before!', "definitions"), '{definitions}'),
                                 'not-in-use-single' => sprintf(__('"%s" has not been used before!', "definitions"), '{definitions}'),
-                                'terms-in-posts' => sprintf(__('%s terms in %s posts', "definitions"), '{terms_count}','{posts_count}'),
+                                'terms-in-posts' => sprintf(__('Estimated %s terms in %s posts', "definitions"), '{terms_count}','{posts_count}'),
                                 'way-too-many-terms' => __('Your term occurs in a lot of posts. Try to be more specific.', "definitions"),
                                 'too-many-terms' => __('Your term occurs in a lot of posts. Try to be more specific.', "definitions"),
                                 'positive-ratio-terms' => __('The number of times this term occurs is good.', "definitions"),
