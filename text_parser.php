@@ -358,8 +358,7 @@ if ( ! class_exists( 'wpdef_text_parser' ) ) {
 				//
 				// Cross join every post with terms used in the saved post
 				// Create table for postmeta with structure (post_id, meta_key, meta_value)
-				// Filter this table with post_content REGEXP pattern
-				$pattern       = $this->get_regex( "', term.name, '", 'SQL' );
+				// Filter this table with post_content LIKE %term%
 				$post_type_sql = "(p.post_type = '" . implode( "' or p.post_type = '", DEFINITIONS::$target_post_types ) . "')";
 				$sub_sql       = "select * from $wpdb->posts as p where p.ID != {$post_id} and p.post_status = 'publish' and ($post_type_sql) ";
 
@@ -390,9 +389,8 @@ if ( ! class_exists( 'wpdef_text_parser' ) ) {
 				// Select post_content of the saved post
 				// Create list (post_id, definition) for every post
 				//
-				// Save meta_value 'post_id:definition' where post_content REGEXP pattern
+				// Save meta_value 'post_id:definition' where post_content LIKE %term%
 
-				$pattern = $this->get_regex( "', definitions.definition,'", 'SQL' );
 				$post_type_sql = "(p.post_type = '".implode("' or p.post_type = '", DEFINITIONS::$source_post_types)."')";
 
 				$sql
