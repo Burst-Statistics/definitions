@@ -3,7 +3,7 @@
  * Plugin Name: Definitions - Internal Linkbuilding
  * Plugin URI: https://www.really-simple-plugins.com
  * Description: Plugin to autoreplace in the content of a page or post every instance of a word that is defined in the definitions 
- * Version: 1.0.0.2
+ * Version: 1.0.0.3
  * Text Domain: definitions
  * Domain Path: /lang
  * Author: Really Simple Plugins

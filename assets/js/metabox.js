@@ -17,7 +17,7 @@
             wpdef_metabox.definition_count_current    = 0;
             wpdef_metabox.definition_count_new        = 0;
             wpdef_metabox.step                        = 0;
-            wpdef_metabox.performance_level           = 1;
+            wpdef_metabox.performance_level           = 0;
             wpdef_metabox.typingTimer;
             wpdef_metabox.doneTypingInterval          = 800;
             wpdef_metabox.last_checked_definition;
@@ -49,11 +49,9 @@
             wpdef_metabox.set_add_definition_state();
             wpdef_metabox.performance_notice_ajax();
             wpdef_metabox.set_enable_checkbox_state();
-
         },
 
         handle_add_tag : function () {
-            console.log("handle add tag");
             wpdef_metabox.add_definition_to_all_list();
             wpdef_metabox.performance_notice_ajax();
             wpdef_metabox.set_add_tag_state();
@@ -62,9 +60,6 @@
 
         },
 
-        /**
-         *
-         */
         afterFinishedTyping : function ( e ) {
             wpdef_metabox.performance_notice_ajax();
             wpdef_metabox.set_add_tag_state();
@@ -126,7 +121,7 @@
         },
 
         /**
-         * Enable/disable enable checkbox depending on if definition tags were added
+         * Enable/disable checkbox depending on if definition tags were added
          */
         set_enable_checkbox_state : function () {
             var definitions = wpdef_metabox.get_post_definitions_list(false);
@@ -140,7 +135,7 @@
         },
 
         /**
-         * Enable/disable enable option to add tags, depending on if tags are already there or not
+         * Enable/disable option to add tags, depending on if tags are already there or not
          */
         set_add_tag_state : function () {
             var current_definitions = wpdef_metabox.get_post_definitions_list(true);
@@ -181,7 +176,7 @@
 
         /**
          * @param index
-         * @returns Translated string
+         * @returns string translated
          */
         localize_string : function ( index ) {
             if (wpdef.strings.hasOwnProperty(index)) {
@@ -225,11 +220,15 @@
             if (wpdef_metabox.last_checked_definition === post_definitions[0]) {
                 return;
             }
+
             if ( wpdef_metabox.ajaxCallActive ) {
                 return;
             }
-            
+
             $('.dfn-performance-notice').html(wpdef_metabox.localize_string('retrieving-status'));
+            wpdef_metabox.performance_level = -1;
+
+
 
             wpdef_metabox.ajaxCallActive = true;
             $.ajax({
@@ -260,10 +259,13 @@
          * Start animation in the performance notice
          */
         start_animation : function () {
-            if (wpdef_metabox.definition_count_current == wpdef_metabox.definition_count_new ) return;
+            if (wpdef_metabox.definition_count_current == wpdef_metabox.definition_count_new ) {
+                wpdef_metabox.animation_time = wpdef_metabox.animation_time_end;
+            } else {
+                wpdef_metabox.animation_time = wpdef_metabox.animation_time_begin;
+                wpdef_metabox.step = (wpdef_metabox.definition_count_new - wpdef_metabox.definition_count_current) / 40;
+            }
 
-            wpdef_metabox.animation_time = wpdef_metabox.animation_time_begin;
-            wpdef_metabox.step = (wpdef_metabox.definition_count_new - wpdef_metabox.definition_count_current) / 40;
             wpdef_metabox.animate_performance_notice();
         },
 
@@ -292,7 +294,7 @@
                     setTimeout(wpdef_metabox.animate_performance_notice, wpdef_metabox.anitation_time_to_wait(wpdef_metabox.animation_time) );
                 }
             } else {
-                if (wpdef_metabox.performance_level != wpdef_metabox.calculate_performance_level( Math.round(wpdef_metabox.definition_count_current), wpdef_metabox.post_count ) ) {
+                if (wpdef_metabox.performance_level != new_performance_level ) {
                     wpdef_metabox.performance_level = new_performance_level;
                     wpdef_metabox.definition_count_current = wpdef_metabox.definition_count_new;
                     wpdef_metabox.add_performance_notice();
