@@ -5,10 +5,10 @@ Requires at least: 4.0
 Tested up to: 4.1
 Stable tag: 1.0.0.2
 
-Plugin to autoreplace in the content of a page or post every instance of a word that is defined in the definitions. By creating a separate page for every definition you create a lot of high value content, so it is seo friendly.  
+Determine posts to be the definition of a word. In the content of all other posts the word will be replaced with a link to the definition.
 
 == Installation ==
-Download the plugin from the wordpres plugin directory
+Download the plugin from the wordpress plugin directory
 Upload the plugin in your plugins directory,
 Go to “plugins” in your wordpress admin, then click activate
 
