@@ -1,8 +1,9 @@
-<?php
-defined( 'ABSPATH' ) or die( "you do not have access to this page!" );
+<?php defined( 'ABSPATH' ) or die( "you do not have access to this page!" );
 
 if ( ! class_exists( 'wpdef_text_parser' ) ) {
+
 	class wpdef_text_parser {
+
 		private $current_term_match;
 		private $current_replace_link;
 
@@ -59,13 +60,14 @@ if ( ! class_exists( 'wpdef_text_parser' ) ) {
 		/**
 		 * Load the preview for our definitions
 		 */
-
 		public function load_preview() {
 			$definitions_ids = array_map( 'intval', $_GET['ids'] );
 			$error           = false;
 			$previews        = array();
 			foreach ( $definitions_ids as $definitions_id ) {
 				$definition    = get_post( $definitions_id );
+				if ( !$definition ) continue;
+
 				$excerpt       = $this->get_excerpt( $definition );
 				$disable_image = get_post_meta( $definitions_id, 'definition_disable_image', true );
 				if ( $disable_image ) {
@@ -166,7 +168,6 @@ if ( ! class_exists( 'wpdef_text_parser' ) ) {
 		 *
 		 * @return string
 		 */
-
 		public function replace_definitions_with_links( $content ) {
 			$terms = $this->load_used_definitions_in_post( get_the_ID() );
 			foreach ( $terms as $post_id_term ) {
@@ -191,7 +192,6 @@ if ( ! class_exists( 'wpdef_text_parser' ) ) {
 		 *
 		 * @return mixed|string|string[]
 		 */
-
 		function definition_preg_replace_callback( $matches ) {
 			$group = apply_filters( 'wpdef_matching_group', WPDEF_PATTERN_PHP_MATCHING_GROUP );
 			$link  = str_replace( '{term}', $matches[ $group ], $this->current_replace_link );
@@ -222,7 +222,6 @@ if ( ! class_exists( 'wpdef_text_parser' ) ) {
 		 *
 		 * @return string
 		 */
-
 		public function get_excerpt( $post ) {
 			$excerpt = apply_filters( 'the_excerpt', $post->post_excerpt );
 
@@ -259,44 +258,48 @@ if ( ! class_exists( 'wpdef_text_parser' ) ) {
 		 */
 		public function scan_definition_count() {
 			$error = false;
-			$response = array(
-				'success' => true,
-				'count'   => 0,
-			);
+			$count = 0;
 
 			if ( ! current_user_can( 'edit_posts' ) ) {
 				$error = true;;
 			}
-			if ( ! isset( $_GET['definitions'] ) || ! isset( $_GET['post_id'] ) ) {
+			if ( ! isset($_GET['definitions']) || ! isset($_GET['post_id']) ) {
 				$error = true;
 			}
 
 			global $wpdb;
 			//only one definition is used per post
-			if (!$error && !is_array($_GET['definitions'] )) {
+			if ( !$error && !is_array($_GET['definitions'] )) {
 				$error = true;
 			}
 
-			if (!$error) {
-				$definition = sanitize_text_field(reset($_GET['definitions']));
-				$post_id     = intval( $_GET['post_id'] );
+            $definition = sanitize_text_field(reset($_GET['definitions']));
+            $post_id    = intval( $_GET['post_id'] );
 
+            if ($post_id == 0) {
+                $error = true;
+            }
+
+			if (!$error) {
 				//cache count
-				$sanitized_definition = sanitize_title($definition);
-				$count = get_transient("wpdef_{$post_id}_{$sanitized_definition}_count");
+				$count = get_transient("wpdef_{$post_id}_{$definition}_count");
 				if ( !$count ) {
 					// Count definitions from this post used in all other posts
 					$post_type_sql = "(p.post_type = '".implode("' or p.post_type = '", DEFINITIONS::$target_post_types)."')";
 					$sql           = "select count(*) from (select * from $wpdb->posts as p where p.ID != {$post_id} and p.post_content LIKE '%$definition%' AND p.post_status = 'publish' and ($post_type_sql) ) as post ";
 					$count         = $wpdb->get_var( $sql );
-					set_transient("wpdef_{$post_id}_{$sanitized_definition}_count", $count, DAY_IN_SECONDS );
+                    if ( $count ) {
+                        set_transient("wpdef_{$post_id}_{$definition}_count", $count, DAY_IN_SECONDS);
+                    } else {
+                        $error = true;
+                    }
 				}
-
-				$response = array(
-					'success' => true,
-					'count'   => $count,
-				);
 			}
+
+            $response = array(
+                'success' => !$error,
+                'count'   => $count,
+            );
 
 			$response = json_encode( $response );
 			header( "Content-Type: application/json" );
@@ -338,9 +341,12 @@ if ( ! class_exists( 'wpdef_text_parser' ) ) {
 
 			global $wpdb;
 			$post_id = intval( $post_id );
-			$post_type = get_post_type($post_id);
+            if ($post_id == 0) return;
 
-			//((?<!h[1-9]\>))text(?!\<\/h[1-9])
+            $post_type = get_post_type($post_id);
+
+
+            //((?<!h[1-9]\>))text(?!\<\/h[1-9])
 			// Pattern: (<p>[^<]*( definition[ \,\.\;\!\?]))|(( definition[ \,\.\;\!\?])[^<]*<\/p)
 			// <p>Commodi totam quam perferendis dicta definition.
 			// or
