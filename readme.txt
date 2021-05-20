@@ -1,5 +1,5 @@
 === Definitions - Internal Linkbuilding ===
-Contributors: Hidde Nauta, RogierLankhorst, Tom Eijkelenkamp
+Contributors: tomeijkelenkamp, Hidde Nauta, RogierLankhorst, aahulsebos, leonwimmenhoeve
 Tags: tooltips, hyperlinks, linkbuilding, cool
 Requires at least: 4.9
 License: GPL2
