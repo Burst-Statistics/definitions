@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Definitions - Internal Linkbuilding
  * Plugin URI: https://www.really-simple-plugins.com
- * Description: Autoreplace post content with links to definitions.
+ * Description: Automatically replace your posts' keywords on your website with an internal link and tooltip. 
  * Version: 1.0.0.3
  * Text Domain: definitions
  * Domain Path: /lang
