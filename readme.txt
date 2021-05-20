@@ -1,4 +1,4 @@
-=== Definitions Hyperlinks ===
+=== Definitions - Internal Linkbuilding ===
 Contributors: Hidde Nauta, RogierLankhorst, Tom Eijkelenkamp
 Tags: tooltips, hyperlinks, linkbuilding, cool
 Requires at least: 4.9
