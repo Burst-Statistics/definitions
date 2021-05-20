@@ -103,9 +103,7 @@ class wpdef_tour {
 
 	public function listen_for_cancel_tour() {
 
-		if ( ! isset( $_POST['token'] )
-		     || ! wp_verify_nonce( $_POST['token'], 'wpdef_tour_nonce' )
-		) {
+		if ( ! isset($_POST['token']) || ! wp_verify_nonce($_POST['token'], 'wpdef_tour_nonce') ) {
 			return;
 		}
 		update_site_option( 'wpdef_tour_started', false );
@@ -115,17 +113,15 @@ class wpdef_tour {
 
 	public function restart_tour() {
 
-		if ( ! isset( $_POST['wpdef_restart_tour'] ) ) {
+		if ( ! isset($_POST['wpdef_restart_tour']) ) {
 			return;
 		}
 
-		if ( ! current_user_can( 'manage_options' ) ) {
+		if ( ! current_user_can( 'manage_options') ) {
 			return;
 		}
 
-		if ( ! isset( $_POST['complianz_nonce'] )
-		     || ! wp_verify_nonce( $_POST['complianz_nonce'], 'complianz_save' )
-		) {
+		if ( ! isset($_POST['complianz_nonce']) || ! wp_verify_nonce($_POST['complianz_nonce'], 'complianz_save') ) {
 			return;
 		}
 

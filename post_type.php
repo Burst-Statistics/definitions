@@ -267,8 +267,8 @@ if (!class_exists('wpdef_posttype')) {
                         'hyperlink',
                         'preview',
                 );
-                if (in_array($_POST['dfn-link-type'], $options)) {
-	                $link_type = sanitize_title($_POST['dfn-link-type']);
+                $link_type = sanitize_title($_POST['dfn-link-type']);
+                if (in_array($link_type, $options)) {
 	                update_post_meta(
 		                $post_id,
 		                'definition_link_type',
@@ -278,7 +278,7 @@ if (!class_exists('wpdef_posttype')) {
             }
 
             if ( array_key_exists( 'dfn-disable-image', $_POST ) ) {
-	            $disable_image = $_POST['dfn-disable-image'] === 'on' ? 'on' : false;
+	            $disable_image = sanitize_title($_POST['dfn-disable-image']) === 'on' ? 'on' : false;
 	            update_post_meta(
                     $post_id,
                     'definition_disable_image',

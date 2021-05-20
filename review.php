@@ -196,7 +196,7 @@ if ( ! class_exists( "wpdef_review" ) ) {
 		 */
 
 		public function dismiss_review_notice_callback() {
-			$type = isset( $_POST['type'] ) ? $_POST['type'] : false;
+			$type = isset( $_POST['type'] ) ? sanitize_title($_POST['type']) : false;
 
 			if ( $type === 'dismiss' ) {
 				update_option( 'wpdef_review_notice_shown', true );
