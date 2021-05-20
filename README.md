@@ -9,9 +9,9 @@ Developed for ourselves to explain, underline and link to specific terms in our 
 **How it works:** For every post on your website you can designate a keyword. That keyword will than be auto-replaced in the content by a hoverable link with tooltip, if so desired. 
 **Example:** As a use case for Complianz.io; we have a custom post type "Definitions", every definition explains a keyword in more detail. If we use "Cookie Policy" on our website, this word will be underlined as a tooltip and on hover will show a infobox with an internal link to this definition. See an example [here](https://complianz.io/customizing-the-cookie-policy-templates/)
 
-### Customization
+## Customization
 
-# Add to custom post-types:
+### Add to custom post-types:
 
 `function my_add_post_type($post_types){
         $post_types[] = 'your-custom-post-type';
@@ -19,16 +19,16 @@ Developed for ourselves to explain, underline and link to specific terms in our 
     }
 add_filter('wpdef_source_post_types','my_add_post_type');`
 
-# Tooltip CSS:
+### Tooltip CSS:
 
 `.wpdef-preview-content{}`
 `.wpdef-preview-image{}`
 `.wpdef-preview-text{}`
 `.wpdef-read-more{}`
 
-# Hyperlink CSS:
+### Hyperlink CSS:
 
-.wpdef-definition {}`
+`.wpdef-definition {}`
 
 ### Developers Guide and Contributions
 
