@@ -20,6 +20,14 @@ A lightweight SEO tool we use for internal linkbuilding in our knowledge base, b
 * Does not replace in H1-6 elements. Only in post content.
 * You can use a tooltip with or without featured image.
 
+= How it works =
+
+For every post on your website you can designate a keyword. That keyword will than be auto-replaced in the content by a hoverable link with tooltip, if so desired. 
+
+= Example =
+
+As a use case for Complianz.io; we have a custom post type "Definitions", every definition explains a keyword in more detail. If we use "Cookie Policy" on our website, this word will be underlined as a tooltip and on hover will show a infobox with an internal link to this definition. [Example](https://complianz.io/customizing-the-cookie-policy-templates/)
+
 = Support =
 Please leave a review and/or feature request so we can help each other! If you have any questions, please leave them at the support forum on wordpress.org.
 
