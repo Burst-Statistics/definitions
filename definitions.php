@@ -178,8 +178,6 @@ if ( ! function_exists( 'wpdef_set_activation_time_stamp' ) ) {
 
 }
 
-
-
 if ( ! function_exists( 'wpdef_start_tour' ) ) {
     /**
      * start tour for plugin
