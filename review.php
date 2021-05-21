@@ -161,18 +161,18 @@ if ( ! class_exists( "wpdef_review" ) ) {
 			<script type='text/javascript'>
                 jQuery(document).ready(function ($) {
                     $(".wpdef-review.notice.is-dismissible").on("click", ".notice-dismiss", function (event) {
-                        rsssl_dismiss_review('dismiss');
+                        wpdef_dismiss_review('dismiss');
                     });
                     $(".wpdef-review.notice.is-dismissible").on("click", "#maybe-later", function (event) {
-                        rsssl_dismiss_review('later');
+                        wpdef_dismiss_review('later');
                         $(this).closest('.wpdef-review').remove();
                     });
                     $(".wpdef-review.notice.is-dismissible").on("click", ".review-dismiss", function (event) {
-                        rsssl_dismiss_review('dismiss');
+                        wpdef_dismiss_review('dismiss');
                         $(this).closest('.wpdef-review').remove();
                     });
 
-                    function rsssl_dismiss_review(type) {
+                    function wpdef_dismiss_review(type) {
                         var data = {
                             'action': 'dismiss_review_notice',
                             'type': type,

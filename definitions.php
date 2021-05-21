@@ -129,7 +129,7 @@ if ( ! class_exists( 'DEFINITIONS' ) ) {
 		 */
 		public static function get_instance() {
 			if ( ! isset( self::$instance )
-			     && ! ( self::$instance instanceof COMPLIANZ )
+			     && ! ( self::$instance instanceof DEFINITIONS )
 			) {
 				self::$instance = new self();
 			}
