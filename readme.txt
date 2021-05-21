@@ -1,7 +1,7 @@
 === Definitions - Internal Linkbuilding ===
 Contributors: tomeijkelenkamp, Hidde Nauta, RogierLankhorst, aahulsebos, leonwimmenhoeve
 Tags: tooltips, hyperlinks, linkbuilding, cool
-Requires at least: 5.6
+Requires at least: 5.2
 License: GPL2
 Requires PHP: 5.6
 Tested up to: 5.6

@@ -3,7 +3,7 @@
  * Plugin Name: Definitions - Internal Linkbuilding
  * Plugin URI: https://www.really-simple-plugins.com
  * Description: Automatically replace your posts' keywords on your website with an internal link and tooltip. 
- * Version: 1.0.0.3
+ * Version: 1.0.0
  * Text Domain: definitions
  * Domain Path: /lang
  * Author: Really Simple Plugins
@@ -11,7 +11,7 @@
  * License: GPL2
  */
 
-/*  Copyright 2014  Really Simple Plugins  (email : support@really-simple-plugins.com)
+/*  Copyright 2021  Really Simple Plugins  (email : support@really-simple-plugins.com)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License, version 2, as 
@@ -45,7 +45,7 @@ if ( ! function_exists( 'wpdef_activation_check' ) ) {
 		}
 
 		global $wp_version;
-		if ( version_compare( $wp_version, '4.6', '<' ) ) {
+		if ( version_compare( $wp_version, '5.2', '<' ) ) {
 			deactivate_plugins( plugin_basename( __FILE__ ) );
 			wp_die( __( 'Definitions - Internal Linkbuilding cannot be activated. The plugin requires WordPress 4.6 or higher', 'definitions' ) );
 		}
