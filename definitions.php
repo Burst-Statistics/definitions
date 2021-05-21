@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Definitions - Internal Linkbuilding
- * Plugin URI: https://www.really-simple-plugins.com
+ * Plugin URI: https://wordpress.org/plugins/definitions
  * Description: Automatically replace your posts' keywords on your website with an internal link and tooltip. 
  * Version: 1.0.0
  * Text Domain: definitions
