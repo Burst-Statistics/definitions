@@ -4,7 +4,7 @@ Tags: tooltips, hyperlinks, linkbuilding, cool
 Requires at least: 4.9
 License: GPL2
 Requires PHP: 5.6
-Tested up to: 5.7
+Tested up to: 5.7.2
 Stable tag: 5.1.0
 
 Automatically replace your posts' keywords on your website with an internal link and tooltip. 
