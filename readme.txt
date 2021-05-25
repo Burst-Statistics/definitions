@@ -1,11 +1,11 @@
 === Definitions - Internal Linkbuilding ===
 Contributors: tomeijkelenkamp, Hidde Nauta, RogierLankhorst, aahulsebos, leonwimmenhoeve
 Tags: tooltips, hyperlinks, linkbuilding, cool
-Requires at least: 4.9
+Requires at least: 5.2
 License: GPL2
 Requires PHP: 5.6
-Tested up to: 5.7.2
-Stable tag: 5.1.0
+Tested up to: 5.7
+Stable tag: 1.0.0
 
 Automatically replace your posts' keywords on your website with an internal link and tooltip. 
 
@@ -21,8 +21,7 @@ A lightweight SEO tool we use for internal linkbuilding in our knowledge base, b
 * You can use a tooltip with or without featured image.
 
 = How it works =
-
-For every post on your website you can designate a keyword. That keyword will than be auto-replaced in the content by a hoverable link with tooltip, if so desired. 
+For every post on your website you can designate a keyword. That keyword will than be auto-replaced in the content by a hoverable link with tooltip, if so desired.
 
 = Example =
 
@@ -39,16 +38,12 @@ Definitions is on [GitHub](https://github.com/Really-Simple-Plugins/definitions/
 * Go to “plugins” in your Wordpress Dashboard, and click “add new”.
 * Click “upload”, and select the downloaded zip file.
 * Activate.
-* Navigate to “Complianz”, and follow the instructions.
+* In each post, you can now add a term to mark it as definition for that term.
 
 == Frequently asked questions ==
 = Customization =
 To customize the hyperlinks and tooltips, please refer to [really-simple-plugins.com](https://really-simple-plugins.com/definitions-internal-linkbuilding/documentation/) for more information.
 
 == Change log ==
-= 5.0.3 =
-* Improvement: new purposes for EU/UK
-* Improvement: switch consent area order in cookie policies
-* Fix: Elementor integration after reload
-* New: Variation swatches for Woocommerce integration
-* Improvement: show "hide cookie banner" metabox only on public post types
+= 1.0.0 =
+* Initial commit

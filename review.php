@@ -172,7 +172,7 @@ if ( ! class_exists( "rspdef_review" ) ) {
                         $(this).closest('.rspdef-review').remove();
                     });
 
-                    function rsssl_dismiss_review(type) {
+                    function wpdef_dismiss_review(type) {
                         var data = {
                             'action': 'dismiss_review_notice',
                             'type': type,

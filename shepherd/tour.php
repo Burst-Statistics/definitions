@@ -121,11 +121,8 @@ class rspdef_tour {
 			return;
 		}
 
-		if ( ! isset($_POST['complianz_nonce']) || ! wp_verify_nonce($_POST['complianz_nonce'], 'complianz_save') ) {
-			return;
-		}
-
 		update_site_option( 'rspdef_tour_started', true );
+
 
 		wp_redirect( admin_url( 'plugins.php' ) );
 		exit;
