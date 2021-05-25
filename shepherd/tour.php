@@ -69,9 +69,9 @@ class rspdef_tour {
 			         . '<span class="rspdef-tour-text">{content}</span></div>';
 			$steps = array(
 				0 => array(
-					'title'  => __( 'Welcome to Definitions - Internal Linkbuilding', 'definitions' ),
+					'title'  => __( 'Welcome to Definitions - Internal Linkbuilding', 'definitions-internal-linkbuilding' ),
 					'text'   => __( "You can find the settings of Definitions under every post. To get a headstart, have a look at our documentation.",
-						'definitions' ),
+						'definitions-internal-linkbuilding' ),
 					'start_link'   => admin_url( "edit.php" ),
 					'documentation_link'   => "https://really-simple-plugins.com/definitions-internal-linkbuilding/documentation",
 				),
@@ -82,8 +82,8 @@ class rspdef_tour {
 					'ajaxurl'        => admin_url( 'admin-ajax.php' ),
 					'html'           => $html,
 					'token'          => wp_create_nonce( 'rspdef_tour_nonce' ),
-					'start'          => __( "Start", "definitions" ),
-					'documentation'  => __( "Documentation", "definitions" ),
+					'start'          => __( "Start", "definitions-internal-linkbuilding" ),
+					'documentation'  => __( "Documentation", "definitions-internal-linkbuilding" ),
 					'steps'          => $steps,
 
 

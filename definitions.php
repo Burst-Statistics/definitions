@@ -41,13 +41,13 @@ if ( ! function_exists( 'rspdef_activation_check' ) ) {
 		if ( version_compare( PHP_VERSION, '5.6', '<' ) ) {
 			deactivate_plugins( plugin_basename( __FILE__ ) );
 			wp_die( __( 'Definitions - Internal Linkbuilding cannot be activated. The plugin requires PHP 5.6 or higher',
-				'definitions' ) );
+				'definitions-internal-linkbuilding' ) );
 		}
 
 		global $wp_version;
 		if ( version_compare( $wp_version, '4.6', '<' ) ) {
 			deactivate_plugins( plugin_basename( __FILE__ ) );
-			wp_die( __( 'Definitions - Internal Linkbuilding cannot be activated. The plugin requires WordPress 4.6 or higher', 'definitions' ) );
+			wp_die( __( 'Definitions - Internal Linkbuilding cannot be activated. The plugin requires WordPress 4.6 or higher', 'definitions-internal-linkbuilding' ) );
 		}
 	}
 

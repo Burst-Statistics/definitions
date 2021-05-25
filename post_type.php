@@ -15,20 +15,20 @@ if (!class_exists('rspdef_posttype')) {
 		 */
 		public function register_definitions() {
             $labels   =  array(
-                'name'                          => __( 'Definitions', 'definitions' ),
-                'singular_name'                 => __( 'Definition', 'definitions' ),
-                'add_new'                       => __( 'New definition', 'definitions' ),
-                'add_new_item'                  => __( 'Add new definition', 'definitions' ),
-                'parent_item_colon'             => __( 'definition', 'definitions' ),
-                'parent'                        => __( 'definition parentitem', 'definitions' ),
-                'edit_item'                     => __( 'Edit definition', 'definitions' ),
-                'new_item'                      => __( 'New definition', 'definitions' ),
-                'view_item'                     => __( 'View definition', 'definitions' ),
-                'search_items'                  => __( 'Search definitions', 'definitions' ),
-                'not_found'                     => __( 'No definitions found', 'definitions' ),
-                'not_found_in_trash'            => __( 'No definitions found in trash', 'definitions' ),
-                'choose_from_most_used'         => __( '', 'definitions' ),
-                'separate_items_with_commas'    => __( '', 'definitions' ),
+                'name'                          => __( 'Definitions', 'definitions-internal-linkbuilding' ),
+                'singular_name'                 => __( 'Definition', 'definitions-internal-linkbuilding' ),
+                'add_new'                       => __( 'New definition', 'definitions-internal-linkbuilding' ),
+                'add_new_item'                  => __( 'Add new definition', 'definitions-internal-linkbuilding' ),
+                'parent_item_colon'             => __( 'definition', 'definitions-internal-linkbuilding' ),
+                'parent'                        => __( 'definition parentitem', 'definitions-internal-linkbuilding' ),
+                'edit_item'                     => __( 'Edit definition', 'definitions-internal-linkbuilding' ),
+                'new_item'                      => __( 'New definition', 'definitions-internal-linkbuilding' ),
+                'view_item'                     => __( 'View definition', 'definitions-internal-linkbuilding' ),
+                'search_items'                  => __( 'Search definitions', 'definitions-internal-linkbuilding' ),
+                'not_found'                     => __( 'No definitions found', 'definitions-internal-linkbuilding' ),
+                'not_found_in_trash'            => __( 'No definitions found in trash', 'definitions-internal-linkbuilding' ),
+                'choose_from_most_used'         => __( '', 'definitions-internal-linkbuilding' ),
+                'separate_items_with_commas'    => __( '', 'definitions-internal-linkbuilding' ),
             );
 
             $args = [
@@ -98,19 +98,19 @@ if (!class_exists('rspdef_posttype')) {
                         array(
                             'url' => admin_url('admin-ajax.php'),
                             'strings'=> array(
-                                'read-more' => __("Read more", "definitions"),
-                                'add-term' => __('Add a term to see the occurrence count', "definitions"),
-                                'already-in-use-plural' => sprintf(__('%s are already in use. Choose another', "definitions"), '{definitions}'),
-                                'already-in-use-single' => sprintf(__('"%s" is already in use. Choose another', "definitions"), '{definitions}'),
-                                'not-in-use-plural' => sprintf(__('%s are not used before!', "definitions"), '{definitions}'),
-                                'not-in-use-single' => sprintf(__('"%s" has not been used before!', "definitions"), '{definitions}'),
-                                'terms-in-posts' => sprintf(__('Estimated %s terms in %s posts', "definitions"), '{terms_count}','{posts_count}'),
-                                'way-too-many-terms' => __('Your term occurs in a lot of posts. Try to be more specific.', "definitions"),
-                                'too-many-terms' => __('Your term occurs in a lot of posts. Try to be more specific.', "definitions"),
-                                'positive-ratio-terms' => __('The number of times this term occurs is good.', "definitions"),
-                                'few-terms' => __('There are not many matches for this term.', "definitions"),
-                                'no-terms' => __('No matches were found.', "definitions"),
-                                'retrieving-status' => __('Calculating results...', "definitions"),
+                                'read-more' => __("Read more", "definitions-internal-linkbuilding"),
+                                'add-term' => __('Add a term to see the occurrence count', "definitions-internal-linkbuilding"),
+                                'already-in-use-plural' => sprintf(__('%s are already in use. Choose another', "definitions-internal-linkbuilding"), '{definitions}'),
+                                'already-in-use-single' => sprintf(__('"%s" is already in use. Choose another', "definitions-internal-linkbuilding"), '{definitions}'),
+                                'not-in-use-plural' => sprintf(__('%s are not used before!', "definitions-internal-linkbuilding"), '{definitions}'),
+                                'not-in-use-single' => sprintf(__('"%s" has not been used before!', "definitions-internal-linkbuilding"), '{definitions}'),
+                                'terms-in-posts' => sprintf(__('Estimated %s terms in %s posts', "definitions-internal-linkbuilding"), '{terms_count}','{posts_count}'),
+                                'way-too-many-terms' => __('Your term occurs in a lot of posts. Try to be more specific.', "definitions-internal-linkbuilding"),
+                                'too-many-terms' => __('Your term occurs in a lot of posts. Try to be more specific.', "definitions-internal-linkbuilding"),
+                                'positive-ratio-terms' => __('The number of times this term occurs is good.', "definitions-internal-linkbuilding"),
+                                'few-terms' => __('There are not many matches for this term.', "definitions-internal-linkbuilding"),
+                                'no-terms' => __('No matches were found.', "definitions-internal-linkbuilding"),
+                                'retrieving-status' => __('Calculating results...', "definitions-internal-linkbuilding"),
                             ),
                             'post_count' => wp_count_posts()->publish,
                             'existing_definitions' => $definitions,
@@ -184,18 +184,18 @@ if (!class_exists('rspdef_posttype')) {
 	        $link_type    = get_post_meta( $post->ID, 'definition_link_type', true );
             $disable_image  = get_post_meta( $post->ID, 'definition_disable_image', true )  ? 'checked="checked"' : '';
             ?>
-            <span class="rspdef-comment"><?php _e("If you want to know all the possibilities with Definitions - Internal Linkbuilding, have a look at our documentation.", "definitions") ?> <a href="https://really-simple-plugins.com/definitions-internal-linkbuilding/documentation"><?php _e("Read more", "definitions") ?></a></span>
-            <h3><?php _e("Settings", "definitions")?></h3>
+            <span class="rspdef-comment"><?php _e("If you want to know all the possibilities with Definitions - Internal Linkbuilding, have a look at our documentation.", "definitions-internal-linkbuilding") ?> <a href="https://really-simple-plugins.com/definitions-internal-linkbuilding/documentation"><?php _e("Read more", "definitions-internal-linkbuilding") ?></a></span>
+            <h3><?php _e("Settings", "definitions-internal-linkbuilding")?></h3>
             <?php $this->definition_tag_field( $post ); ?>
             <div class="rspdef-field rspdef-definition-add-notice">
-                <div class="rspdef-icon-bullet rspdef-icon-bullet-invisible"></div><span class="rspdef-comment"><?php _e("Add a term to see the occurrence count", "definitions") ?></span>
+                <div class="rspdef-icon-bullet rspdef-icon-bullet-invisible"></div><span class="rspdef-comment"><?php _e("Add a term to see the occurrence count", "definitions-internal-linkbuilding") ?></span>
             </div>
 
             <div class="rspdef-field rspdef-show-if-term rspdef-disabled">
                 <label for="rspdef-link-type">
                     <select name="rspdef-link-type">
-                        <option value="preview"><?php _e("Preview on hover", "definitions")?></option>
-                        <option value="hyperlink" <?php if ($link_type ==='hyperlink') echo "selected"?> ><?php _e("Hyperlink", "definitions")?></option>
+                        <option value="preview"><?php _e("Preview on hover", "definitions-internal-linkbuilding")?></option>
+                        <option value="hyperlink" <?php if ($link_type ==='hyperlink') echo "selected"?> ><?php _e("Hyperlink", "definitions-internal-linkbuilding")?></option>
                     </select>
                 </label>
             </div>
@@ -203,14 +203,14 @@ if (!class_exists('rspdef_posttype')) {
             <div class="rspdef-field rspdef-show-if-term  rspdef-disabled">
                 <input type="hidden" class="rspdef-disable-image" name="rspdef-disable-image" value=""/>
                 <input type="checkbox" class="rspdef-disable-image" name="rspdef-disable-image" <?php echo $disable_image ?>/>
-                <label><?php _e("Disable Featured Image", "definitions")?></label>
+                <label><?php _e("Disable Featured Image", "definitions-internal-linkbuilding")?></label>
             </div>
 
-            <h3 class="rspdef-performance-notice-header rspdef-show-if-term rspdef-disabled"><?php _e("Status", "definitions")?></h3>
+            <h3 class="rspdef-performance-notice-header rspdef-show-if-term rspdef-disabled"><?php _e("Status", "definitions-internal-linkbuilding")?></h3>
             <div class="rspdef-performance-notice rspdef-show-if-term rspdef-disabled"></div>
 
             <div class="rspdef-field">
-                <span class="rspdef-save-changes"><?php _e("Settings changed, don't forget to save!", "definitions")?></span>
+                <span class="rspdef-save-changes"><?php _e("Settings changed, don't forget to save!", "definitions-internal-linkbuilding")?></span>
             </div>
             <?php
         }

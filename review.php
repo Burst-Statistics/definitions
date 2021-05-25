@@ -119,23 +119,23 @@ if ( ! class_exists( "rspdef_review" ) ) {
 						<p><?php
                             if ($this->show_by_count){
 	                            printf( __( 'Hi, you already have %s definitions used in %s posts, awesome! If you have a moment, please consider leaving a review on WordPress.org to spread the word. We greatly appreciate it! If you have any questions or feedback, leave us a %smessage%s.',
-		                            'definitions' ),$this->definitions_count, $this->found_in_posts_count, '<a href="https://rspdefinitions.com" target="_blank">', '</a>' );
+		                            'definitions-internal-linkbuilding' ),$this->definitions_count, $this->found_in_posts_count, '<a href="https://rspdefinitions.com" target="_blank">', '</a>' );
                             } else {
 	                            printf( __( 'Hi, you have been using WP Definitions for a month now, awesome! If you have a moment, please consider leaving a review on WordPress.org to spread the word. We greatly appreciate it! If you have any questions or feedback, leave us a %smessage%s.',
-		                            'definitions' ), '<a href="https://rspdefinitions.com" target="_blank">', '</a>' );
+		                            'definitions-internal-linkbuilding' ), '<a href="https://rspdefinitions.com" target="_blank">', '</a>' );
                             }
 						?></p>
 						<i>- Rogier</i>
 						<div class="rspdef-buttons-row">
 							<a class="button button-primary" target="_blank"
-							   href="https://wordpress.org/support/plugin/definitions/reviews/#new-post"><?php _e( 'Leave a review', 'definitions' ); ?></a>
+							   href="https://wordpress.org/support/plugin/definitions/reviews/#new-post"><?php _e( 'Leave a review', 'definitions-internal-linkbuilding' ); ?></a>
 
 							<div class="dashicons dashicons-calendar"></div>
 							<a href="<?php echo add_query_arg(array('rspdef_dismiss_review'=>1), admin_url() )?>"
-							   id="maybe-later"><?php _e( 'Maybe later', 'definitions' ); ?></a>
+							   id="maybe-later"><?php _e( 'Maybe later', 'definitions-internal-linkbuilding' ); ?></a>
 
 							<div class="dashicons dashicons-no-alt"></div>
-							<a href="<?php echo add_query_arg(array('rspdef_dismiss_review'=>1), admin_url() )?>"><?php _e( 'Don\'t show again', 'definitions' ); ?></a>
+							<a href="<?php echo add_query_arg(array('rspdef_dismiss_review'=>1), admin_url() )?>"><?php _e( 'Don\'t show again', 'definitions-internal-linkbuilding' ); ?></a>
 						</div>
 					</div>
 				</div>
