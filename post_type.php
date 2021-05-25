@@ -27,8 +27,8 @@ if (!class_exists('rspdef_posttype')) {
                 'search_items'                  => __( 'Search definitions', 'definitions-internal-linkbuilding' ),
                 'not_found'                     => __( 'No definitions found', 'definitions-internal-linkbuilding' ),
                 'not_found_in_trash'            => __( 'No definitions found in trash', 'definitions-internal-linkbuilding' ),
-                'choose_from_most_used'         => __( '', 'definitions-internal-linkbuilding' ),
-                'separate_items_with_commas'    => __( '', 'definitions-internal-linkbuilding' ),
+                'choose_from_most_used'         => '',
+                'separate_items_with_commas'    => '',
             );
 
             $args = [
@@ -41,7 +41,7 @@ if (!class_exists('rspdef_posttype')) {
                 'rewrite'           => array( 'slug' => 'definitions_title' ),
             ];
 
-            register_taxonomy( 'definitions_title', DEFINITIONS::$source_post_types, $args );
+            register_taxonomy( 'definitions_title', RSPDEF_DEFINITIONS::$source_post_types, $args );
 		}
 
 
@@ -53,7 +53,7 @@ if (!class_exists('rspdef_posttype')) {
                 'definitions_box_id',
                 'Internal linkbuilding',
                 array( $this, 'definitions_meta_box_html' ),
-	            apply_filters('rspdef_source_post_types', DEFINITIONS::$source_post_types),
+	            apply_filters('rspdef_source_post_types', RSPDEF_DEFINITIONS::$source_post_types),
                 'side'
             );
 
@@ -71,7 +71,7 @@ if (!class_exists('rspdef_posttype')) {
             global $post;
 
             if ( $hook == 'post-new.php' || $hook == 'post.php' ) {
-                if ( in_array($post->post_type, DEFINITIONS::$source_post_types ) ) {
+                if ( in_array($post->post_type, RSPDEF_DEFINITIONS::$source_post_types ) ) {
                     wp_register_style( 'rspdef-metabox', trailingslashit( RSPDEF_URL ) . "assets/css/metabox.css", "", RSPDEF_VERSION );
                     wp_enqueue_style( 'rspdef-metabox' );
 	                wp_enqueue_script( 'tags-box' );

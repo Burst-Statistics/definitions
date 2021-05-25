@@ -54,8 +54,8 @@ if ( ! function_exists( 'rspdef_activation_check' ) ) {
 	register_activation_hook( __FILE__, 'rspdef_activation_check' );
 }
 
-if ( ! class_exists( 'DEFINITIONS' ) ) {
-	class DEFINITIONS {
+if ( ! class_exists( 'RSPDEF_DEFINITIONS' ) ) {
+	class RSPDEF_DEFINITIONS {
 		public static $instance;
 		public static $post_type;
 		public static $text_parser;
@@ -122,13 +122,13 @@ if ( ! class_exists( 'DEFINITIONS' ) ) {
 		/**
 		 * Instantiate the class.
 		 *
-		 * @return DEFINITIONS
+		 * @return RSPDEF_DEFINITIONS
 		 * @since 1.0.0
 		 *
 		 */
 		public static function get_instance() {
 			if ( ! isset( self::$instance )
-			     && ! ( self::$instance instanceof DEFINITIONS )
+			     && ! ( self::$instance instanceof RSPDEF_DEFINITIONS )
 			) {
 				self::$instance = new self();
 			}
@@ -157,7 +157,7 @@ if ( ! class_exists( 'DEFINITIONS' ) ) {
 	add_action(
 		'plugins_loaded',
 		function () {
-			DEFINITIONS::get_instance();
+			RSPDEF_DEFINITIONS::get_instance();
 		},
 		9
 	);

@@ -42,7 +42,7 @@ if ( ! class_exists( "rspdef_review" ) ) {
 
 			$found_in_posts_count = get_transient('rspdef_found_in_posts_count');
 			if ( !$found_in_posts_count ) {
-				$found_in_posts_count = DEFINITIONS::$text_parser->count_posts_with_definitions();
+				$found_in_posts_count = RSPDEF_DEFINITIONS::$text_parser->count_posts_with_definitions();
 				set_transient('rspdef_found_in_posts_count', $found_in_posts_count, DAY_IN_SECONDS);
 			}
 

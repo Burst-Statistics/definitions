@@ -285,7 +285,7 @@ if ( ! class_exists( 'rspdef_text_parser' ) ) {
 				$count = get_transient("rspdef_{$post_id}_{$definition}_count");
 				if ( !$count ) {
 					// Count definitions from this post used in all other posts
-					$post_type_sql = "(p.post_type = '".implode("' or p.post_type = '", DEFINITIONS::$target_post_types)."')";
+					$post_type_sql = "(p.post_type = '".implode("' or p.post_type = '", RSPDEF_DEFINITIONS::$target_post_types)."')";
 					$sql           = "select count(*) from (select * from $wpdb->posts as p where p.ID != {$post_id} and p.post_content LIKE '%$definition%' AND p.post_status = 'publish' and ($post_type_sql) ) as post ";
 					$count         = $wpdb->get_var( $sql );
                     if ( $count ) {
@@ -353,7 +353,7 @@ if ( ! class_exists( 'rspdef_text_parser' ) ) {
 			// Commodi totam quam perferendis dicta definition.</p>
 			// Where not encountered another html tag like <h3>, using [^<]
 
-			if (in_array($post_type, DEFINITIONS::$source_post_types)) {
+			if (in_array($post_type, RSPDEF_DEFINITIONS::$source_post_types)) {
 				// Meta value: 'post_id:definition'
 
 				// Delete postmeta: definitions from this post used in all other posts
@@ -365,7 +365,7 @@ if ( ! class_exists( 'rspdef_text_parser' ) ) {
 				// Cross join every post with terms used in the saved post
 				// Create table for postmeta with structure (post_id, meta_key, meta_value)
 				// Filter this table with post_content LIKE %term%
-				$post_type_sql = "(p.post_type = '" . implode( "' or p.post_type = '", DEFINITIONS::$target_post_types ) . "')";
+				$post_type_sql = "(p.post_type = '" . implode( "' or p.post_type = '", RSPDEF_DEFINITIONS::$target_post_types ) . "')";
 				$sub_sql       = "select * from $wpdb->posts as p where p.ID != {$post_id} and p.post_status = 'publish' and ($post_type_sql) ";
 
 				$sql
@@ -383,7 +383,7 @@ if ( ! class_exists( 'rspdef_text_parser' ) ) {
 			}
 
 			//if the post type of the current this post is not in the target post type list, skip.
-			if (in_array($post_type, DEFINITIONS::$target_post_types)) {
+			if (in_array($post_type, RSPDEF_DEFINITIONS::$target_post_types)) {
 
 				// Delete postmeta: definitions from other posts found in this post
 				$sql = "delete from $wpdb->postmeta where meta_key = 'used_definitions' and post_id = {$post_id}";
@@ -397,7 +397,7 @@ if ( ! class_exists( 'rspdef_text_parser' ) ) {
 				//
 				// Save meta_value 'post_id:definition' where post_content LIKE %term%
 
-				$post_type_sql = "(p.post_type = '".implode("' or p.post_type = '", DEFINITIONS::$source_post_types)."')";
+				$post_type_sql = "(p.post_type = '".implode("' or p.post_type = '", RSPDEF_DEFINITIONS::$source_post_types)."')";
 
 				$sql
 					= "insert into $wpdb->postmeta (post_id, meta_key, meta_value) " .
