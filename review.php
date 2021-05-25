@@ -119,16 +119,16 @@ if ( ! class_exists( "rspdef_review" ) ) {
 						<p><?php
                             if ($this->show_by_count){
 	                            printf( __( 'Hi, you already have %s definitions used in %s posts, awesome! If you have a moment, please consider leaving a review on WordPress.org to spread the word. We greatly appreciate it! If you have any questions or feedback, leave us a %smessage%s.',
-		                            'definitions-internal-linkbuilding' ),$this->definitions_count, $this->found_in_posts_count, '<a href="https://rspdefinitions.com" target="_blank">', '</a>' );
+		                            'definitions-internal-linkbuilding' ),$this->definitions_count, $this->found_in_posts_count, '<a href="https://wordpress.org/support/plugin/definitions-internal-linkbuilding/reviews/#new-post" target="_blank">', '</a>' );
                             } else {
 	                            printf( __( 'Hi, you have been using WP Definitions for a month now, awesome! If you have a moment, please consider leaving a review on WordPress.org to spread the word. We greatly appreciate it! If you have any questions or feedback, leave us a %smessage%s.',
-		                            'definitions-internal-linkbuilding' ), '<a href="https://rspdefinitions.com" target="_blank">', '</a>' );
+		                            'definitions-internal-linkbuilding' ), '<a href="https://wordpress.org/support/plugin/definitions-internal-linkbuilding/reviews/#new-post" target="_blank">', '</a>' );
                             }
 						?></p>
 						<i>- Rogier</i>
 						<div class="rspdef-buttons-row">
 							<a class="button button-primary" target="_blank"
-							   href="https://wordpress.org/support/plugin/definitions/reviews/#new-post"><?php _e( 'Leave a review', 'definitions-internal-linkbuilding' ); ?></a>
+							   href="https://wordpress.org/support/plugin/definitions-internal-linkbuilding/reviews/#new-post"><?php _e( 'Leave a review', 'definitions-internal-linkbuilding' ); ?></a>
 
 							<div class="dashicons dashicons-calendar"></div>
 							<a href="<?php echo add_query_arg(array('rspdef_dismiss_review'=>1), admin_url() )?>"

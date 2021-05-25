@@ -335,27 +335,27 @@
             var warning = "";
             if ( rspdef_metabox.performance_level == 4 ) {
                 icon = "<div class='rspdef-icon-bullet rspdef-icon-bullet-red'></div>";
-                warning = "<span class='rspdef-comment'>" + rspdef_metabox.localize_string('way-too-many-terms') + " <a href='https://really-simple-plugins.com/internal-linkbuilder/'>" + rspdef_metabox.localize_string('read-more') + "</a><span>";
+                warning = "<span class='rspdef-comment'>" + rspdef_metabox.localize_string('way-too-many-terms') + " <a href='https://really-simple-plugins.com/definitions-internal-linkbuilding/documentation'>" + rspdef_metabox.localize_string('read-more') + "</a><span>";
             }
 
             if ( rspdef_metabox.performance_level == 3 ) {
                 icon = "<div class='rspdef-icon-bullet rspdef-icon-bullet-orange'></div>";
-                warning = "<span class='rspdef-comment'>" + rspdef_metabox.localize_string('too-many-terms') + " <a href='https://really-simple-plugins.com/internal-linkbuilder/'>" + rspdef_metabox.localize_string('read-more') + "</a><span>";
+                warning = "<span class='rspdef-comment'>" + rspdef_metabox.localize_string('too-many-terms') + " <a href='https://really-simple-plugins.com/definitions-internal-linkbuilding/documentation'>" + rspdef_metabox.localize_string('read-more') + "</a><span>";
             }
 
             if ( rspdef_metabox.performance_level == 2 ) {
                 icon = "<div class='rspdef-icon-bullet rspdef-icon-bullet-orange'></div>";
-                warning = "<span class='rspdef-comment'>" + rspdef_metabox.localize_string('few-terms') + " <a href='https://really-simple-plugins.com/internal-linkbuilder/'>" + rspdef_metabox.localize_string('read-more') + "</a><span>";
+                warning = "<span class='rspdef-comment'>" + rspdef_metabox.localize_string('few-terms') + " <a href='https://really-simple-plugins.com/definitions-internal-linkbuilding/documentation'>" + rspdef_metabox.localize_string('read-more') + "</a><span>";
             }
 
             if ( rspdef_metabox.performance_level == 1 ) {
                 icon = "<div class='rspdef-icon-bullet rspdef-icon-bullet-green'></div>";
-                warning = "<span class='rspdef-comment'>" + rspdef_metabox.localize_string('positive-ratio-terms') + " <a href='https://really-simple-plugins.com/internal-linkbuilder/'>" + rspdef_metabox.localize_string('read-more') + "</a><span>";
+                warning = "<span class='rspdef-comment'>" + rspdef_metabox.localize_string('positive-ratio-terms') + " <a href='https://really-simple-plugins.com/definitions-internal-linkbuilding/documentation'>" + rspdef_metabox.localize_string('read-more') + "</a><span>";
             }
 
             if ( rspdef_metabox.performance_level == 0 ) {
                 icon = "<div class='rspdef-icon-bullet rspdef-icon-bullet-red'></div>";
-                warning = "<span class='rspdef-comment'>" + rspdef_metabox.localize_string('no-terms') + " <a href='https://really-simple-plugins.com/internal-linkbuilder/'>" + rspdef_metabox.localize_string('read-more') + "</a><span>";
+                warning = "<span class='rspdef-comment'>" + rspdef_metabox.localize_string('no-terms') + " <a href='https://really-simple-plugins.com/definitions-internal-linkbuilding/documentation'>" + rspdef_metabox.localize_string('read-more') + "</a><span>";
             }
 
             var html = "";
