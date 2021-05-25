@@ -2,69 +2,69 @@
 
 ( function( $ ) {
 
-    window.wpdef_metabox = {
+    window.rspdef_metabox = {
 
         init : function() {
             if ( $('.block-editor__container').length ) {
                 window.tagBox && window.tagBox.init();
             }
 
-            wpdef_metabox.post_count                  = wpdef.post_count;
-            wpdef_metabox.existing_definitions        = wpdef.existing_definitions;
-            wpdef_metabox.animation_time              = -40;
-            wpdef_metabox.animation_time_begin        = -20;
-            wpdef_metabox.animation_time_end          = 20;
-            wpdef_metabox.definition_count_current    = 0;
-            wpdef_metabox.definition_count_new        = 0;
-            wpdef_metabox.step                        = 0;
-            wpdef_metabox.performance_level           = 0;
-            wpdef_metabox.typingTimer;
-            wpdef_metabox.doneTypingInterval          = 800;
-            wpdef_metabox.last_checked_definition;
-            wpdef_metabox.ajaxCallActive = false;
-            wpdef_metabox.add_performance_notice();
-            wpdef_metabox.performance_notice_ajax();
-            wpdef_metabox.set_enable_checkbox_state();
-            wpdef_metabox.set_add_tag_state();
-            wpdef_metabox.conditionally_show_use_image();
+            rspdef_metabox.post_count                  = rspdef.post_count;
+            rspdef_metabox.existing_definitions        = rspdef.existing_definitions;
+            rspdef_metabox.animation_time              = -40;
+            rspdef_metabox.animation_time_begin        = -20;
+            rspdef_metabox.animation_time_end          = 20;
+            rspdef_metabox.definition_count_current    = 0;
+            rspdef_metabox.definition_count_new        = 0;
+            rspdef_metabox.step                        = 0;
+            rspdef_metabox.performance_level           = 0;
+            rspdef_metabox.typingTimer;
+            rspdef_metabox.doneTypingInterval          = 800;
+            rspdef_metabox.last_checked_definition;
+            rspdef_metabox.ajaxCallActive = false;
+            rspdef_metabox.add_performance_notice();
+            rspdef_metabox.performance_notice_ajax();
+            rspdef_metabox.set_enable_checkbox_state();
+            rspdef_metabox.set_add_tag_state();
+            rspdef_metabox.conditionally_show_use_image();
 
             $(document).on('keyup', '#definitions_box_id input[name="newtag[definitions_title]"]', function(e){
-                clearTimeout(wpdef_metabox.typingTimer);
-                wpdef_metabox.typingTimer = setTimeout(wpdef_metabox.afterFinishedTyping, wpdef_metabox.doneTypingInterval);
+                clearTimeout(rspdef_metabox.typingTimer);
+                rspdef_metabox.typingTimer = setTimeout(rspdef_metabox.afterFinishedTyping, rspdef_metabox.doneTypingInterval);
             });
 
             //on keydown, clear the countdown
             $(document).on('keydown', '#definitions_box_id input[name="newtag[definitions_title]"]', function(e){
-                clearTimeout(wpdef_metabox.typingTimer);
+                clearTimeout(rspdef_metabox.typingTimer);
             });
 
-            $(document).on('click', '#definitions_box_id input[name="dfn-definition-add"]',  wpdef_metabox.handle_add_tag );
-            $(document).on('click', '.remove-tag-icon', wpdef_metabox.handle_remove_tag  );
-            $(document).on('change', '#definitions_box_id select[name="dfn-link-type"]', wpdef_metabox.conditionally_show_use_image);
+            $(document).on('click', '#definitions_box_id input[name="rspdef-definition-add"]',  rspdef_metabox.handle_add_tag );
+            $(document).on('click', '.remove-tag-icon', rspdef_metabox.handle_remove_tag  );
+            $(document).on('change', '#definitions_box_id select[name="rspdef-link-type"]', rspdef_metabox.conditionally_show_use_image);
         },
 
         handle_remove_tag : function () {
-            wpdef_metabox.set_add_tag_state();
-            wpdef_metabox.remove_definition_from_all_list($(this));
-            wpdef_metabox.set_add_definition_state();
-            wpdef_metabox.performance_notice_ajax();
-            wpdef_metabox.set_enable_checkbox_state();
+            rspdef_metabox.set_add_tag_state();
+            rspdef_metabox.remove_definition_from_all_list($(this));
+            rspdef_metabox.set_add_definition_state();
+            rspdef_metabox.performance_notice_ajax();
+            rspdef_metabox.set_enable_checkbox_state();
         },
 
         handle_add_tag : function () {
-            wpdef_metabox.add_definition_to_all_list();
-            wpdef_metabox.performance_notice_ajax();
-            wpdef_metabox.set_add_tag_state();
-            wpdef_metabox.set_add_definition_state();
-            wpdef_metabox.set_enable_checkbox_state();
+            rspdef_metabox.add_definition_to_all_list();
+            rspdef_metabox.performance_notice_ajax();
+            rspdef_metabox.set_add_tag_state();
+            rspdef_metabox.set_add_definition_state();
+            rspdef_metabox.set_enable_checkbox_state();
 
         },
 
         afterFinishedTyping : function ( e ) {
-            wpdef_metabox.performance_notice_ajax();
-            wpdef_metabox.set_add_tag_state();
-            wpdef_metabox.set_add_definition_state();
-            wpdef_metabox.set_enable_checkbox_state();
+            rspdef_metabox.performance_notice_ajax();
+            rspdef_metabox.set_add_tag_state();
+            rspdef_metabox.set_add_definition_state();
+            rspdef_metabox.set_enable_checkbox_state();
         },
 
         /**
@@ -77,26 +77,26 @@
             }
 
             var definitions = new_definition.split(',');
-            var exists = wpdef_metabox.get_existing_definitions_from_list( definitions );
+            var exists = rspdef_metabox.get_existing_definitions_from_list( definitions );
             if ( exists.length > 0 ) {
                 if ( exists.length > 1 ) {
                     exists = exists.join(', ');
-                    var message = wpdef_metabox.localize_string('already-in-use-plural').replace('{definitions}', exists)
+                    var message = rspdef_metabox.localize_string('already-in-use-plural').replace('{definitions}', exists)
                 } else {
-                    var message = wpdef_metabox.localize_string('already-in-use-single').replace('{definitions}', exists)
+                    var message = rspdef_metabox.localize_string('already-in-use-single').replace('{definitions}', exists)
                 }
-                var notice_html = '<div class="dfn-icon-bullet dfn-icon-bullet-red"></div><span class="dfn-comment">' + message + '</span>';
-                $('#definitions_box_id .dfn-definition-add-notice').html(notice_html);
-                $('#definitions_box_id input[name="dfn-definition-add"]').prop('disabled', true);
+                var notice_html = '<div class="rspdef-icon-bullet rspdef-icon-bullet-red"></div><span class="rspdef-comment">' + message + '</span>';
+                $('#definitions_box_id .rspdef-definition-add-notice').html(notice_html);
+                $('#definitions_box_id input[name="rspdef-definition-add"]').prop('disabled', true);
             } else {
                 if ( new_definition.indexOf(",") >= 0 ) {
-                    var message = wpdef_metabox.localize_string('not-in-use-plural').replace('{definitions}', new_definition)
+                    var message = rspdef_metabox.localize_string('not-in-use-plural').replace('{definitions}', new_definition)
                 } else {
-                    var message = wpdef_metabox.localize_string('not-in-use-single').replace('{definitions}', new_definition)
+                    var message = rspdef_metabox.localize_string('not-in-use-single').replace('{definitions}', new_definition)
                 }
-                var notice_html = '<div class="dfn-icon-bullet dfn-icon-bullet-green"></div><span class="dfn-comment">' + message + '</span>';
-                $('#definitions_box_id .dfn-definition-add-notice').html(notice_html);
-                $('#definitions_box_id input[name="dfn-definition-add"]').prop('disabled', false);
+                var notice_html = '<div class="rspdef-icon-bullet rspdef-icon-bullet-green"></div><span class="rspdef-comment">' + message + '</span>';
+                $('#definitions_box_id .rspdef-definition-add-notice').html(notice_html);
+                $('#definitions_box_id input[name="rspdef-definition-add"]').prop('disabled', false);
             }
         },
 
@@ -108,7 +108,7 @@
             var exists = [];
             for (let i=0; i<definitions_list.length; i++) {
                 var definition = $.trim(definitions_list[i]);
-                if ( $.inArray(definition, wpdef_metabox.existing_definitions) !== -1 ) {
+                if ( $.inArray(definition, rspdef_metabox.existing_definitions) !== -1 ) {
                     exists.push(definition);
                 }
             }
@@ -117,20 +117,20 @@
         },
 
         showSaveChanges : function () {
-            $('#definitions_box_id .dfn-save-changes').show();
+            $('#definitions_box_id .rspdef-save-changes').show();
         },
 
         /**
          * Enable/disable checkbox depending on if definition tags were added
          */
         set_enable_checkbox_state : function () {
-            var definitions = wpdef_metabox.get_post_definitions_list(false);
+            var definitions = rspdef_metabox.get_post_definitions_list(false);
             if ( definitions.length > 0 ){
-                $('#definitions_box_id .dfn-show-if-term ').removeClass('dfn-disabled');
-                $('#definitions_box_id input.dfn-link-type').prop('disabled', false);
+                $('#definitions_box_id .rspdef-show-if-term ').removeClass('rspdef-disabled');
+                $('#definitions_box_id input.rspdef-link-type').prop('disabled', false);
             } else {
-                $('#definitions_box_id .dfn-show-if-term ').addClass('dfn-disabled');
-                $('#definitions_box_id input.dfn-link-type').prop('disabled', true);
+                $('#definitions_box_id .rspdef-show-if-term ').addClass('rspdef-disabled');
+                $('#definitions_box_id input.rspdef-link-type').prop('disabled', true);
             }
         },
 
@@ -138,14 +138,14 @@
          * Enable/disable option to add tags, depending on if tags are already there or not
          */
         set_add_tag_state : function () {
-            var current_definitions = wpdef_metabox.get_post_definitions_list(true);
+            var current_definitions = rspdef_metabox.get_post_definitions_list(true);
             if (current_definitions.length > 0) {
-                $('#definitions_box_id .dfn-definition-add-notice').hide();
-                $('#definitions_box_id input[name="dfn-definition-add"]').closest('.ajaxtag').hide();
+                $('#definitions_box_id .rspdef-definition-add-notice').hide();
+                $('#definitions_box_id input[name="rspdef-definition-add"]').closest('.ajaxtag').hide();
             } else {
-                var notice_html = '<div class="dfn-icon-bullet dfn-icon-bullet-red"></div><span class="dfn-comment">' + wpdef_metabox.localize_string('add-term') + '</span>';
-                $('#definitions_box_id .dfn-definition-add-notice').html(notice_html).show();
-                $('#definitions_box_id input[name="dfn-definition-add"]').closest('.ajaxtag').show();
+                var notice_html = '<div class="rspdef-icon-bullet rspdef-icon-bullet-red"></div><span class="rspdef-comment">' + rspdef_metabox.localize_string('add-term') + '</span>';
+                $('#definitions_box_id .rspdef-definition-add-notice').html(notice_html).show();
+                $('#definitions_box_id input[name="rspdef-definition-add"]').closest('.ajaxtag').show();
             }
         },
 
@@ -168,7 +168,7 @@
                 }
             }
 
-            $('#definitions_box_id .dfn-post-definition-list li').each( function() {
+            $('#definitions_box_id .rspdef-post-definition-list li').each( function() {
                 post_definitions.push( $(this).html().split('&nbsp;').pop() );
             });
             return post_definitions;
@@ -179,8 +179,8 @@
          * @returns string translated
          */
         localize_string : function ( index ) {
-            if (wpdef.strings.hasOwnProperty(index)) {
-                return wpdef.strings[index];
+            if (rspdef.strings.hasOwnProperty(index)) {
+                return rspdef.strings[index];
             }
 
             return '';
@@ -191,8 +191,8 @@
          * Set enable checkbox state
          */
         add_definition_to_all_list : function () {
-            var add_definition = wpdef_metabox.get_post_definitions_list().pop();
-            wpdef_metabox.existing_definitions.push( add_definition );
+            var add_definition = rspdef_metabox.get_post_definitions_list().pop();
+            rspdef_metabox.existing_definitions.push( add_definition );
         },
 
         /**
@@ -201,7 +201,7 @@
          */
         remove_definition_from_all_list : function (obj) {
             var remove_definition = obj.next().html().split(' ').pop();
-            wpdef_metabox.existing_definitions = wpdef_metabox.existing_definitions.filter(function(elem){
+            rspdef_metabox.existing_definitions = rspdef_metabox.existing_definitions.filter(function(elem){
                 return elem != remove_definition;
             });
         },
@@ -211,46 +211,46 @@
          * Start animation in the performance notice
          */
         performance_notice_ajax : function () {
-            var post_definitions = wpdef_metabox.get_post_definitions_list();
+            var post_definitions = rspdef_metabox.get_post_definitions_list();
 
             if ( post_definitions.length==0 ){
                 return;
             }
 
-            if (wpdef_metabox.last_checked_definition === post_definitions[0]) {
+            if (rspdef_metabox.last_checked_definition === post_definitions[0]) {
                 return;
             }
 
-            if ( wpdef_metabox.ajaxCallActive ) {
+            if ( rspdef_metabox.ajaxCallActive ) {
                 return;
             }
 
-            $('.dfn-performance-notice').html(wpdef_metabox.localize_string('retrieving-status'));
-            wpdef_metabox.performance_level = -1;
+            $('.rspdef-performance-notice').html(rspdef_metabox.localize_string('retrieving-status'));
+            rspdef_metabox.performance_level = -1;
 
 
 
-            wpdef_metabox.ajaxCallActive = true;
+            rspdef_metabox.ajaxCallActive = true;
             $.ajax({
                 type: "GET",
-                url: wpdef.url,
+                url: rspdef.url,
                 dataType: 'json',
                 data: ({
-                    action: 'wpdef_scan_definition_count',
+                    action: 'rspdef_scan_definition_count',
                     definitions: post_definitions,
                     post_id: $("#post_ID").val(),
                 }),
                 success: function (response) {
-                    wpdef_metabox.last_checked_definition = post_definitions[0];
-                    wpdef_metabox.ajaxCallActive = false;
+                    rspdef_metabox.last_checked_definition = post_definitions[0];
+                    rspdef_metabox.ajaxCallActive = false;
                     if (response.success) {
-                        wpdef_metabox.definition_count_new = response.count;
-                        wpdef_metabox.start_animation();
+                        rspdef_metabox.definition_count_new = response.count;
+                        rspdef_metabox.start_animation();
                     }
                 },
                 error:function(response) {
                     console.log("error retrieving count");
-                    wpdef_metabox.ajaxCallActive = false;
+                    rspdef_metabox.ajaxCallActive = false;
                 }
             });
         },
@@ -259,14 +259,14 @@
          * Start animation in the performance notice
          */
         start_animation : function () {
-            if (wpdef_metabox.definition_count_current == wpdef_metabox.definition_count_new ) {
-                wpdef_metabox.animation_time = wpdef_metabox.animation_time_end;
+            if (rspdef_metabox.definition_count_current == rspdef_metabox.definition_count_new ) {
+                rspdef_metabox.animation_time = rspdef_metabox.animation_time_end;
             } else {
-                wpdef_metabox.animation_time = wpdef_metabox.animation_time_begin;
-                wpdef_metabox.step = (wpdef_metabox.definition_count_new - wpdef_metabox.definition_count_current) / 40;
+                rspdef_metabox.animation_time = rspdef_metabox.animation_time_begin;
+                rspdef_metabox.step = (rspdef_metabox.definition_count_new - rspdef_metabox.definition_count_current) / 40;
             }
 
-            wpdef_metabox.animate_performance_notice();
+            rspdef_metabox.animate_performance_notice();
         },
 
         /**
@@ -281,26 +281,26 @@
          * Animate the definition count and notice message in the performance notice
          */
         animate_performance_notice : function () {
-            var new_performance_level = wpdef_metabox.calculate_performance_level( Math.round(wpdef_metabox.definition_count_current), wpdef_metabox.post_count );
-            if ( wpdef_metabox.animation_time != wpdef_metabox.animation_time_end ) {
-                wpdef_metabox.animation_time++;
-                wpdef_metabox.definition_count_current = Number(wpdef_metabox.definition_count_current) + Number(wpdef_metabox.step);
-                if ( wpdef_metabox.performance_level != new_performance_level ) {
-                    wpdef_metabox.performance_level = new_performance_level;
-                    wpdef_metabox.add_performance_notice();
-                    setTimeout(wpdef_metabox.animate_performance_notice, wpdef_metabox.anitation_time_to_wait(wpdef_metabox.animation_time) );
+            var new_performance_level = rspdef_metabox.calculate_performance_level( Math.round(rspdef_metabox.definition_count_current), rspdef_metabox.post_count );
+            if ( rspdef_metabox.animation_time != rspdef_metabox.animation_time_end ) {
+                rspdef_metabox.animation_time++;
+                rspdef_metabox.definition_count_current = Number(rspdef_metabox.definition_count_current) + Number(rspdef_metabox.step);
+                if ( rspdef_metabox.performance_level != new_performance_level ) {
+                    rspdef_metabox.performance_level = new_performance_level;
+                    rspdef_metabox.add_performance_notice();
+                    setTimeout(rspdef_metabox.animate_performance_notice, rspdef_metabox.anitation_time_to_wait(rspdef_metabox.animation_time) );
                 } else {
-                    $('#definitions_box_id .dfn-definition-count').html( Math.round(wpdef_metabox.definition_count_current) );
-                    setTimeout(wpdef_metabox.animate_performance_notice, wpdef_metabox.anitation_time_to_wait(wpdef_metabox.animation_time) );
+                    $('#definitions_box_id .rspdef-definition-count').html( Math.round(rspdef_metabox.definition_count_current) );
+                    setTimeout(rspdef_metabox.animate_performance_notice, rspdef_metabox.anitation_time_to_wait(rspdef_metabox.animation_time) );
                 }
             } else {
-                if (wpdef_metabox.performance_level != new_performance_level ) {
-                    wpdef_metabox.performance_level = new_performance_level;
-                    wpdef_metabox.definition_count_current = wpdef_metabox.definition_count_new;
-                    wpdef_metabox.add_performance_notice();
+                if (rspdef_metabox.performance_level != new_performance_level ) {
+                    rspdef_metabox.performance_level = new_performance_level;
+                    rspdef_metabox.definition_count_current = rspdef_metabox.definition_count_new;
+                    rspdef_metabox.add_performance_notice();
                 } else {
-                    $('#definitions_box_id .dfn-definition-count').val(wpdef_metabox.definition_count_new);
-                    wpdef_metabox.definition_count_current = wpdef_metabox.definition_count_new;
+                    $('#definitions_box_id .rspdef-definition-count').val(rspdef_metabox.definition_count_new);
+                    rspdef_metabox.definition_count_current = rspdef_metabox.definition_count_new;
                 }
             }
         },
@@ -309,14 +309,14 @@
          * Add performance notice to metabox
          */
         add_performance_notice : function () {
-            var definitions = wpdef_metabox.get_post_definitions_list();
+            var definitions = rspdef_metabox.get_post_definitions_list();
             if ( definitions.length > 0 ){
-                $('#definitions_box_id .dfn-show-if-term ').removeClass('dfn-disabled');
+                $('#definitions_box_id .rspdef-show-if-term ').removeClass('rspdef-disabled');
             } else {
-                $('#definitions_box_id .dfn-show-if-term ').addClass('dfn-disabled');
+                $('#definitions_box_id .rspdef-show-if-term ').addClass('rspdef-disabled');
             }
-            var html = wpdef_metabox.get_performance_notice_html( wpdef_metabox.definition_count_current )
-            $('#definitions_box_id .dfn-performance-notice').html( html );
+            var html = rspdef_metabox.get_performance_notice_html( rspdef_metabox.definition_count_current )
+            $('#definitions_box_id .rspdef-performance-notice').html( html );
         },
 
         /**
@@ -328,44 +328,44 @@
 
             var icon    = "";
 
-            var notice = "<span class='dfn-definition-count-notice'>" + wpdef_metabox.localize_string('terms-in-posts') + "<span>";
-            notice = notice.replace('{terms_count}', "<span class='dfn-definition-count'>" + definition_count + "</span>");
-            notice = notice.replace('{posts_count}', "" + wpdef_metabox.post_count );
+            var notice = "<span class='rspdef-definition-count-notice'>" + rspdef_metabox.localize_string('terms-in-posts') + "<span>";
+            notice = notice.replace('{terms_count}', "<span class='rspdef-definition-count'>" + definition_count + "</span>");
+            notice = notice.replace('{posts_count}', "" + rspdef_metabox.post_count );
 
             var warning = "";
-            if ( wpdef_metabox.performance_level == 4 ) {
-                icon = "<div class='dfn-icon-bullet dfn-icon-bullet-red'></div>";
-                warning = "<span class='dfn-comment'>" + wpdef_metabox.localize_string('way-too-many-terms') + " <a href='https://really-simple-plugins.com/internal-linkbuilder/'>" + wpdef_metabox.localize_string('read-more') + "</a><span>";
+            if ( rspdef_metabox.performance_level == 4 ) {
+                icon = "<div class='rspdef-icon-bullet rspdef-icon-bullet-red'></div>";
+                warning = "<span class='rspdef-comment'>" + rspdef_metabox.localize_string('way-too-many-terms') + " <a target='_blank' href='https://really-simple-plugins.com/definitions-internal-linkbuilding/documentation'>" + rspdef_metabox.localize_string('read-more') + "</a><span>";
             }
 
-            if ( wpdef_metabox.performance_level == 3 ) {
-                icon = "<div class='dfn-icon-bullet dfn-icon-bullet-orange'></div>";
-                warning = "<span class='dfn-comment'>" + wpdef_metabox.localize_string('too-many-terms') + " <a href='https://really-simple-plugins.com/internal-linkbuilder/'>" + wpdef_metabox.localize_string('read-more') + "</a><span>";
+            if ( rspdef_metabox.performance_level == 3 ) {
+                icon = "<div class='rspdef-icon-bullet rspdef-icon-bullet-orange'></div>";
+                warning = "<span class='rspdef-comment'>" + rspdef_metabox.localize_string('too-many-terms') + " <a target='_blank' href='https://really-simple-plugins.com/definitions-internal-linkbuilding/documentation'>" + rspdef_metabox.localize_string('read-more') + "</a><span>";
             }
 
-            if ( wpdef_metabox.performance_level == 2 ) {
-                icon = "<div class='dfn-icon-bullet dfn-icon-bullet-orange'></div>";
-                warning = "<span class='dfn-comment'>" + wpdef_metabox.localize_string('few-terms') + " <a href='https://really-simple-plugins.com/internal-linkbuilder/'>" + wpdef_metabox.localize_string('read-more') + "</a><span>";
+            if ( rspdef_metabox.performance_level == 2 ) {
+                icon = "<div class='rspdef-icon-bullet rspdef-icon-bullet-orange'></div>";
+                warning = "<span class='rspdef-comment'>" + rspdef_metabox.localize_string('few-terms') + " <a target='_blank' href='https://really-simple-plugins.com/definitions-internal-linkbuilding/documentation'>" + rspdef_metabox.localize_string('read-more') + "</a><span>";
             }
 
-            if ( wpdef_metabox.performance_level == 1 ) {
-                icon = "<div class='dfn-icon-bullet dfn-icon-bullet-green'></div>";
-                warning = "<span class='dfn-comment'>" + wpdef_metabox.localize_string('positive-ratio-terms') + " <a href='https://really-simple-plugins.com/internal-linkbuilder/'>" + wpdef_metabox.localize_string('read-more') + "</a><span>";
+            if ( rspdef_metabox.performance_level == 1 ) {
+                icon = "<div class='rspdef-icon-bullet rspdef-icon-bullet-green'></div>";
+                warning = "<span class='rspdef-comment'>" + rspdef_metabox.localize_string('positive-ratio-terms') + " <a target='_blank' href='https://really-simple-plugins.com/definitions-internal-linkbuilding/documentation'>" + rspdef_metabox.localize_string('read-more') + "</a><span>";
             }
 
-            if ( wpdef_metabox.performance_level == 0 ) {
-                icon = "<div class='dfn-icon-bullet dfn-icon-bullet-red'></div>";
-                warning = "<span class='dfn-comment'>" + wpdef_metabox.localize_string('no-terms') + " <a href='https://really-simple-plugins.com/internal-linkbuilder/'>" + wpdef_metabox.localize_string('read-more') + "</a><span>";
+            if ( rspdef_metabox.performance_level == 0 ) {
+                icon = "<div class='rspdef-icon-bullet rspdef-icon-bullet-red'></div>";
+                warning = "<span class='rspdef-comment'>" + rspdef_metabox.localize_string('no-terms') + " <a target='_blank' href='https://really-simple-plugins.com/definitions-internal-linkbuilding/documentation'>" + rspdef_metabox.localize_string('read-more') + "</a><span>";
             }
 
             var html = "";
 
-            html += "<div class='dfn-field'>";
+            html += "<div class='rspdef-field'>";
             html += icon;
             html += notice;
             html += "</div>";
             html += warning;
-            html += "<input type='hidden' class='dfn-definition-ids' value='" + definition_count + "'>";
+            html += "<input type='hidden' class='rspdef-definition-ids' value='" + definition_count + "'>";
             html += "<br><br>";
 
             return html;
@@ -390,10 +390,10 @@
          * Conditionally show the use image checkbox field depending if you use the tooltip or not
          */
         conditionally_show_use_image : function () {
-            if ( $('#definitions_box_id select[name="dfn-link-type"]').val()!=='hyperlink' ) {
-                $('.dfn-disable-image').closest('.dfn-field').show();
+            if ( $('#definitions_box_id select[name="rspdef-link-type"]').val()!=='hyperlink' ) {
+                $('.rspdef-disable-image').closest('.rspdef-field').show();
             } else {
-                $('.dfn-disable-image').closest('.dfn-field').hide();
+                $('.rspdef-disable-image').closest('.rspdef-field').hide();
             }
         },
 
@@ -403,5 +403,5 @@
 
 
 jQuery(document).ready(function ($) {
-    window.wpdef_metabox.init();
+    window.rspdef_metabox.init();
 });

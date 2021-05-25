@@ -1,13 +1,13 @@
 /**css hooks
 
  */
-.wpdef-tour-hook {
+.rspdef-tour-hook {
   float: left;
 }
 /**
 	Plugins overview tour
 */
-.wpdef-plugins-overview-tour-container {
+.rspdef-plugins-overview-tour-container {
   margin-left: 200px;
 }
 /**
@@ -33,26 +33,26 @@
 .shepherd-content {
   width: 450px;
 }
-.wpdef-plugins-overview-tour-container.shepherd-element.shepherd-theme-arrows.shepherd-has-title .shepherd-content header {
+.rspdef-plugins-overview-tour-container.shepherd-element.shepherd-theme-arrows.shepherd-has-title .shepherd-content header {
   background-color: black;
 }
-.wpdef-plugins-overview-tour-container.shepherd-element.shepherd-theme-arrows.shepherd-has-title .shepherd-content header h3 {
+.rspdef-plugins-overview-tour-container.shepherd-element.shepherd-theme-arrows.shepherd-has-title .shepherd-content header h3 {
   color: white;
 }
-.wpdef-tour-logo {
+.rspdef-tour-logo {
   background-color: black;
   padding: 10px;
 }
-.wpdef-tour-logo svg {
+.rspdef-tour-logo svg {
   background-color: black;
   fill: white;
   stroke: white;
 }
-.wpdef-tour-logo-text {
+.rspdef-tour-logo-text {
   height: 70px;
   display: flex;
 }
-.wpdef-tour-text {
+.rspdef-tour-text {
   display: flex;
   margin-left: 25px;
   justify-content: center;
@@ -67,4 +67,4 @@
   font-weight: bold;
   margin-top: -1px;
 }
-/*# sourceMappingURL=wpdef-tour.css.map */
+/*# sourceMappingURL=rspdef-tour.css.map */

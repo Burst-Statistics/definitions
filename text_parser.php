@@ -1,8 +1,8 @@
 <?php defined( 'ABSPATH' ) or die( "you do not have access to this page!" );
 
-if ( ! class_exists( 'wpdef_text_parser' ) ) {
+if ( ! class_exists( 'rspdef_text_parser' ) ) {
 
-	class wpdef_text_parser {
+	class rspdef_text_parser {
 
 		private $current_term_match;
 		private $current_replace_link;
@@ -11,9 +11,9 @@ if ( ! class_exists( 'wpdef_text_parser' ) ) {
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 			add_action( 'script_loader_tag', array( $this, 'defer_replacement_script' ), 10, 3 );
 			add_filter( 'the_content', array( $this, 'replace_definitions_with_links' ) );
-			add_action( 'wp_ajax_nopriv_wpdef_load_preview', array( $this, 'load_preview' ) );
-			add_action( 'wp_ajax_wpdef_load_preview', array( $this, 'load_preview' ) );
-			add_action( 'wp_ajax_wpdef_scan_definition_count', array( $this, 'scan_definition_count' ) );
+			add_action( 'wp_ajax_nopriv_rspdef_load_preview', array( $this, 'load_preview' ) );
+			add_action( 'wp_ajax_rspdef_load_preview', array( $this, 'load_preview' ) );
+			add_action( 'wp_ajax_rspdef_scan_definition_count', array( $this, 'scan_definition_count' ) );
 			add_action( 'save_post', array( $this, 'save_used_definitions_in_post' ), 10, 1 );
 			add_action( 'delete_term', array( $this, 'clear_used_definitions' ), 10, 5 );
 		}
@@ -22,17 +22,17 @@ if ( ! class_exists( 'wpdef_text_parser' ) ) {
 		 * Enqueue our assets
 		 */
 		public function enqueue_assets() {
-			wp_register_style( 'wpdef-tooltip', WPDEF_URL . 'assets/css/tooltip.css', array(), WPDEF_VERSION );
-			wp_enqueue_style( 'wpdef-tooltip' );
+			wp_register_style( 'rspdef-tooltip', RSPDEF_URL . 'assets/css/tooltip.css', array(), RSPDEF_VERSION );
+			wp_enqueue_style( 'rspdef-tooltip' );
 
 			$minified = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
 
-			wp_enqueue_script( 'wpdef',
-				WPDEF_URL . "assets/js/definitions$minified.js", array( 'jquery' ),
-				WPDEF_VERSION, true );
+			wp_enqueue_script( 'rspdef',
+				RSPDEF_URL . "assets/js/definitions$minified.js", array( 'jquery' ),
+				RSPDEF_VERSION, true );
 			wp_localize_script(
-				'wpdef',
-				'wpdef',
+				'rspdef',
+				'rspdef',
 				array(
 					'url' => admin_url( 'admin-ajax.php' ),
 				)
@@ -50,7 +50,7 @@ if ( ! class_exists( 'wpdef_text_parser' ) ) {
 		 */
 		function defer_replacement_script( $tag, $handle, $src ) {
 
-			if ( $handle === 'wpdef' ) {
+			if ( $handle === 'rspdef' ) {
 				$tag = str_replace( '<script ', '<script defer ', $tag );
 			}
 
@@ -108,9 +108,9 @@ if ( ! class_exists( 'wpdef_text_parser' ) ) {
 		 */
 		public function load_template( $filename, $args = array() ) {
 
-			$file       = trailingslashit( WPDEF_PATH ) . 'templates/' . $filename;
+			$file       = trailingslashit( RSPDEF_PATH ) . 'templates/' . $filename;
 			$theme_file = trailingslashit( get_stylesheet_directory() )
-			              . trailingslashit( basename( WPDEF_PATH ) )
+			              . trailingslashit( basename( RSPDEF_PATH ) )
 			              . 'templates/' . $filename;
 
 			if ( file_exists( $theme_file ) ) {
@@ -149,15 +149,15 @@ if ( ! class_exists( 'wpdef_text_parser' ) ) {
 
 			//defaults to preview
 			if ( $link_type === 'hyperlink' ) {
-				$tooltip_html = '<a href="{url}" class="wpdef-hyperlink"><span>{term}</span></a>';
+				$tooltip_html = '<a href="{url}" class="rspdef-hyperlink"><span>{term}</span></a>';
 				$tooltip_html = str_replace( array( "{url}" ), array( $url ), $tooltip_html );
 			} else {
 				// https://stackoverflow.com/questions/40531029/how-to-create-a-pure-css-tooltip-with-html-content-for-inline-elements
-				$tooltip_html = '<span class=" wpdef-preview"><a href="{url}"><dfn title="{term}" class="wpdef-definition" data-definitions_id="{post_id}"></dfn></a></span>';
+				$tooltip_html = '<span class=" rspdef-preview"><a href="{url}"><rspdef title="{term}" class="rspdef-definition" data-definitions_id="{post_id}"></rspdef></a></span>';
 				$tooltip_html = str_replace( array( "{url}", "{tooltip}", "{post_id}" ), array( $url, $tooltip, $post_id ), $tooltip_html );
 			}
 
-			return apply_filters( 'wpdef_tooltip_html', $tooltip_html );
+			return apply_filters( 'rspdef_tooltip_html', $tooltip_html );
 		}
 
 
@@ -182,7 +182,7 @@ if ( ! class_exists( 'wpdef_text_parser' ) ) {
 				$content = preg_replace_callback( $pattern, [ $this, 'definition_preg_replace_callback' ], $content, 1 );
 			}
 
-			return apply_filters( 'wpdef_content', $content );
+			return apply_filters( 'rspdef_content', $content );
 		}
 
 		/**
@@ -193,7 +193,7 @@ if ( ! class_exists( 'wpdef_text_parser' ) ) {
 		 * @return mixed|string|string[]
 		 */
 		function definition_preg_replace_callback( $matches ) {
-			$group = apply_filters( 'wpdef_matching_group', WPDEF_PATTERN_PHP_MATCHING_GROUP );
+			$group = apply_filters( 'rspdef_matching_group', RSPDEF_PATTERN_PHP_MATCHING_GROUP );
 			$link  = str_replace( '{term}', $matches[ $group ], $this->current_replace_link );
 
 			return str_replace( $matches[ $group ], $link, $matches[0] );
@@ -209,9 +209,9 @@ if ( ! class_exists( 'wpdef_text_parser' ) ) {
 		 */
 		private function get_regex( $term, $type = 'PHP' ) {
 			if ( $type === 'SQL' ) {
-				$pattern = str_replace( '{definition}', $term, apply_filters( 'wp_definitions_pattern', WPDEF_PATTERN_SQL ) );
+				$pattern = str_replace( '{definition}', $term, apply_filters( 'wp_definitions_pattern', RSPDEF_PATTERN_SQL ) );
 			} else {
-				$pattern = str_replace( '{definition}', $term, apply_filters( 'wp_definitions_pattern', WPDEF_PATTERN_PHP ) );
+				$pattern = str_replace( '{definition}', $term, apply_filters( 'wp_definitions_pattern', RSPDEF_PATTERN_PHP ) );
 			}
 			return $pattern;
 		}
@@ -282,14 +282,14 @@ if ( ! class_exists( 'wpdef_text_parser' ) ) {
 
 			if (!$error) {
 				//cache count
-				$count = get_transient("wpdef_{$post_id}_{$definition}_count");
+				$count = get_transient("rspdef_{$post_id}_{$definition}_count");
 				if ( !$count ) {
 					// Count definitions from this post used in all other posts
 					$post_type_sql = "(p.post_type = '".implode("' or p.post_type = '", DEFINITIONS::$target_post_types)."')";
 					$sql           = "select count(*) from (select * from $wpdb->posts as p where p.ID != {$post_id} and p.post_content LIKE '%$definition%' AND p.post_status = 'publish' and ($post_type_sql) ) as post ";
 					$count         = $wpdb->get_var( $sql );
                     if ( $count ) {
-                        set_transient("wpdef_{$post_id}_{$definition}_count", $count, DAY_IN_SECONDS);
+                        set_transient("rspdef_{$post_id}_{$definition}_count", $count, DAY_IN_SECONDS);
                     } else {
                         $error = true;
                     }

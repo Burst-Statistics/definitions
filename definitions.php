@@ -31,27 +31,27 @@
 
 defined('ABSPATH') or die("you do not have acces to this page!");
 
-if ( ! function_exists( 'wpdef_activation_check' ) ) {
+if ( ! function_exists( 'rspdef_activation_check' ) ) {
 	/**
 	 * Checks if the plugin can safely be activated, at least php 5.6 and wp 4.6
 	 *
 	 * @since 1.0.0
 	 */
-	function wpdef_activation_check() {
+	function rspdef_activation_check() {
 		if ( version_compare( PHP_VERSION, '5.6', '<' ) ) {
 			deactivate_plugins( plugin_basename( __FILE__ ) );
 			wp_die( __( 'Definitions - Internal Linkbuilding cannot be activated. The plugin requires PHP 5.6 or higher',
-				'definitions' ) );
+				'definitions-internal-linkbuilding' ) );
 		}
 
 		global $wp_version;
 		if ( version_compare( $wp_version, '5.2', '<' ) ) {
 			deactivate_plugins( plugin_basename( __FILE__ ) );
-			wp_die( __( 'Definitions - Internal Linkbuilding cannot be activated. The plugin requires WordPress 4.6 or higher', 'definitions' ) );
+			wp_die( __( 'Definitions - Internal Linkbuilding cannot be activated. The plugin requires WordPress 4.6 or higher', 'definitions-internal-linkbuilding' ) );
 		}
 	}
 
-	register_activation_hook( __FILE__, 'wpdef_activation_check' );
+	register_activation_hook( __FILE__, 'rspdef_activation_check' );
 }
 
 if ( ! class_exists( 'DEFINITIONS' ) ) {
@@ -70,13 +70,13 @@ if ( ! class_exists( 'DEFINITIONS' ) ) {
 			self::setup_constants();
 			self::includes();
 			self::hooks();
-			self::$target_post_types = apply_filters('wpdef_target_post_types', array('page','post'));
-			self::$source_post_types = apply_filters('wpdef_source_post_types', array('post'));
-			self::$post_type         = new wpdef_posttype();
-			self::$text_parser       = new wpdef_text_parser();
+			self::$target_post_types = apply_filters('rspdef_target_post_types', array('page','post'));
+			self::$source_post_types = apply_filters('rspdef_source_post_types', array('post'));
+			self::$post_type         = new rspdef_posttype();
+			self::$text_parser       = new rspdef_text_parser();
 			if ( is_admin() ) {
-				self::$review        = new wpdef_review();
-                self::$tour          = new wpdef_tour();
+				self::$review        = new rspdef_review();
+                self::$tour          = new rspdef_tour();
 			}
 		}
 
@@ -88,9 +88,9 @@ if ( ! class_exists( 'DEFINITIONS' ) ) {
 			require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 			$plugin_data = get_plugin_data( __FILE__ );
 
-			define( 'WPDEF_URL', plugin_dir_url( __FILE__ ) );
-			define( 'WPDEF_PATH', plugin_dir_path( __FILE__ ) );
-			define( 'WPDEF_PLUGIN', plugin_basename( __FILE__ ) );
+			define( 'RSPDEF_URL', plugin_dir_url( __FILE__ ) );
+			define( 'RSPDEF_PATH', plugin_dir_path( __FILE__ ) );
+			define( 'RSPDEF_PLUGIN', plugin_basename( __FILE__ ) );
 
 			/**
 			 * SQL does not support negative look aheads and negative lookbehinds. So we have to use a broader match
@@ -98,7 +98,7 @@ if ( ! class_exists( 'DEFINITIONS' ) ) {
 
 			$start = ' \>';//string can start with either a tag (>) or a space
 			$end = '\n\< \,\.\;\!\?';//string can end with any punctuation, space, break, or tag
-			define( 'WPDEF_PATTERN_SQL', "(.*[^<]*[$start]({definition})[$end])|([$start]({definition})[".$end."][^<].*)" );
+			define( 'RSPDEF_PATTERN_SQL', "(.*[^<]*[$start]({definition})[$end])|([$start]({definition})[".$end."][^<].*)" );
 
 			/**
 			 * With PHP we can use a negative lookbehind and lookahead
@@ -107,17 +107,16 @@ if ( ! class_exists( 'DEFINITIONS' ) ) {
 			 * between space, punctuation, p or div tag
 			 */
 
-			define( 'WPDEF_PATTERN_PHP', "/((?!<(a|b|h[1-9])[^>]*?>)(?:^|(<div.*>)|(<p.*>)|\s)({definition})(?:\s|\.|\,|\?|\!|(<\/p>)|(<\/div>))(?![^<]*?<\/(a|b|h[1-9])>))/i" );
+			define( 'RSPDEF_PATTERN_PHP', "/((?!<(a|b|h[1-9])[^>]*?>)(?:^|(<div.*>)|(<p.*>)|\s)({definition})(?:\s|\.|\,|\?|\!|(<\/p>)|(<\/div>))(?![^<]*?<\/(a|b|h[1-9])>))/i" );
 
 			/**
 			 * This is the matching group that contains our match.
 			 */
-			define( 'WPDEF_PATTERN_PHP_MATCHING_GROUP', 5 );
+			define( 'RSPDEF_PATTERN_PHP_MATCHING_GROUP', 5 );
 
 			$debug = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? time() : '';
-			define( 'WPDEF_VERSION', $plugin_data['Version'] . $debug );
-			define( 'WPDEF_PLUGIN_FILE', __FILE__ );
-			define( 'DEFINITIONS_COUNT', 5 );
+			define( 'RSPDEF_VERSION', $plugin_data['Version'] . $debug );
+			define( 'RSPDEF_PLUGIN_FILE', __FILE__ );
 		}
 
 		/**
@@ -138,12 +137,12 @@ if ( ! class_exists( 'DEFINITIONS' ) ) {
 		}
 
 		private function includes() {
-			require_once( WPDEF_PATH . 'post_type.php' );
-			require_once( WPDEF_PATH . 'text_parser.php' );
+			require_once( RSPDEF_PATH . 'post_type.php' );
+			require_once( RSPDEF_PATH . 'text_parser.php' );
 
 			if ( is_admin() ) {
-				require_once( WPDEF_PATH . 'review.php' );
-                require_once( WPDEF_PATH . 'shepherd/tour.php' );
+				require_once( RSPDEF_PATH . 'review.php' );
+                require_once( RSPDEF_PATH . 'shepherd/tour.php' );
 			}
 		}
 
@@ -164,29 +163,30 @@ if ( ! class_exists( 'DEFINITIONS' ) ) {
 	);
 }
 
-if ( ! function_exists( 'wpdef_set_activation_time_stamp' ) ) {
+if ( ! function_exists( 'rspdef_set_activation_time_stamp' ) ) {
 	/**
 	 * Set an activation time stamp
 	 *
 	 * @param $networkwide
 	 */
-	function wpdef_set_activation_time_stamp( $networkwide ) {
-		update_option( 'wpdef_activation_time', time() );
+	function rspdef_set_activation_time_stamp( $networkwide ) {
+		update_option( 'rspdef_activation_time', time() );
 	}
 
-	register_activation_hook( __FILE__, 'wpdef_set_activation_time_stamp' );
+	register_activation_hook( __FILE__, 'rspdef_set_activation_time_stamp' );
 
 }
 
-if ( ! function_exists( 'wpdef_start_tour' ) ) {
+if ( ! function_exists( 'rspdef_start_tour' ) ) {
+
     /**
      * start tour for plugin
      */
-    function wpdef_start_tour(){
-        if (!get_site_option('wpdef_tour_shown_once')){
-            update_site_option('wpdef_tour_started', true);
+    function rspdef_start_tour(){
+        if (!get_site_option('rspdef_tour_shown_once')){
+            update_site_option('rspdef_tour_started', true);
         }
     }
 
-    register_activation_hook( __FILE__, 'wpdef_start_tour' );
+    register_activation_hook( __FILE__, 'rspdef_start_tour' );
 }
