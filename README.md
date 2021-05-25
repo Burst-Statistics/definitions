@@ -17,18 +17,18 @@ Developed for ourselves to explain, underline and link to specific terms in our 
         $post_types[] = 'your-custom-post-type';
         return $post_types;
     }
-add_filter('wpdef_source_post_types','my_add_post_type');`
+add_filter('rspdedf_source_post_types','my_add_post_type');`
 
 ### Tooltip CSS:
 
-`.wpdef-preview-content{}`
-`.wpdef-preview-image{}`
-`.wpdef-preview-text{}`
-`.wpdef-read-more{}`
+`.rspdedf-preview-content{}`
+`.rspdedf-preview-image{}`
+`.rspdedf-preview-text{}`
+`.rspdedf-read-more{}`
 
 ### Hyperlink CSS:
 
-`.wpdef-definition {}`
+`.rspdedf-definition {}`
 
 ### Developers Guide and Contributions
 

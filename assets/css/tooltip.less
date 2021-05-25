@@ -1,5 +1,5 @@
 a{
-  &.wpdef-definition{
+  &.rspdef-definition{
     border-bottom: 1px dotted #ba0000;
     &:hover{
       text-decoration: none;
@@ -8,7 +8,7 @@ a{
 }
 
 
-.wpdef-preview {
+.rspdef-preview {
   dfn {
     position: relative;
     display: inline-block;
@@ -22,13 +22,13 @@ a{
     &:before {
       content: attr(title);
     }
-    > .wpdef-preview-content {
+    > .rspdef-preview-content {
       display: none;
       position: absolute;
       top: calc(1em + 10px);
       animation: fadeIn ease 1s;
     }
-    &:hover > .wpdef-preview-content {
+    &:hover > .rspdef-preview-content {
       box-shadow: 0 0 5px 5px rgba(222, 222, 222, 0.2);
       display: block;
       z-index: 100;
@@ -36,16 +36,16 @@ a{
       background-color: white;
       width: 16em;
     }
-    .wpdef-preview-image {
+    .rspdef-preview-image {
       img {width:100%}
     }
 
-    .wpdef-preview-text {
+    .rspdef-preview-text {
       padding: 1em 1em 0 1em;
       font-style: normal;
     }
 
-    .wpdef-read-more {
+    .rspdef-read-more {
       padding: 1em;
       font-style: normal;
     }

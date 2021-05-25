@@ -1,8 +1,8 @@
 <?php
 defined('ABSPATH') or die("you do not have acces to this page!");
 
-if (!class_exists('wpdef_posttype')) {
-	class wpdef_posttype {
+if (!class_exists('rspdef_posttype')) {
+	class rspdef_posttype {
 		public function __construct() {
 			add_action( 'init', array( $this, 'register_definitions' ) );
 			add_action( 'add_meta_boxes', array( $this, 'add_definitions_meta_box' ) );
@@ -53,7 +53,7 @@ if (!class_exists('wpdef_posttype')) {
                 'definitions_box_id',
                 'Internal linkbuilding',
                 array( $this, 'definitions_meta_box_html' ),
-	            apply_filters('wpdef_source_post_types', DEFINITIONS::$source_post_types),
+	            apply_filters('rspdef_source_post_types', DEFINITIONS::$source_post_types),
                 'side'
             );
 
@@ -72,20 +72,18 @@ if (!class_exists('wpdef_posttype')) {
 
             if ( $hook == 'post-new.php' || $hook == 'post.php' ) {
                 if ( in_array($post->post_type, DEFINITIONS::$source_post_types ) ) {
-                    wp_register_style( 'wpdef-metabox', trailingslashit( WPDEF_URL ) . "assets/css/metabox.css", "", WPDEF_VERSION );
-                    wp_enqueue_style( 'wpdef-metabox' );
+                    wp_register_style( 'rspdef-metabox', trailingslashit( RSPDEF_URL ) . "assets/css/metabox.css", "", RSPDEF_VERSION );
+                    wp_enqueue_style( 'rspdef-metabox' );
 	                wp_enqueue_script( 'tags-box' );
                     if( $this->uses_gutenberg() ) {
-                        $suffix = wp_scripts_get_suffix();
 	                    wp_enqueue_script( 'tags-box' );
-//                        wp_enqueue_script('wpdef-tagbox-js', "/wp-admin/js/tags-box$suffix.js", array('jquery', 'tags-suggest'), false, true);
                     }
 
                     $minified = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
 
-                    wp_enqueue_script( 'wpdef',
-                        WPDEF_URL . "assets/js/metabox$minified.js", array('jquery'),
-                        WPDEF_VERSION, true );
+                    wp_enqueue_script( 'rspdef',
+                        RSPDEF_URL . "assets/js/metabox$minified.js", array('jquery'),
+                        RSPDEF_VERSION, true );
 
                     $args = array(
                             'taxonomy' => 'definitions_title',
@@ -95,8 +93,8 @@ if (!class_exists('wpdef_posttype')) {
 	                $definitions = array_column( get_terms( $args ), 'name');
 
                     wp_localize_script(
-                        'wpdef',
-                        'wpdef',
+                        'rspdef',
+                        'rspdef',
                         array(
                             'url' => admin_url('admin-ajax.php'),
                             'strings'=> array(
@@ -129,7 +127,7 @@ if (!class_exists('wpdef_posttype')) {
 		public function maybe_sort_metabox($key) {
 			$user_id = get_current_user_id();
 			//only do this once
-			if ( get_user_meta( $user_id, 'wpdef_sorted_metaboxes', true) ){
+			if ( get_user_meta( $user_id, 'rspdef_sorted_metaboxes', true) ){
 				return;
 			}
 
@@ -155,7 +153,7 @@ if (!class_exists('wpdef_posttype')) {
 
 			$order['side'] = implode(",",$new_order);
 			update_user_option( $user_id, "meta-box-order_".$post_type, $order, true);
-			update_user_meta( $user_id, 'wpdef_sorted_metaboxes', true);
+			update_user_meta( $user_id, 'rspdef_sorted_metaboxes', true);
 		}
 
 
@@ -186,33 +184,33 @@ if (!class_exists('wpdef_posttype')) {
 	        $link_type    = get_post_meta( $post->ID, 'definition_link_type', true );
             $disable_image  = get_post_meta( $post->ID, 'definition_disable_image', true )  ? 'checked="checked"' : '';
             ?>
-            <span class="dfn-comment"><?php _e("If you want to know all the possibilities with Definitions - Internal Linkbuilding, have a look at our documentation.", "definitions") ?> <a href="https://really-simple-plugins.com/definitions-internal-linkbuilding/documentation"><?php _e("Read more", "definitions") ?></a></span>
+            <span class="rspdef-comment"><?php _e("If you want to know all the possibilities with Definitions - Internal Linkbuilding, have a look at our documentation.", "definitions") ?> <a href="https://really-simple-plugins.com/definitions-internal-linkbuilding/documentation"><?php _e("Read more", "definitions") ?></a></span>
             <h3><?php _e("Settings", "definitions")?></h3>
             <?php $this->definition_tag_field( $post ); ?>
-            <div class="dfn-field dfn-definition-add-notice">
-                <div class="dfn-icon-bullet dfn-icon-bullet-invisible"></div><span class="dfn-comment"><?php _e("Add a term to see the occurrence count", "definitions") ?></span>
+            <div class="rspdef-field rspdef-definition-add-notice">
+                <div class="rspdef-icon-bullet rspdef-icon-bullet-invisible"></div><span class="rspdef-comment"><?php _e("Add a term to see the occurrence count", "definitions") ?></span>
             </div>
 
-            <div class="dfn-field dfn-show-if-term dfn-disabled">
-                <label for="dfn-link-type">
-                    <select name="dfn-link-type">
+            <div class="rspdef-field rspdef-show-if-term rspdef-disabled">
+                <label for="rspdef-link-type">
+                    <select name="rspdef-link-type">
                         <option value="preview"><?php _e("Preview on hover", "definitions")?></option>
                         <option value="hyperlink" <?php if ($link_type ==='hyperlink') echo "selected"?> ><?php _e("Hyperlink", "definitions")?></option>
                     </select>
                 </label>
             </div>
 
-            <div class="dfn-field dfn-show-if-term  dfn-disabled">
-                <input type="hidden" class="dfn-disable-image" name="dfn-disable-image" value=""/>
-                <input type="checkbox" class="dfn-disable-image" name="dfn-disable-image" <?php echo $disable_image ?>/>
+            <div class="rspdef-field rspdef-show-if-term  rspdef-disabled">
+                <input type="hidden" class="rspdef-disable-image" name="rspdef-disable-image" value=""/>
+                <input type="checkbox" class="rspdef-disable-image" name="rspdef-disable-image" <?php echo $disable_image ?>/>
                 <label><?php _e("Disable Featured Image", "definitions")?></label>
             </div>
 
-            <h3 class="dfn-performance-notice-header dfn-show-if-term dfn-disabled"><?php _e("Status", "definitions")?></h3>
-            <div class="dfn-performance-notice dfn-show-if-term dfn-disabled"></div>
+            <h3 class="rspdef-performance-notice-header rspdef-show-if-term rspdef-disabled"><?php _e("Status", "definitions")?></h3>
+            <div class="rspdef-performance-notice rspdef-show-if-term rspdef-disabled"></div>
 
-            <div class="dfn-field">
-                <span class="dfn-save-changes"><?php _e("Settings changed, don't forget to save!", "definitions")?></span>
+            <div class="rspdef-field">
+                <span class="rspdef-save-changes"><?php _e("Settings changed, don't forget to save!", "definitions")?></span>
             </div>
             <?php
         }
@@ -243,14 +241,14 @@ if (!class_exists('wpdef_posttype')) {
                         <div class="ajaxtag hide-if-no-js">
                             <label class="screen-reader-text" for="new-tag-<?php echo esc_attr($tax_name); ?>"><?php echo $taxonomy->labels->add_new_item; ?></label>
                             <input data-wp-taxonomy="<?php echo esc_attr($tax_name); ?>" type="text" id="new-tag-<?php echo $tax_name; ?>" name="newtag[<?php echo $tax_name; ?>]" class="newtag form-input-tip" size="16" autocomplete="off" aria-describedby="new-tag-<?php echo $tax_name; ?>-desc" maxlength="30" value="" />
-                            <input type="button" class="button tagadd" name="dfn-definition-add" value="<?php esc_attr_e( 'Add' ); ?>" />
+                            <input type="button" class="button tagadd" name="rspdef-definition-add" value="<?php esc_attr_e( 'Add' ); ?>" />
                         </div>
                         <p class="howto" id="new-tag-<?php echo esc_attr($tax_name); ?>-desc"><?php echo $taxonomy->labels->separate_items_with_commas; ?></p>
                     <?php elseif ( empty( $terms_to_edit ) ) : ?>
                         <p><?php echo $taxonomy->labels->no_terms; ?></p>
                     <?php endif; ?>
                 </div>
-                <ul class="tagchecklist dfn-post-definition-list" role="list"></ul>
+                <ul class="tagchecklist rspdef-post-definition-list" role="list"></ul>
             </div>
             <?php
         }
@@ -262,12 +260,12 @@ if (!class_exists('wpdef_posttype')) {
         function save_postdata_definitions( $post_id ) {
 	        if (!current_user_can('edit_posts')) return;
 
-	        if ( array_key_exists( 'dfn-link-type', $_POST ) ) {
+	        if ( array_key_exists( 'rspdef-link-type', $_POST ) ) {
                 $options = array(
                         'hyperlink',
                         'preview',
                 );
-                $link_type = sanitize_title($_POST['dfn-link-type']);
+                $link_type = sanitize_title($_POST['rspdef-link-type']);
                 if (in_array($link_type, $options)) {
 	                update_post_meta(
 		                $post_id,
@@ -277,8 +275,8 @@ if (!class_exists('wpdef_posttype')) {
                 }
             }
 
-            if ( array_key_exists( 'dfn-disable-image', $_POST ) ) {
-	            $disable_image = sanitize_title($_POST['dfn-disable-image']) === 'on' ? 'on' : false;
+            if ( array_key_exists( 'rspdef-disable-image', $_POST ) ) {
+	            $disable_image = sanitize_title($_POST['rspdef-disable-image']) === 'on' ? 'on' : false;
 	            update_post_meta(
                     $post_id,
                     'definition_disable_image',

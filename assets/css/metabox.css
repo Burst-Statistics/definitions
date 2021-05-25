@@ -2,59 +2,59 @@
 #tagsdiv-definitions_title {
   display: none;
 }
-.dfn-disabled {
+.rspdef-disabled {
   opacity: 0.3;
 }
-.dfn-field {
+.rspdef-field {
   display: flex;
   align-items: center;
   gap: 10px;
   margin: 10px 0;
 }
-.dfn-field .dfn-save-changes {
+.rspdef-field .rspdef-save-changes {
   color: red;
   font-size: 12px;
   display: none;
 }
-.dfn-field input[type='checkbox'] {
+.rspdef-field input[type='checkbox'] {
   margin: 0;
 }
-.dfn-field .dfn-icon-bullet {
+.rspdef-field .rspdef-icon-bullet {
   margin-right: 10px;
 }
-.dfn-field .dfn-icon-bullet-red {
+.rspdef-field .rspdef-icon-bullet-red {
   height: 15px;
   width: 15px;
   border-radius: 10px;
   background-color: #D7263D;
 }
-.dfn-field .dfn-icon-bullet-orange {
+.rspdef-field .rspdef-icon-bullet-orange {
   height: 15px;
   width: 15px;
   border-radius: 10px;
   background-color: #f39c12;
 }
-.dfn-field .dfn-icon-bullet-green {
+.rspdef-field .rspdef-icon-bullet-green {
   height: 15px;
   width: 15px;
   border-radius: 10px;
   background-color: #22932e;
 }
-.dfn-field .dfn-icon-bullet-invisible {
+.rspdef-field .rspdef-icon-bullet-invisible {
   height: 15px;
   width: 15px;
   border-radius: 10px;
 }
-.dfn-field input:disabled + label {
+.rspdef-field input:disabled + label {
   color: #d7d7d7;
 }
 h3 {
   margin: 1em 0 0.5em 0;
 }
-.dfn-post-definition-list {
+.rspdef-post-definition-list {
   margin-bottom: 0;
 }
-.dfn-comment {
+.rspdef-comment {
   width: 80%;
 }
 /*# sourceMappingURL=metabox.css.map */

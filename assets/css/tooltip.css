@@ -1,43 +1,43 @@
-a.wpdef-definition {
+a.rspdef-definition {
   border-bottom: 1px dotted #ba0000;
 }
-a.wpdef-definition:hover {
+a.rspdef-definition:hover {
   text-decoration: none;
 }
-.wpdef-preview dfn {
+.rspdef-preview dfn {
   position: relative;
   display: inline-block;
   cursor: pointer;
   border-bottom: 1px dotted;
 }
-.wpdef-preview dfn div {
+.rspdef-preview dfn div {
   text-decoration: none;
   color: initial;
 }
-.wpdef-preview dfn:before {
+.rspdef-preview dfn:before {
   content: attr(title);
 }
-.wpdef-preview dfn > .wpdef-preview-content {
+.rspdef-preview dfn > .rspdef-preview-content {
   display: none;
   position: absolute;
   top: calc(1em + 10px);
   animation: fadeIn ease 1s;
 }
-.wpdef-preview dfn:hover > .wpdef-preview-content {
+.rspdef-preview dfn:hover > .rspdef-preview-content {
   box-shadow: 0 0 5px 5px rgba(222, 222, 222, 0.2);
   display: block;
   z-index: 100;
   background-color: white;
   width: 16em;
 }
-.wpdef-preview dfn .wpdef-preview-image img {
+.rspdef-preview dfn .rspdef-preview-image img {
   width: 100%;
 }
-.wpdef-preview dfn .wpdef-preview-text {
+.rspdef-preview dfn .rspdef-preview-text {
   padding: 1em 1em 0 1em;
   font-style: normal;
 }
-.wpdef-preview dfn .wpdef-read-more {
+.rspdef-preview dfn .rspdef-read-more {
   padding: 1em;
   font-style: normal;
 }

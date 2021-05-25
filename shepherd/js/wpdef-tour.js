@@ -1,7 +1,7 @@
 jQuery(document).ready(function($) {
-	console.log('wpdef-tour');
+	console.log('rspdef-tour');
 	if (!window.Shepherd) return;
-    console.log('wpdef-tour 2');
+    console.log('rspdef-tour 2');
 
 	var plugins_overview_tour = new Shepherd.Tour();
 	plugins_overview_tour.options.defaults =
@@ -27,22 +27,22 @@ jQuery(document).ready(function($) {
 		}
 	};
 
-	var steps = wpdef_tour.steps;
-    console.log('wpdef-tour 3');
-	plugins_overview_tour.addStep('wpdef-step-0', {
-		classes: 'shepherd-theme-arrows wpdef-plugins-overview-tour-container shepherd-has-cancel-link',
+	var steps = rspdef_tour.steps;
+    console.log('rspdef-tour 3');
+	plugins_overview_tour.addStep('rspdef-step-0', {
+		classes: 'shepherd-theme-arrows rspdef-plugins-overview-tour-container shepherd-has-cancel-link',
 		title: steps[0]['title'],
-		text: wpdef_tour.html.replace('{content}', steps[0]['text']),
+		text: rspdef_tour.html.replace('{content}', steps[0]['text']),
 		buttons: [
             {
-                text: wpdef_tour.start,
+                text: rspdef_tour.start,
                 classes: 'button button-secondary',
                 action: function() {
                     window.location = steps[0]['start_link'];
                 }
             },
 			{
-				text: wpdef_tour.documentation,
+				text: rspdef_tour.documentation,
 				classes: 'button button-primary',
 				action: function() {
 					window.open(steps[0]['documentation_link'], '_blank');
@@ -50,14 +50,14 @@ jQuery(document).ready(function($) {
 			},
 		],
 	});
-    console.log('wpdef-tour 4');
+    console.log('rspdef-tour 4');
 	plugins_overview_tour.on('cancel', cancel_tour);
 
 	// start tour when the settings link appears after plugin activation
 	if ($('#deactivate-definitions-internal-linkbuilding').length) {
 		plugins_overview_tour.start();
 	}
-    console.log('wpdef-tour 5');
+    console.log('rspdef-tour 5');
 	/**
 	 * Cancel tour
 	 */
@@ -68,11 +68,11 @@ jQuery(document).ready(function($) {
 
 		$.ajax({
 			type: "POST",
-			url: wpdef_tour.ajaxurl,
+			url: rspdef_tour.ajaxurl,
 			dataType: 'json',
 			data: ({
-				action: 'wpdef_cancel_tour',
-				token: wpdef_tour.token,
+				action: 'rspdef_cancel_tour',
+				token: rspdef_tour.token,
 			})
 		});
 	};
