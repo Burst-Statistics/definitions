@@ -153,7 +153,7 @@ if ( ! class_exists( 'rspdef_text_parser' ) ) {
 				$tooltip_html = str_replace( array( "{url}" ), array( $url ), $tooltip_html );
 			} else {
 				// https://stackoverflow.com/questions/40531029/how-to-create-a-pure-css-tooltip-with-html-content-for-inline-elements
-				$tooltip_html = '<span class=" rspdef-preview"><a href="{url}"><dfn title="{term}" class="rspdef-definition" data-definitions_id="{post_id}"></dfn></a></span>';
+				$tooltip_html = '<span class=" rspdef-preview"><a href="{url}"><rspdef title="{term}" class="rspdef-definition" data-definitions_id="{post_id}"></rspdef></a></span>';
 				$tooltip_html = str_replace( array( "{url}", "{tooltip}", "{post_id}" ), array( $url, $tooltip, $post_id ), $tooltip_html );
 			}
 

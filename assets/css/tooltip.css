@@ -4,40 +4,40 @@ a.rspdef-definition {
 a.rspdef-definition:hover {
   text-decoration: none;
 }
-.rspdef-preview dfn {
+.rspdef-preview rspdef {
   position: relative;
   display: inline-block;
   cursor: pointer;
   border-bottom: 1px dotted;
 }
-.rspdef-preview dfn div {
+.rspdef-preview rspdef div {
   text-decoration: none;
   color: initial;
 }
-.rspdef-preview dfn:before {
+.rspdef-preview rspdef:before {
   content: attr(title);
 }
-.rspdef-preview dfn > .rspdef-preview-content {
+.rspdef-preview rspdef > .rspdef-preview-content {
   display: none;
   position: absolute;
   top: calc(1em + 10px);
   animation: fadeIn ease 1s;
 }
-.rspdef-preview dfn:hover > .rspdef-preview-content {
+.rspdef-preview rspdef:hover > .rspdef-preview-content {
   box-shadow: 0 0 5px 5px rgba(222, 222, 222, 0.2);
   display: block;
   z-index: 100;
   background-color: white;
   width: 16em;
 }
-.rspdef-preview dfn .rspdef-preview-image img {
+.rspdef-preview rspdef .rspdef-preview-image img {
   width: 100%;
 }
-.rspdef-preview dfn .rspdef-preview-text {
+.rspdef-preview rspdef .rspdef-preview-text {
   padding: 1em 1em 0 1em;
   font-style: normal;
 }
-.rspdef-preview dfn .rspdef-read-more {
+.rspdef-preview rspdef .rspdef-read-more {
   padding: 1em;
   font-style: normal;
 }
