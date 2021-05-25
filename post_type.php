@@ -184,7 +184,7 @@ if (!class_exists('rspdef_posttype')) {
 	        $link_type    = get_post_meta( $post->ID, 'definition_link_type', true );
             $disable_image  = get_post_meta( $post->ID, 'definition_disable_image', true )  ? 'checked="checked"' : '';
             ?>
-            <span class="rspdef-comment"><?php _e("If you want to know all the possibilities with Definitions - Internal Linkbuilding, have a look at our documentation.", "definitions-internal-linkbuilding") ?> <a href="https://really-simple-plugins.com/definitions-internal-linkbuilding/documentation"><?php _e("Read more", "definitions-internal-linkbuilding") ?></a></span>
+            <span class="rspdef-comment"><?php _e("If you want to know all the possibilities with Definitions - Internal Linkbuilding, have a look at our documentation.", "definitions-internal-linkbuilding") ?> <a target="_blank" href="https://really-simple-plugins.com/definitions-internal-linkbuilding/documentation"><?php _e("Read more", "definitions-internal-linkbuilding") ?></a></span>
             <h3><?php _e("Settings", "definitions-internal-linkbuilding")?></h3>
             <?php $this->definition_tag_field( $post ); ?>
             <div class="rspdef-field rspdef-definition-add-notice">
