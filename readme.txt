@@ -1,6 +1,6 @@
 === Definitions - Internal Linkbuilding ===
 Contributors: tomeijkelenkamp, Hidde Nauta, RogierLankhorst, aahulsebos, leonwimmenhoeve
-Tags: tooltips, hyperlinks, linkbuilding, cool
+Tags: tooltip, hyperlinks, linkbuilding, glossary, dictionary, 
 Requires at least: 5.2
 License: GPL2
 Requires PHP: 5.6
