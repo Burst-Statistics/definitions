@@ -25,7 +25,7 @@ For every post on your website you can designate a keyword. That keyword will th
 
 = Example =
 
-As a use case for Complianz.io; we have a custom post type "Definitions", every definition explains a keyword in more detail. If we use "Cookie Policy" on our website, this word will be underlined as a tooltip and on hover will show a infobox with an internal link to this definition. [Example](https://complianz.io/customizing-the-cookie-policy-templates/)
+As a use case for Complianz.io; we have a custom post type "Definitions", every definition explains a keyword in more detail. If we use "Cookie Policy" on our website, this word will be underlined as a tooltip and on hover will show a infobox with an internal link to this definition. [Example](https://really-simple-plugins.com/definitions-internal-linkbuilding/)
 
 = Support =
 Please leave a review and/or feature request so we can help each other! If you have any questions, please leave them at the support forum on wordpress.org.
